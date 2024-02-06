@@ -43,7 +43,6 @@ data_path_y = config["data_path_y"]
 data_folder_x_train = sorted(glob.glob(data_path_x+"/train/*.npy"))
 data_folder_x_val = sorted(glob.glob(data_path_x+"/val/*.npy"))
 n_train = len(data_folder_x_train)
-print(data_folder_x_train)
 
 # train the model
 

@@ -9,7 +9,7 @@
     "loss_type": "l1",
     "gpu_list": "0",
     "train_lr": 2e-5,
-    "img_channel": 3,
+    "img_channels": 3,
     "img_size_x": 256,
     "img_size_y": 256,
     "print_loss_step": 100,
