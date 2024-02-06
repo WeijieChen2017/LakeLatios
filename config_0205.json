@@ -1,0 +1,20 @@
+{
+    "time_steps": 1000,
+    "train_epochs": 700000,
+    "batch_size": 8,
+    "save_folder": "./proj/MR2CT_InstanceUNet/",
+    "data_path_x": "./data/MR2CT/MR_x_2d/",
+    "data_path_y": "./data/MR2CT/CT_y_2d/",
+    "load_path": null,
+    "loss_type": "l1",
+    "gpu_list": "0",
+    "train_lr": 2e-5,
+    "img_channel": 3,
+    "img_size_x": 256,
+    "img_size_y": 256,
+    "print_loss_step": 100,
+    "eval_step": 1000,
+    "save_step": 10000,
+    "eval_batch_num": 1000
+  }
+  
