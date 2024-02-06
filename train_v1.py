@@ -97,8 +97,6 @@ for idx_epoch in range(train_epochs):
         time[idx_batch] = tb
 
     # convert to tensor
-    data_t0 = np.expand_dims(data_t0, axis=(0))
-    data_t1 = np.expand_dims(data_t1, axis=(0))
     data_t0 = torch.tensor(data_t0).float().to(device)
     data_t1 = torch.tensor(data_t1).float().to(device)
     time = torch.tensor(time).float().to(device)
@@ -126,22 +124,22 @@ for idx_epoch in range(train_epochs):
     if idx_epoch % eval_step == 0:
         plt.figure(figsize=(12, 3))
         plt.subplot(1, 4, 1)
-        plt.imshow(data_x[0, :, :], cmap="gray")
+        plt.imshow(data_x[0, :, :].cpu().numpy(), cmap="gray")
         plt.title("MR")
         plt.axis("off")
 
         plt.subplot(1, 4, 2)
-        plt.imshow(data_y[0, :, :], cmap="gray")
+        plt.imshow(data_y[0, :, :].cpu().numpy(), cmap="gray")
         plt.title("CT")
         plt.axis("off")
 
         plt.subplot(1, 4, 3)
-        plt.imshow(data_t0[0, 0, :, :], cmap="gray")
+        plt.imshow(data_t0[0, 0, :, :].cpu().numpy(), cmap="gray")
         plt.title("fusion t0")
         plt.axis("off")
 
         plt.subplot(1, 4, 4)
-        plt.imshow(data_t1[0, 0, :, :], cmap="gray")
+        plt.imshow(data_t1[0, 0, :, :].cpu().numpy(), cmap="gray")
         plt.title("fusion t1")
         plt.axis("off")
 
@@ -176,8 +174,6 @@ for idx_epoch in range(train_epochs):
                 data_t1[idx_batch, :, :, :] = data_t1b
                 time[idx_batch] = tb
 
-            data_t0 = np.expand_dims(data_t0, axis=(0))
-            data_t1 = np.expand_dims(data_t1, axis=(0))
             data_t0 = torch.tensor(data_t0).float().to(device)
             data_t1 = torch.tensor(data_t1).float().to(device)
             time = torch.tensor(time).float().to(device)
