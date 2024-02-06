@@ -89,8 +89,8 @@ for idx_epoch in range(train_epochs):
 
         # generate the fusion data
         tb = np.random.randint(max_time)
-        data_t0b = data_x * (1 - time / max_time) + data_y * (time / max_time)
-        data_t1b = data_x * (1 - (time+1) / max_time) + data_y * ((time+1) / max_time)
+        data_t0b = data_x * (1 - tb / max_time) + data_y * (tb / max_time)
+        data_t1b = data_x * (1 - (tb+1) / max_time) + data_y * ((tb+1) / max_time)
 
         data_t0[idx_batch, :, :, :] = data_t0b
         data_t1[idx_batch, :, :, :] = data_t1b
@@ -169,8 +169,8 @@ for idx_epoch in range(train_epochs):
 
                 # generate the fusion data
                 tb = np.random.randint(max_time)
-                data_t0b = data_x * (1 - time / max_time) + data_y * (time / max_time)
-                data_t1b = data_x * (1 - (time+1) / max_time) + data_y * ((time+1) / max_time)
+                data_t0b = data_x * (1 - tb / max_time) + data_y * (tb / max_time)
+                data_t1b = data_x * (1 - (tb+1) / max_time) + data_y * ((tb+1) / max_time)
 
                 data_t0[idx_batch, :, :, :] = data_t0b
                 data_t1[idx_batch, :, :, :] = data_t1b
