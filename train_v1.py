@@ -135,12 +135,12 @@ for idx_epoch in range(train_epochs):
         plt.axis("off")
 
         plt.subplot(1, 4, 3)
-        plt.imshow(data_t0[0, 0, :, :].cpu().numpy(), cmap="gray")
+        plt.imshow(data_t0[batch_size-1, 0, :, :].cpu().numpy(), cmap="gray")
         plt.title("fusion t0")
         plt.axis("off")
 
         plt.subplot(1, 4, 4)
-        plt.imshow(data_t1[0, 0, :, :].cpu().numpy(), cmap="gray")
+        plt.imshow(data_t1[batch_size-1, 0, :, :].cpu().numpy(), cmap="gray")
         plt.title("fusion t1")
         plt.axis("off")
 
