@@ -75,7 +75,7 @@ for idx_epoch in range(train_epochs):
 
     data_t0 = np.zeros((batch_size, img_channels, img_size_x, img_size_y))
     data_t1 = np.zeros((batch_size, img_channels, img_size_x, img_size_y))
-    time = np.zeros((batch_size, 1))
+    time = np.zeros((batch_size))
     best_eval_loss = 1e10
 
     for idx_batch in range(batch_size):
@@ -154,7 +154,7 @@ for idx_epoch in range(train_epochs):
 
             data_t0 = np.zeros((batch_size, img_channels, img_size_x, img_size_y))
             data_t1 = np.zeros((batch_size, img_channels, img_size_x, img_size_y))
-            time = np.zeros((batch_size, 1))
+            time = np.zeros((batch_size))
 
             for idx_batch in range(batch_size):
 
