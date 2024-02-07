@@ -43,6 +43,7 @@ data_path_y = config["data_path_y"]
 data_folder_x_train = sorted(glob.glob(data_path_x+"/train/*.npy"))
 data_folder_x_val = sorted(glob.glob(data_path_x+"/val/*.npy"))
 n_train = len(data_folder_x_train)
+n_val = len(data_folder_x_val)
 
 # train the model
 
@@ -160,7 +161,7 @@ for idx_epoch in range(train_epochs):
 
                 # randomly select the data
                 # the data is normalized to [0, 1]
-                idx_data = random.choice(range(n_train))
+                idx_data = random.choice(range(n_val))
                 data_x = np.load(data_folder_x_val[idx_data])
                 filename = os.path.basename(data_folder_x_val[idx_data])
                 data_y = np.load(data_path_y+"/val/"+filename)
