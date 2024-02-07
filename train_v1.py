@@ -124,12 +124,12 @@ for idx_epoch in range(train_epochs):
     if idx_epoch % eval_step == 0:
         plt.figure(figsize=(12, 3))
         plt.subplot(1, 4, 1)
-        plt.imshow(data_x[0, :, :].cpu().numpy(), cmap="gray")
+        plt.imshow(data_x[0, :, :], cmap="gray")
         plt.title("MR")
         plt.axis("off")
 
         plt.subplot(1, 4, 2)
-        plt.imshow(data_y[0, :, :].cpu().numpy(), cmap="gray")
+        plt.imshow(data_y[0, :, :], cmap="gray")
         plt.title("CT")
         plt.axis("off")
 
