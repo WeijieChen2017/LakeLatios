@@ -15,6 +15,6 @@
     "print_loss_step": 100,
     "eval_step": 1000,
     "save_step": 10000,
-    "eval_batch_num": 1000
+    "eval_batch_num": 100
   }
   

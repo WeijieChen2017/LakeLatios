@@ -72,7 +72,8 @@ eval_step = config["eval_step"]
 save_step = config["save_step"]
 eval_batch_num = config["eval_batch_num"]
 
-for idx_epoch in range(train_epochs):
+for i_epoch in range(train_epochs):
+    idx_epoch = i_epoch + 1
 
     data_t0 = np.zeros((batch_size, img_channels, img_size_x, img_size_y))
     data_t1 = np.zeros((batch_size, img_channels, img_size_x, img_size_y))
