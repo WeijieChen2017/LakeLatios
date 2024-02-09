@@ -61,8 +61,8 @@ eval_metrics = config["eval_metrics"]
 for idx_case in range(n_test):
     
     # load the case
-    data_x = np.load(data_folder_x_test[idx_data])
-    filename = os.path.basename(data_folder_x_test[idx_data])
+    data_x = np.load(data_folder_x_test[idx_case])
+    filename = os.path.basename(data_folder_x_test[idx_case])
     data_y = np.load(data_path_y+"/test/"+filename)
     data_t = np.zeros((1, img_channels, img_size_x, img_size_y))
     data_t[0, :, :, :] = data_x
