@@ -64,7 +64,7 @@ for idx_case in range(n_test):
     # load the case
     data_x = np.load(data_folder_x_test[idx_case])
     filename = os.path.basename(data_folder_x_test[idx_case])
-    data_y = np.load(data_path_y+"/test/"+filename)
+    data_y = np.load(data_path_y+"/test/"+filename) * 4000
     data_t = np.zeros((1, img_channels, img_size_x, img_size_y))
     data_t[0, :, :, :] = data_x
     data_t0 = torch.tensor(data_t).float().to(device)
@@ -77,20 +77,15 @@ for idx_case in range(n_test):
         data_t0 = pred_t1
 
     # save the metrics
-    data_t1 = np.squeeze(pred_t1.cpu().numpy())
+    data_t1 = np.squeeze(pred_t1.cpu().numpy()) * 4000
     if eval_metrics == "mae":
-        metric = np.mean(np.abs(data_t1 - data_y)) * 4000
+        metric = np.mean(np.abs(data_t1 - data_y))
     else:
         raise ValueError("Unknown eval metrics")
     
     with open(result_folder + "test_metrics.txt", "a") as f:
         f.write("%s, %.6f\n" % (filename, metric))
     print("Case: %s, Metric: %.6f" % (filename, metric))
-
-    # output all shape
-    print("data_x shape: ", data_x.shape)
-    print("data_y shape: ", data_y.shape)
-    print("data_t1 shape: ", data_t1.shape)
 
     # save for preview
     plt.figure(figsize=(12, 3))
