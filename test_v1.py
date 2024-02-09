@@ -51,6 +51,7 @@ import random
 import numpy as np
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import DivergingNorm
 
 max_time = config["time_steps"]
 img_channels = config["img_channels"]
@@ -78,9 +79,7 @@ for idx_case in range(n_test):
     # save the metrics
     data_t1 = np.squeeze(pred_t1.cpu().numpy())
     if eval_metrics == "mae":
-        metric = np.mean(np.abs(data_t1 - data_y))
-    elif eval_metrics == "mse":
-        metric = np.mean((data_t1 - data_y)**2)
+        metric = np.mean(np.abs(data_t1 - data_y)) * 4000
     else:
         raise ValueError("Unknown eval metrics")
     
@@ -105,9 +104,12 @@ for idx_case in range(n_test):
     plt.title("pred")
     plt.axis("off")
 
-    # show the diff using red-blue color map
+    # show the diff using red-blue color map and make the zero as white
     plt.subplot(1, 4, 4)
-    plt.imshow(data_path_y[1:, :, :]-data_t1[0, :, :], cmap="seismic")
+    diff_img = data_y[1:, :, :]-data_t1[1, :, :]
+    zero_whihte_norm = DivergingNorm(vmin=np.amin(diff_img), vcenter=0, vmax=np.amax(diff_img))
+    plt.imshow(data_y[1:, :, :]-data_t1[1, :, :], norm=zero_whihte_norm, cmap="seismic")
+    plt.colorbar()
     plt.title("diff (y-pred)")
     plt.axis("off")
 
