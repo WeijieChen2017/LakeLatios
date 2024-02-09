@@ -1,0 +1,13 @@
+{
+    "time_steps": 1000,
+    "save_folder": "./proj/MR2CT_InstanceUNet/",
+    "data_path_x": "./data/MR2CT/MR_x_2d/",
+    "data_path_y": "./data/MR2CT/CT_y_2d/",
+    "load_path": "best_model.pth",
+    "eval_metric": "MAE",
+    "gpu_list": "0",
+    "img_channels": 3,
+    "img_size_x": 256,
+    "img_size_y": 256
+  }
+  
