@@ -88,7 +88,7 @@ for idx_case in range(n_test):
     print("Case: %s, Metric: %.6f" % (filename, metric))
 
     # save for preview
-    plt.figure(figsize=(12, 3))
+    plt.figure(figsize=(9, 3))
     plt.subplot(1, 4, 1)
     plt.imshow(data_x[1, :, :], cmap="gray")
     plt.title("MR")
