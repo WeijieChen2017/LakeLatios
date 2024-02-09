@@ -51,7 +51,7 @@ import random
 import numpy as np
 
 import matplotlib.pyplot as plt
-from matplotlib.colors import DivergingNorm
+from matplotlib.colors import TwoSlopeNorm
 
 max_time = config["time_steps"]
 img_channels = config["img_channels"]
@@ -107,7 +107,7 @@ for idx_case in range(n_test):
     # show the diff using red-blue color map and make the zero as white
     plt.subplot(1, 4, 4)
     diff_img = data_y[1:, :, :]-data_t1[1, :, :]
-    zero_whihte_norm = DivergingNorm(vmin=np.amin(diff_img), vcenter=0, vmax=np.amax(diff_img))
+    zero_whihte_norm = TwoSlopeNorm(vmin=np.amin(diff_img), vcenter=0, vmax=np.amax(diff_img))
     plt.imshow(data_y[1:, :, :]-data_t1[1, :, :], norm=zero_whihte_norm, cmap="seismic")
     plt.colorbar()
     plt.title("diff (y-pred)")
