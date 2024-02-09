@@ -113,6 +113,9 @@ for idx_case in range(n_test):
     plt.title("diff (y-pred)")
     plt.axis("off")
 
+    # set the total title
+    plt.suptitle("Case: %s, Metric: %.6f" % (filename, metric))
+
     plt.savefig(result_folder + "preview_%s.png" % filename)
     plt.close()
 
