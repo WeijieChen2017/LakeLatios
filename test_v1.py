@@ -87,6 +87,11 @@ for idx_case in range(n_test):
         f.write("%s, %.6f\n" % (filename, metric))
     print("Case: %s, Metric: %.6f" % (filename, metric))
 
+    # output all shape
+    print("data_x shape: ", data_x.shape)
+    print("data_y shape: ", data_y.shape)
+    print("data_t1 shape: ", data_t1.shape)
+
     # save for preview
     plt.figure(figsize=(12, 3))
     plt.subplot(1, 4, 1)
@@ -108,7 +113,7 @@ for idx_case in range(n_test):
     plt.subplot(1, 4, 4)
     diff_img = data_y[1:, :, :]-data_t1[1, :, :]
     zero_whihte_norm = TwoSlopeNorm(vmin=np.amin(diff_img), vcenter=0, vmax=np.amax(diff_img))
-    plt.imshow(data_y[1:, :, :]-data_t1[1, :, :], norm=zero_whihte_norm, cmap="seismic")
+    plt.imshow(diff_img, norm=zero_whihte_norm, cmap="seismic")
     plt.colorbar()
     plt.title("diff (y-pred)")
     plt.axis("off")
