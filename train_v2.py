@@ -8,6 +8,8 @@ cfg = json.load(open(cfg_path))
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 root_dir = cfg["root_dir"]
+if not os.path.exists(root_dir):
+    os.makedirs(root_dir)
 
 import json
 import torch
