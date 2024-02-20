@@ -4,30 +4,6 @@ import numpy as np
 from torch.utils.data import Dataset
 from torchvision import transforms
 
-class DynamicNormalize:
-    def __init__(self):
-        self.mean = 0
-        self.std = 1
-        self.n_samples = 0
-
-    def update_stats(self, tensor):
-        # Calculate the mean and std for the current tensor
-        batch_mean = tensor.mean()
-        batch_std = tensor.std()
-
-        # Update the overall mean and std using a running average
-        self.mean = (self.mean * self.n_samples + batch_mean) / (self.n_samples + 1)
-        self.std = (self.std * self.n_samples + batch_std) / (self.n_samples + 1)
-        self.n_samples += 1
-
-    def __call__(self, tensor):
-        # Update stats with the current image
-        self.update_stats(tensor)
-        
-        # Normalize the current image
-        return (tensor - self.mean) / (self.std + 1e-6)
-
-
 # create customized dataset
 # folder structure:
 # - data
@@ -57,7 +33,6 @@ class PairedMRCTDataset(Dataset):
         for i in range(len(self.list_MR)):
             assert self.list_MR[i].split("/")[-1] == self.list_CT[i].split("/")[-1]
         self.data_path = list(zip(self.list_MR, self.list_CT))
-        self.dynamic_normalizer = DynamicNormalize()  # Instantiate the dynamic normalizer
 
     def __len__(self):
         return len(self.list_MR)
@@ -68,14 +43,12 @@ class PairedMRCTDataset(Dataset):
 
         MR = np.load(self.data_path[idx][0], allow_pickle=True)
         CT = np.load(self.data_path[idx][1], allow_pickle=True)
+        # H, W, C -> C, H, W
+        MR = MR.transpose((2, 0, 1))
+        CT = CT.transpose((2, 0, 1))
         sample = {'MR': MR, 'CT': CT}
         if self.transform:
             sample = self.transform(sample)
-
-        # Apply dynamic normalization to your data
-        MR_normalized = self.dynamic_normalizer(sample['MR'])
-        CT_normalized = self.dynamic_normalizer(sample['CT'])
-        sample = {'MR': MR_normalized, 'CT': CT_normalized}
 
         return sample
     
@@ -84,9 +57,9 @@ class PairedMRCTDataset(Dataset):
 # random horizontal flip
 # random vertical flip
 # random rotation
-# random intensity shift
-# normalize to 0 mean and 1 std
-train_transform = transforms.Compose([
+# H, W, C -> C, H, W
+# has pre-normalized to 0 mean and 1 std
+trainval_transform = transforms.Compose([
     transforms.Resize((1024, 1024)),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
@@ -97,7 +70,7 @@ train_transform = transforms.Compose([
 # define the test transform
 # resize to 1024x1024
 # normalize to 0 mean and 1 std
-val_transform = transforms.Compose([
+test_transform = transforms.Compose([
     transforms.Resize((1024, 1024)),
     transforms.ToTensor(),
 ])
