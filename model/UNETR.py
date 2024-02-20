@@ -228,7 +228,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         self._init_weights()
 
     def load_pretrain(self, pretrain_path, remove_prefix="image_encoder."):
-        pretrain_dict = torch.load(pretrain_path, map_location="cpu")["state_dict"]
+        pretrain_dict = torch.load(pretrain_path, map_location="cpu")
         model_dict = self.state_dict()
         pretrain_dict = {k[len(remove_prefix):]: v for k, v in pretrain_dict.items() if k[len(remove_prefix):] in model_dict}
         model_dict.update(pretrain_dict)
