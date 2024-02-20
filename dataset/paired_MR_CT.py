@@ -65,6 +65,9 @@ class PairedMRCTDataset_train(Dataset):
         # H, W, C -> C, H, W
         MR = MR.transpose((2, 0, 1))
         CT = CT.transpose((2, 0, 1))
+        # convert to tensor
+        MR = torch.from_numpy(MR).float()
+        CT = torch.from_numpy(CT).float()
         # transform
         if self.transform:
             MR = self.transform(MR)
