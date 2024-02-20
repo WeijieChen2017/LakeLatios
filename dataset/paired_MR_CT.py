@@ -62,8 +62,6 @@ class PairedMRCTDataset_train(Dataset):
 
         MR = np.load(self.data_path[idx][0], allow_pickle=True)
         CT = np.load(self.data_path[idx][1], allow_pickle=True)
-        # get the middle slice from CT
-        CT = CT[CT.shape[0]//2, :, :]
 
         # convert to tensor
         MR = torch.from_numpy(MR).float()
@@ -90,7 +88,9 @@ class PairedMRCTDataset_train(Dataset):
         MR, CT = paird_random_augmentation(MR, CT)
         # squeeze the first dimension
         MR = MR.squeeze(0)
-        # CT = CT.squeeze(0)
+        CT = CT.squeeze(0)
+        # get the middle slice from CT, from 3, 1024, 1024 to 1, 1024, 1024
+        CT = CT[1, :, :]
         sample = {"MR": MR, "CT": CT}
 
         return sample
