@@ -230,10 +230,6 @@ class decoder_Deconv_encoder_MedSAM(nn.Module):
         if self.verbose:
             print("x.shape", x.shape)
 
-        zx = self.decoder_x(x)
-        if self.verbose:
-            print("zx.shape", zx.shape)
-
         x = self.patch_embed(x)
         if self.verbose:
             print("after patch_embed x.shape", x.shape)
