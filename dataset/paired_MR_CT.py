@@ -88,6 +88,9 @@ class PairedMRCTDataset_train(Dataset):
             CT = self.transform(CT)
         # random augmentation
         MR, CT = paird_random_augmentation(MR, CT)
+        # squeeze the first dimension
+        MR = MR.squeeze(0)
+        CT = CT.squeeze(0)
         sample = {"MR": MR, "CT": CT}
 
         return sample
