@@ -24,7 +24,7 @@ from matplotlib import pyplot as plt
 from model import decoder_UNETR_encoder_MedSAM, decoder_Deconv_encoder_MedSAM
 from dataset import PairedMRCTDataset_train
 
-if cfg["model"] == "decoder_UNETR_encoder_MedSAM":
+if cfg["model_name"] == "decoder_UNETR_encoder_MedSAM":
     model = decoder_UNETR_encoder_MedSAM(
         img_size=cfg["img_size"],
         patch_size=cfg["patch_size"],
@@ -44,7 +44,7 @@ if cfg["model"] == "decoder_UNETR_encoder_MedSAM":
         window_size=cfg["window_size"],
         global_attn_indexes=cfg["global_attn_indexes"],
     )
-if cfg["model"] == "decoder_Deconv_encoder_MedSAM":
+if cfg["model_name"] == "decoder_Deconv_encoder_MedSAM":
     model = decoder_Deconv_encoder_MedSAM(
         img_size=cfg["img_size"],
         patch_size=cfg["patch_size"],
