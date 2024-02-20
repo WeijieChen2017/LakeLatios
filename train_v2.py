@@ -4,7 +4,7 @@
 import os
 import json
 # load the cfg
-cfg_path = "config_0219.json"
+cfg_path = "config_0220.json"
 cfg = json.load(open(cfg_path))
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import torch
@@ -20,28 +20,49 @@ from torchvision import transforms
 from torch.utils.data import DataLoader
 from matplotlib import pyplot as plt
 
-from model import decoder_UNETR_encoder_MedSAM
+from model import decoder_UNETR_encoder_MedSAM, decoder_Deconv_encoder_MedSAM
 from dataset import PairedMRCTDataset_train
 
-model = decoder_UNETR_encoder_MedSAM(
-    img_size=cfg["img_size"],
-    patch_size=cfg["patch_size"],
-    in_chans=cfg["in_chans"],
-    out_chans=cfg["out_chans"],
-    out_chans_pretrain=cfg["out_chans_pretrain"],
-    embed_dim=cfg["embed_dim"],
-    depth=cfg["depth"],
-    num_heads=cfg["num_heads"],
-    mlp_ratio=cfg["mlp_ratio"],
-    qkv_bias=True if cfg["qkv_bias"] == "True" else False,
-    norm_layer=nn.LayerNorm if cfg["norm_layer"] == "nn.LayerNorm" else None,
-    act_layer=nn.GELU if cfg["act_layer"] == "nn.GELU" else None,
-    use_abs_pos=True if cfg["use_abs_pos"] == "True" else False,
-    use_rel_pos=False if cfg["use_rel_pos"] == "False" else True,
-    rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
-    window_size=cfg["window_size"],
-    global_attn_indexes=cfg["global_attn_indexes"],
-)
+if cfg["model"] == "decoder_UNETR_encoder_MedSAM":
+    model = decoder_UNETR_encoder_MedSAM(
+        img_size=cfg["img_size"],
+        patch_size=cfg["patch_size"],
+        in_chans=cfg["in_chans"],
+        out_chans=cfg["out_chans"],
+        out_chans_pretrain=cfg["out_chans_pretrain"],
+        embed_dim=cfg["embed_dim"],
+        depth=cfg["depth"],
+        num_heads=cfg["num_heads"],
+        mlp_ratio=cfg["mlp_ratio"],
+        qkv_bias=True if cfg["qkv_bias"] == "True" else False,
+        norm_layer=nn.LayerNorm if cfg["norm_layer"] == "nn.LayerNorm" else None,
+        act_layer=nn.GELU if cfg["act_layer"] == "nn.GELU" else None,
+        use_abs_pos=True if cfg["use_abs_pos"] == "True" else False,
+        use_rel_pos=False if cfg["use_rel_pos"] == "False" else True,
+        rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
+        window_size=cfg["window_size"],
+        global_attn_indexes=cfg["global_attn_indexes"],
+    )
+if cfg["model"] == "decoder_Deconv_encoder_MedSAM":
+    model = decoder_Deconv_encoder_MedSAM(
+        img_size=cfg["img_size"],
+        patch_size=cfg["patch_size"],
+        in_chans=cfg["in_chans"],
+        out_chans=cfg["out_chans"],
+        out_chans_pretrain=cfg["out_chans_pretrain"],
+        embed_dim=cfg["embed_dim"],
+        depth=cfg["depth"],
+        num_heads=cfg["num_heads"],
+        mlp_ratio=cfg["mlp_ratio"],
+        qkv_bias=True if cfg["qkv_bias"] == "True" else False,
+        norm_layer=nn.LayerNorm if cfg["norm_layer"] == "nn.LayerNorm" else None,
+        act_layer=nn.GELU if cfg["act_layer"] == "nn.GELU" else None,
+        use_abs_pos=True if cfg["use_abs_pos"] == "True" else False,
+        use_rel_pos=False if cfg["use_rel_pos"] == "False" else True,
+        rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
+        window_size=cfg["window_size"],
+        global_attn_indexes=cfg["global_attn_indexes"],
+    )
 model.load_pretrain(cfg["pretrain_path"])
 model.to(device)
 
