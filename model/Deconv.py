@@ -178,7 +178,7 @@ class decoder_Deconv_encoder_MedSAM(nn.Module):
             yellow_block(64, 32), # 512px -> 512px
             blue_block(32, 32), # 512px -> 1024px
             yellow_block(32, out_chans), # 1024px -> 1024px
-            nn.Conv2d(out_chans, out_chans, kernel_size=1, padding=1, bias=False),
+            nn.Conv2d(out_chans, out_chans, kernel_size=1, bias=False),
         )
 
         self._freeze_backbone()
