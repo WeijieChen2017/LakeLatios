@@ -93,6 +93,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         rel_pos_zero_init: bool = True,
         window_size: int = 0,
         global_attn_indexes: Tuple[int, ...] = (),
+        verbose: bool = False,
     ) -> None:
         """
         Args:
@@ -115,6 +116,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         super().__init__()
         self.img_size = img_size
         self.global_attn_indexes = global_attn_indexes
+        self.verbose = verbose
 
         # ENCODER modules
         self.patch_embed = PatchEmbed(
@@ -233,7 +235,8 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         pretrain_dict = {k[len(remove_prefix):]: v for k, v in pretrain_dict.items() if k[len(remove_prefix):] in model_dict}
         model_dict.update(pretrain_dict)
         self.load_state_dict(model_dict)
-        print(f"load pretrain from {pretrain_path}")
+        if self.verbose:
+            print(f"load pretrain from {pretrain_path}")
     
     def _freeze_backbone(self):
         for param in self.patch_embed.parameters():
@@ -249,74 +252,95 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
     def _init_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                print("init conv2d for", m)
+                if self.verbose:
+                    print("init conv2d for", m)
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
                 if m.bias is not None:
                     nn.init.constant_(m.bias, 0)
             elif isinstance(m, nn.Linear):
-                print("init linear for", m)
+                if self.verbose:
+                    print("init linear for", m)
                 nn.init.normal_(m.weight, std=0.01)
                 if m.bias is not None:
                     nn.init.constant_(m.bias, 0)
             elif isinstance(m, nn.LayerNorm):
-                print("init layernorm for", m)
+                if self.verbose:
+                    print("init layernorm for", m)
                 nn.init.constant_(m.bias, 0)
                 nn.init.constant_(m.weight, 1.0)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
 
-        print("x.shape", x.shape)
+        if self.verbose:
+            print("x.shape", x.shape)
 
         zx = self.decoder_x(x)
-        print("zx.shape", zx.shape)
+        if self.verbose:
+            print("zx.shape", zx.shape)
 
         x = self.patch_embed(x)
-        print("after patch_embed x.shape", x.shape)
+        if self.verbose:
+            print("after patch_embed x.shape", x.shape)
 
         if self.pos_embed is not None:
             x = x + self.pos_embed
-        print("after pos_embed x.shape", x.shape)
+        if self.verbose:
+            print("after pos_embed x.shape", x.shape)
 
         ViT_heads = []
         for i, blk in enumerate(self.blocks):
             x = blk(x)
-            print("after block", i, x.shape)
+            if self.verbose:
+                print("after block", i, x.shape)
             if i in self.global_attn_indexes:
                 ViT_heads.append(x)
 
         x = self.neck(x.permute(0, 3, 1, 2))
-        print("after neck x.shape", x.shape)
+        if self.verbose:
+            print("after neck x.shape", x.shape)
 
         # z3, z6, z9, z12 = ViT_heads
         [z3, z6, z9, z12] = ViT_heads
-        print("z3.shape", z3.shape, "z6.shape", z6.shape, "z9.shape", z9.shape, "z12.shape", z12.shape)
+        if self.verbose:
+            print("z3.shape", z3.shape, "z6.shape", z6.shape, "z9.shape", z9.shape, "z12.shape", z12.shape)
         z3 = self.z3_block(z3.permute(0, 3, 1, 2)) # B, 256, 1024, 1024
         z6 = self.z6_block(z6.permute(0, 3, 1, 2)) # B, 256, 512, 512
         z9 = self.z9_block(z9.permute(0, 3, 1, 2)) # B, 256, 256, 256
         z12 = self.z12_block(z12.permute(0, 3, 1, 2)) # B, 256, 128, 128
         zneck = self.z_neck_block(x) # B, 256, 128, 128
-        print("after z_block, z3.shape", z3.shape, "z6.shape", z6.shape, "z9.shape", z9.shape, "z12.shape", z12.shape, "zneck.shape", zneck.shape)
+        if self.verbose:
+            print("after z_block, z3.shape", z3.shape, "z6.shape", z6.shape, "z9.shape", z9.shape, "z12.shape", z12.shape, "zneck.shape", zneck.shape)
 
         out = torch.cat([zneck, z12], dim=1) # B, 64px, 512ch
-        print("after cat zneck, z12, out.shape", out.shape)
+        if self.verbose:
+            print("after cat zneck, z12, out.shape", out.shape)
         out = self.decoder_12(out) # B, 64px, 256ch
-        print("after decoder_12 out.shape", out.shape)
+        if self.verbose:
+            print("after decoder_12 out.shape", out.shape)
         out = torch.cat([out, z9], dim=1) # B, 128px, 512ch
-        print("after cat out, z9, out.shape", out.shape)
+        if self.verbose:
+            print("after cat out, z9, out.shape", out.shape)
         out = self.decoder_9(out) # B, 128px, 128ch
-        print("after decoder_9 out.shape", out.shape)
+        if self.verbose:
+            print("after decoder_9 out.shape", out.shape)
         out = torch.cat([out, z6], dim=1) # B, 256px, 256ch
-        print("after cat out, z6, out.shape", out.shape)
+        if self.verbose:
+            print("after cat out, z6, out.shape", out.shape)
         out = self.decoder_6(out) # B, 256px, 64ch
-        print("after decoder_6 out.shape", out.shape)
+        if self.verbose:
+            print("after decoder_6 out.shape", out.shape)
         out = torch.cat([out, z3], dim=1) # B, 512px, 128ch
-        print("after cat out, z3, out.shape", out.shape)
+        if self.verbose:
+            print("after cat out, z3, out.shape", out.shape)
         out = self.decoder_3(out) # B, 512px, 32ch
-        print("after decoder_3 out.shape", out.shape)
+        if self.verbose:
+            print("after decoder_3 out.shape", out.shape)
         out = torch.cat([out, zx], dim=1) # B, 1024px, 64ch
-        print("after cat out, zx, out.shape", out.shape)
+        if self.verbose:
+            print("after cat out, zx, out.shape", out.shape)
         out = self.decoder_out(out) # B, 1024px, 1ch
-        print("after decoder_out out.shape", out.shape)
+        if self.verbose:
+            print("after decoder_out out.shape", out.shape)
 
         return out
     
