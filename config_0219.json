@@ -1,5 +1,5 @@
 {
-    "pretrain_path": "pretrain_model/medsam_vit_b.pth",
+    "pretrain_path": "pretrain/medsam_vit_b.pth",
     "img_size": 1024,
     "patch_size": 16,
     "in_chans": 3,
@@ -17,7 +17,7 @@
     "rel_pos_zero_init": "True",
     "window_size": 0,
     "global_attn_indexes": [2, 5, 8, 11],
-    "root_dir": "./proj/MR2CT_InstanceUNet/",
+    "root_dir": "./proj/decoder_UNETR/",
     "data_path_MR": "./data/MR2CT/MR_x_2d/",
     "data_path_CT": "./data/MR2CT/CT_y_2d/",
     "batch_size": 4,
