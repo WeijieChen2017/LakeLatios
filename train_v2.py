@@ -99,6 +99,7 @@ for epoch in range(cfg["epochs"]):
     for batch in train_loader:
         MR = batch["MR"]
         CT = batch["CT"]
+        print(MR.shape, CT.shape)
         MR = MR.to(device)
         CT = CT.to(device)
         optimizer.zero_grad()
