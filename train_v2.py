@@ -97,7 +97,7 @@ for epoch in range(cfg["epochs"]):
     batch_idx = 0
     for batch in train_loader:
         MR = batch["MR"]
-        CT = batch["CT"][:, 1, :, :]
+        CT = batch["CT"]
         MR = MR.to(device)
         CT = CT.to(device)
         optimizer.zero_grad()
@@ -145,7 +145,7 @@ for epoch in range(cfg["epochs"]):
             val_loss = 0
             for batch in val_loader:
                 MR = batch["MR"]
-                CT = batch["CT"][:, 1, :, :]
+                CT = batch["CT"]
                 MR = MR.to(device)
                 CT = CT.to(device)
                 pred = model(MR)
