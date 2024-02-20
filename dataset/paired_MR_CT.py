@@ -62,9 +62,19 @@ class PairedMRCTDataset_train(Dataset):
 
         MR = np.load(self.data_path[idx][0], allow_pickle=True)
         CT = np.load(self.data_path[idx][1], allow_pickle=True)
-        # H, W, C -> C, H, W
-        MR = MR.transpose((2, 0, 1))
-        CT = CT.transpose((2, 0, 1))
+        # get the middle slice from CT
+        CT = CT[CT.shape[0]//2, :, :]
+
+        # resize from 3x256x256 to 3x1024x1024
+        MR = transforms.functional.resize(MR, (1024, 1024))
+        CT = transforms.functional.resize(CT, (1024, 1024))
+
+        # # H, W, C -> C, H, W
+        # MR = MR.transpose((2, 0, 1))
+        # CT = CT.transpose((2, 0, 1))
+        # have pre-normalized to 0 mean and 1 std
+        # have converted to C, H, W
+        
         # convert to tensor
         MR = torch.from_numpy(MR).float()
         CT = torch.from_numpy(CT).float()
@@ -85,15 +95,15 @@ class PairedMRCTDataset_train(Dataset):
 # random rotation
 # H, W, C -> C, H, W
 # has pre-normalized to 0 mean and 1 std
-trainval_transform = transforms.Compose([
-    transforms.Resize((1024, 1024)),
-    transforms.ToTensor(),
-])
+# trainval_transform = transforms.Compose([
+#     transforms.Resize((1024, 1024), interpolation=2),
+#     transforms.ToTensor(),
+# ])
 
 # define the test transform
 # resize to 1024x1024
 # normalize to 0 mean and 1 std
-test_transform = transforms.Compose([
-    transforms.Resize((1024, 1024)),
-    transforms.ToTensor(),
-])
+# test_transform = transforms.Compose([
+#     transforms.Resize((1024, 1024)),
+#     transforms.ToTensor(),
+# ])

@@ -45,23 +45,23 @@ model = decoder_UNETR_encoder_MedSAM(
 model.load_pretrain(cfg["pretrain_path"])
 
 # load the dataset
-train_transform = transforms.Compose([
-    transforms.Resize((1024, 1024)),
-])
-val_transform = transforms.Compose([
-    transforms.Resize((1024, 1024)),
-])
+# train_transform = transforms.Compose([
+#     transforms.Resize((1024, 1024)),
+# ])
+# val_transform = transforms.Compose([
+#     transforms.Resize((1024, 1024)),
+# ])
 dataset_train = PairedMRCTDataset_train(
      path_MR=cfg["data_path_MR"],
      path_CT=cfg["data_path_CT"],
      stage="train", 
-     transform=train_transform,
+    #  transform=train_transform,
 )
 dataset_val = PairedMRCTDataset_train(
      path_MR=cfg["data_path_MR"],
      path_CT=cfg["data_path_CT"],
      stage="val", 
-     transform=val_transform,
+    #  transform=val_transform,
 )
 train_loader = DataLoader(
     dataset_train, 
@@ -86,22 +86,35 @@ loss_function = nn.L1Loss()
 
 # train the model
 best_val_loss = 1e10
+n_train = len(train_loader)
+n_val = len(val_loader)
+n_train_batch = n_train // cfg["batch_size"]
+n_val_batch = n_val // cfg["batch_size"]
 for epoch in range(cfg["epochs"]):
 
     # training
     model.train()
+    batch_idx = 0
     for batch in train_loader:
         MR = batch["MR"]
         CT = batch["CT"][:, 1, :, :]
         MR = MR.to(device)
         CT = CT.to(device)
         optimizer.zero_grad()
+        epoch_loss = 0
         with torch.set_grad_enabled(True):
             pred = model(MR)
             loss = loss_function(pred, CT)
             loss.backward()
             optimizer.step()
-        text_loss = loss.item()
+            text_loss = loss.item()
+            epoch_loss += text_loss
+            # print the loss every print_step, with current batch over the whole batch
+            if (epoch+1) % cfg["print_step"] == 0:
+                print(f"Epoch {epoch+1}/{cfg['epochs']} Batch {batch_idx+1}/{n_train_batch}, loss: {text_loss}")
+                batch_idx += 1
+
+        epoch_loss /= len(train_loader)
 
     # plot images
     if (epoch+1) % cfg["plot_step"] == 0:
@@ -116,10 +129,10 @@ for epoch in range(cfg["epochs"]):
         plt.close()
 
     # print the loss
-    print(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {text_loss}")
+    print(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}")
     # save the loss
     with open(root_dir+"loss.txt", "a") as f:
-        f.write(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {text_loss}\n")
+        f.write(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}\n")
     # save the model and optimizer
     if (epoch+1) % cfg["save_step"] == 0:
         torch.save(model.state_dict(), root_dir+f"model_{epoch+1}.pth")
