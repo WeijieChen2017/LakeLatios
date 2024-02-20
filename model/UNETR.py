@@ -235,8 +235,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         pretrain_dict = {k[len(remove_prefix):]: v for k, v in pretrain_dict.items() if k[len(remove_prefix):] in model_dict}
         model_dict.update(pretrain_dict)
         self.load_state_dict(model_dict)
-        if self.verbose:
-            print(f"load pretrain from {pretrain_path}")
+        print(f"load pretrain from {pretrain_path}")
     
     def _freeze_backbone(self):
         for param in self.patch_embed.parameters():
@@ -248,6 +247,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         # pos_embed is not a parameter
         if self.pos_embed is not None:
             self.pos_embed.requires_grad = False
+        print("freeze backbone done")
     
     def _init_weights(self):
         for m in self.modules():
@@ -268,6 +268,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
                     print("init layernorm for", m)
                 nn.init.constant_(m.bias, 0)
                 nn.init.constant_(m.weight, 1.0)
+        print("init weights done")
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
 
