@@ -47,11 +47,9 @@ model.load_pretrain(cfg["pretrain_path"])
 # load the dataset
 train_transform = transforms.Compose([
     transforms.Resize((1024, 1024)),
-    transforms.ToTensor(),
 ])
 val_transform = transforms.Compose([
     transforms.Resize((1024, 1024)),
-    transforms.ToTensor(),
 ])
 dataset_train = PairedMRCTDataset_train(
      path_MR=cfg["data_path_MR"],
