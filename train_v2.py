@@ -43,6 +43,7 @@ model = decoder_UNETR_encoder_MedSAM(
     global_attn_indexes=cfg["global_attn_indexes"],
 )
 model.load_pretrain(cfg["pretrain_path"])
+model.to(device)
 
 # load the dataset
 # train_transform = transforms.Compose([

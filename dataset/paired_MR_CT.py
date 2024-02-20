@@ -73,8 +73,8 @@ class PairedMRCTDataset_train(Dataset):
         CT = CT.unsqueeze(0)
 
         # resize from 3x256x256 to 3x1024x1024
-        MR = transforms.functional.resize(MR, (1024, 1024), interpolation=2)
-        CT = transforms.functional.resize(CT, (1024, 1024), interpolation=2)
+        MR = transforms.functional.resize(MR, (1024, 1024), interpolation=2, antialias=True)
+        CT = transforms.functional.resize(CT, (1024, 1024), interpolation=2, antialias=True)
 
         # # H, W, C -> C, H, W
         # MR = MR.transpose((2, 0, 1))
