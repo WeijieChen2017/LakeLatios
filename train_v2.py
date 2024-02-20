@@ -4,7 +4,7 @@
 import os
 import json
 # load the cfg
-cfg_path = "config_0219.json"
+cfg_path = "config_0220.json"
 cfg = json.load(open(cfg_path))
 print(cfg)
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
