@@ -7,12 +7,13 @@ import json
 cfg_path = "config_0219.json"
 cfg = json.load(open(cfg_path))
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 root_dir = cfg["root_dir"]
 if not os.path.exists(root_dir):
     os.makedirs(root_dir)
 
-import torch
+# load libraries
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import transforms
