@@ -89,8 +89,10 @@ class PairedMRCTDataset_train(Dataset):
         # squeeze the first dimension
         MR = MR.squeeze(0)
         CT = CT.squeeze(0)
-        # get the middle slice from CT, from 3, 1024, 1024 to 1, 1024, 1024
+        # select CT in the middle slice from 3x1024x1024 to 1024x1024
         CT = CT[1, :, :]
+        CT = CT.unsqueeze(0)
+
         sample = {"MR": MR, "CT": CT}
 
         return sample
