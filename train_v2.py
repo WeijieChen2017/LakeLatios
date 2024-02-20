@@ -2,6 +2,7 @@
 
 # set GPU
 import os
+import json
 # load the cfg
 cfg_path = "config_0219.json"
 cfg = json.load(open(cfg_path))
@@ -11,7 +12,6 @@ root_dir = cfg["root_dir"]
 if not os.path.exists(root_dir):
     os.makedirs(root_dir)
 
-import json
 import torch
 import torch.nn as nn
 import torch.optim as optim
