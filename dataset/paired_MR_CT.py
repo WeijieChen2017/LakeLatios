@@ -65,19 +65,20 @@ class PairedMRCTDataset_train(Dataset):
         # get the middle slice from CT
         CT = CT[CT.shape[0]//2, :, :]
 
+        # convert to tensor
+        MR = torch.from_numpy(MR).float()
+        CT = torch.from_numpy(CT).float()
+
         # resize from 3x256x256 to 3x1024x1024
-        MR = transforms.functional.resize(MR, (1024, 1024))
-        CT = transforms.functional.resize(CT, (1024, 1024))
+        MR = transforms.functional.resize(MR, (1024, 1024), interpolation=2)
+        CT = transforms.functional.resize(CT, (1024, 1024), interpolation=2)
 
         # # H, W, C -> C, H, W
         # MR = MR.transpose((2, 0, 1))
         # CT = CT.transpose((2, 0, 1))
         # have pre-normalized to 0 mean and 1 std
         # have converted to C, H, W
-        
-        # convert to tensor
-        MR = torch.from_numpy(MR).float()
-        CT = torch.from_numpy(CT).float()
+
         # transform
         if self.transform:
             MR = self.transform(MR)
