@@ -111,9 +111,9 @@ for epoch in range(cfg["epochs"]):
             text_loss = loss.item()
             epoch_loss += text_loss
             # print the loss every print_step, with current batch over the whole batch
-            if (epoch) % cfg["print_batch_step"] == 0:
+            if (batch_idx+1) % cfg["print_batch_step"] == 0:
                 print(f"Epoch {epoch+1}/{cfg['epochs']} Batch {batch_idx+1}/{n_train_batch}, loss: {text_loss}")
-                batch_idx += 1
+        batch_idx += 1
 
         epoch_loss /= len(train_loader)
 
