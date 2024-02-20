@@ -68,6 +68,9 @@ class PairedMRCTDataset_train(Dataset):
         # convert to tensor
         MR = torch.from_numpy(MR).float()
         CT = torch.from_numpy(CT).float()
+        # add first dimension
+        MR = MR.unsqueeze(0)
+        CT = CT.unsqueeze(0)
 
         # resize from 3x256x256 to 3x1024x1024
         MR = transforms.functional.resize(MR, (1024, 1024), interpolation=2)
