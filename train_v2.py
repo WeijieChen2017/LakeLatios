@@ -21,7 +21,7 @@ from torch.utils.data import DataLoader
 from matplotlib import pyplot as plt
 
 from model import decoder_UNETR_encoder_MedSAM
-from dataset import PairedMRCTDataset
+from dataset import PairedMRCTDataset_train
 
 model = decoder_UNETR_encoder_MedSAM(
     img_size=cfg["img_size"],
@@ -47,25 +47,19 @@ model.load_pretrain(cfg["pretrain_path"])
 # load the dataset
 train_transform = transforms.Compose([
     transforms.Resize((1024, 1024)),
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomVerticalFlip(),
-    transforms.RandomRotation(30),
     transforms.ToTensor(),
 ])
 val_transform = transforms.Compose([
     transforms.Resize((1024, 1024)),
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomVerticalFlip(),
-    transforms.RandomRotation(30),
     transforms.ToTensor(),
 ])
-dataset_train = PairedMRCTDataset(
+dataset_train = PairedMRCTDataset_train(
      path_MR=cfg["data_path_MR"],
      path_CT=cfg["data_path_CT"],
      stage="train", 
      transform=train_transform,
 )
-dataset_val = PairedMRCTDataset(
+dataset_val = PairedMRCTDataset_train(
      path_MR=cfg["data_path_MR"],
      path_CT=cfg["data_path_CT"],
      stage="val", 

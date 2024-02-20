@@ -1,1 +1,1 @@
-from .paired_MR_CT import PairedMRCTDataset
+from .paired_MR_CT import PairedMRCTDataset_train

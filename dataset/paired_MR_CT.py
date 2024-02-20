@@ -20,7 +20,26 @@ from torchvision import transforms
 #     - 0022.npy
 #     - ...
 
-class PairedMRCTDataset(Dataset):
+def paird_random_augmentation(mr, ct):
+    # C, H, W
+    # transforms.RandomHorizontalFlip(),
+    if np.random.rand() > 0.5:
+        mr = torch.flip(mr, [2])
+        ct = torch.flip(ct, [2])
+    # transforms.RandomVerticalFlip(),
+    if np.random.rand() > 0.5:
+        mr = torch.flip(mr, [1])
+        ct = torch.flip(ct, [1])
+    # transforms.RandomRotation(30),
+    if np.random.rand() > 0.5:
+        angle = np.random.randint(0, 360)
+        mr = transforms.functional.rotate(mr, angle)
+        ct = transforms.functional.rotate(ct, angle)
+    return mr, ct
+
+
+
+class PairedMRCTDataset_train(Dataset):
     def __init__(self, path_MR, path_CT, stage="train", transform=None):
         self.path_MR = path_MR
         self.path_CT = path_CT
@@ -46,9 +65,13 @@ class PairedMRCTDataset(Dataset):
         # H, W, C -> C, H, W
         MR = MR.transpose((2, 0, 1))
         CT = CT.transpose((2, 0, 1))
-        sample = {'MR': MR, 'CT': CT}
+        # transform
         if self.transform:
-            sample = self.transform(sample)
+            MR = self.transform(MR)
+            CT = self.transform(CT)
+        # random augmentation
+        MR, CT = paird_random_augmentation(MR, CT)
+        sample = {"MR": MR, "CT": CT}
 
         return sample
     
@@ -61,9 +84,6 @@ class PairedMRCTDataset(Dataset):
 # has pre-normalized to 0 mean and 1 std
 trainval_transform = transforms.Compose([
     transforms.Resize((1024, 1024)),
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomVerticalFlip(),
-    transforms.RandomRotation(30),
     transforms.ToTensor(),
 ])
 
