@@ -235,7 +235,8 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         pretrain_dict = {k[len(remove_prefix):]: v for k, v in pretrain_dict.items() if k[len(remove_prefix):] in model_dict}
         model_dict.update(pretrain_dict)
         self.load_state_dict(model_dict)
-        print(f"load pretrain from {pretrain_path}")
+        if self.verbose:
+            print(f"load pretrain from {pretrain_path}")
     
     def _freeze_backbone(self):
         for param in self.patch_embed.parameters():

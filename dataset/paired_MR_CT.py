@@ -20,6 +20,22 @@ from torchvision import transforms
 #     - 0022.npy
 #     - ...
 
+# >>> import numpy as np
+# >>> data = np.load("02187_0021.npy", allow_pickle=True)
+# >>> print(data.shape)
+# (3, 256, 256)
+# >>> print(np.amax(data))
+# 0.6369983510077
+# >>> print(np.ain(data))
+# Traceback (most recent call last):
+#   File "<stdin>", line 1, in <module>
+#   File "/shares/mimrtl/Users/Winston/anaconda3/envs/mimrtl/lib/python3.9/site-packages/numpy/__init__.py", line 303, in __getattr__
+#     raise AttributeError("module {!r} has no attribute "
+# AttributeError: module 'numpy' has no attribute 'ain'
+# >>> print(np.amin(data))
+# 0.0
+# >>> exit()
+
 def paird_random_augmentation(mr, ct):
     # C, H, W
     # transforms.RandomHorizontalFlip(),
@@ -109,6 +125,10 @@ class PairedMRCTDataset_train(Dataset):
         # select CT in the middle slice from 3x1024x1024 to 1024x1024
         CT = CT[1, :, :]
         CT = CT.unsqueeze(0)
+
+        # normalize to 0 mean and 1 std
+        MR = transforms.functional.normalize(MR, mean=0.0, std=1.0)
+        CT = transforms.functional.normalize(CT, mean=0.0, std=1.0)
 
         sample = {"MR": MR, "CT": CT}
 
