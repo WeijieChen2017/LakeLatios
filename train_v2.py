@@ -21,7 +21,9 @@ from torchvision import transforms
 from torch.utils.data import DataLoader
 from matplotlib import pyplot as plt
 
-from model import decoder_UNETR_encoder_MedSAM, decoder_Deconv_encoder_MedSAM, decoder_PyramidPooling_encoder_MedSAM
+from model import decoder_UNETR_encoder_MedSAM
+from model import decoder_Deconv_encoder_MedSAM
+from model import decoder_PyramidPooling_encoder_MedSAM
 from dataset import PairedMRCTDataset_train
 
 # load the model as the "model_name"
