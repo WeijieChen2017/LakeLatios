@@ -59,7 +59,7 @@ class PairedMRCTDataset_train(Dataset):
         indices = range(0, total_samples, step)  # Taking every nth index
 
         self.list_MR = [self.list_MR_full[i] for i in indices]
-        self.list_CT = [self.ist_CT_full[i] for i in indices]
+        self.list_CT = [self.list_CT_full[i] for i in indices]
         self.data_path = list(zip(self.list_MR, self.list_CT))
 
         # Optionally, track the selected samples/indices
