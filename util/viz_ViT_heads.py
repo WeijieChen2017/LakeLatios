@@ -28,16 +28,19 @@ def viz_ViT_heads(ViT_heads, save_path):
     plt.close()
 
     # plot the data distribution in one column
+    # let the subplot uniformly distributed in the vertical direction
     fig, axs = plt.subplots(15, 1, figsize=(5, 40))
     for i in range(15):
         data = ViT_heads[i]
         data = np.squeeze(np.mean(data, axis=-1))
-        axs[i].hist(data.flatten(), bins=100)
+        axs[i].hist(data.flatten(), bins=200)
         axs[i].set_title(head_names[i])
         # set the range from -1 to 1
         axs[i].set_xlim(-2, 2)
         # set the y axis to log scale
         axs[i].set_yscale('log')
+        # axis off
+        axs[i].axis('off')
     plt.savefig(save_path+"/data_distribution.png")
     plt.close()
 
