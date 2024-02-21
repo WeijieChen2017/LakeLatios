@@ -155,8 +155,12 @@ loss_function = nn.L1Loss()
 best_val_loss = 1e10
 n_train = len(train_loader)
 n_val = len(val_loader)
-n_train_batch = n_train // cfg["batch_size"]
-n_val_batch = n_val // cfg["batch_size"]
+n_train_batch = n_train
+n_val_batch = n_val
+# output the parameters
+print(f"n_train: {n_train}, n_val: {n_val}, n_train_batch: {n_train_batch}, n_val_batch: {n_val_batch}")
+
+# train the model
 for epoch in range(cfg["epochs"]):
 
     # training
@@ -210,14 +214,19 @@ for epoch in range(cfg["epochs"]):
         model.eval()
         with torch.no_grad():
             val_loss = 0
-            for batch in val_loader:
+            epoch_val_loss = 0
+            for idx_batch_val, batch in enumerate(val_loader):
                 MR = batch["MR"]
                 CT = batch["CT"]
                 MR = MR.to(device)
                 CT = CT.to(device)
                 pred = model(MR)
-                val_loss += loss_function(pred, CT).item()
-            val_loss /= len(val_loader)
+                text_val_loss = loss_function(pred, CT).item()
+                epoch_val_loss += text_val_loss
+                if (batch_idx+1) % cfg["print_batch_step"] == 0:
+                    print(f"Epoch {epoch+1}/{cfg['epochs']} Batch {idx_batch_val+1}/{n_val_batch}, loss: {text_loss}")
+            val_loss = epoch_val_loss / len(val_loader)
+
         print(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {loss.item()}, val_loss: {val_loss}")
         with open(root_dir+"val_loss.txt", "a") as f:
             f.write(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}\n")
