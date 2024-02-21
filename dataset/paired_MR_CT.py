@@ -56,11 +56,12 @@ def paird_random_augmentation(mr, ct):
 
 
 class PairedMRCTDataset_train(Dataset):
-    def __init__(self, path_MR, path_CT, stage="train", transform=None, subset_fraction=1.0):
+    def __init__(self, path_MR, path_CT, stage="train", transform=None, subset_fraction=1.0, out_channels=1):
         self.path_MR = path_MR
         self.path_CT = path_CT
         self.subset_fraction = subset_fraction
         self.transform = transform
+        self.out_channels = out_channels
         self.list_MR_full = sorted(glob.glob(self.path_MR+"/"+stage+"/*.npy"))
         self.list_CT_full = sorted(glob.glob(self.path_CT+"/"+stage+"/*.npy"))
         # check whether the length of the two lists are the same
@@ -122,9 +123,11 @@ class PairedMRCTDataset_train(Dataset):
         # squeeze the first dimension
         MR = MR.squeeze(0)
         CT = CT.squeeze(0)
-        # select CT in the middle slice from 3x1024x1024 to 1024x1024
-        CT = CT[1, :, :]
-        CT = CT.unsqueeze(0)
+        
+        if self.out_channels == 1:
+            # select CT in the middle slice from 3x1024x1024 to 1024x1024
+            CT = CT[1, :, :]
+            CT = CT.unsqueeze(0)
 
         # normalize to 0 mean and 1 std
         MR = transforms.functional.normalize(MR, mean=0.0, std=1.0)

@@ -4,7 +4,7 @@
     "img_size": 1024,
     "patch_size": 16,
     "in_chans": 3,
-    "out_chans": 1,
+    "out_chans": 3,
     "out_chans_pretrain": 256,
     "embed_dim": 768,
     "depth": 12,

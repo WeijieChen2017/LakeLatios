@@ -93,6 +93,7 @@ if __name__ == "__main__":
         stage="train", 
         subset_fraction=cfg["subset_fraction"],
         #  transform=train_transform,
+        out_channels=cfg["out_chans"],
     )
     dataset_val = PairedMRCTDataset_train(
         path_MR=cfg["data_path_MR"],
@@ -100,6 +101,7 @@ if __name__ == "__main__":
         stage="val", 
         subset_fraction=cfg["subset_fraction"],
         #  transform=val_transform,
+        out_channels=cfg["out_chans"],
     )
     dataset_train.save_used_samples(root_dir+"used_samples_train.txt")
     dataset_val.save_used_samples(root_dir+"used_samples_val.txt")
