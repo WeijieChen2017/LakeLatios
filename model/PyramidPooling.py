@@ -313,22 +313,22 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
             print("after z_neck_block, zneck.shape", zneck.shape)
 
         # z12 and zneck 64px to 1024px
-        z12 = F.interpolate(z12, scale_factor=16, mode="bilinear", align_corners=False)
-        zneck = F.interpolate(zneck, scale_factor=16, mode="bilinear", align_corners=False)
+        z12 = F.interpolate(z12, scale_factor=8, mode="bilinear", align_corners=False)
+        zneck = F.interpolate(zneck, scale_factor=8, mode="bilinear", align_corners=False)
         if self.verbose:
             print("after interpolation, z12.shape", z12.shape, "zneck.shape", zneck.shape)
         # z9 128px to 1024px
-        z9 = F.interpolate(z9, scale_factor=8, mode="bilinear", align_corners=False)
+        z9 = F.interpolate(z9, scale_factor=4, mode="bilinear", align_corners=False)
         if self.verbose:
             print("after interpolation, z9.shape", z9.shape)
         # z6 256px to 1024px
-        z6 = F.interpolate(z6, scale_factor=4, mode="bilinear", align_corners=False)
+        z6 = F.interpolate(z6, scale_factor=2, mode="bilinear", align_corners=False)
         if self.verbose:
             print("after interpolation, z6.shape", z6.shape)
         # z3 512px to 1024px
-        z3 = F.interpolate(z3, scale_factor=2, mode="bilinear", align_corners=False)
-        if self.verbose:
-            print("after interpolation, z3.shape", z3.shape)
+        # z3 = F.interpolate(z3, scale_factor=2, mode="bilinear", align_corners=False)
+        # if self.verbose:
+            # print("after interpolation, z3.shape", z3.shape)
 
         out = torch.cat([zneck, z12, z9, z6, z3], dim=1) # B, 1024px, 256*5ch
         if self.verbose:
@@ -336,6 +336,10 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         out = self.catconv(out)
         if self.verbose:
             print("after catconv, out.shape", out.shape)
+        # out 512px to 1024px
+        out = F.interpolate(out, scale_factor=2, mode="bilinear", align_corners=False)
+        if self.verbose:
+            print("after interpolation, out.shape", out.shape)
         out = torch.cat([out, zx], dim=1)
         if self.verbose:
             print("after cat, out.shape", out.shape)
