@@ -39,8 +39,10 @@ def viz_ViT_heads(ViT_heads, save_path):
         axs[i].set_xlim(-2, 2)
         # set the y axis to log scale
         axs[i].set_yscale('log')
-        # axis off
-        axs[i].axis('off')
+        # adjust subplot
+        plt.subplots_adjust(hspace=0.5)
+        # tight layout
+        plt.tight_layout()
     plt.savefig(save_path+"/data_distribution.png")
     plt.close()
 
