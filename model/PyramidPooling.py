@@ -306,19 +306,29 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         z12 = self.z12_block(z12.permute(0, 3, 1, 2)) # B, 256, 128, 128
         zneck = self.z_neck_block(x) # B, 256, 128, 128
         if self.verbose:
-            print("after z_block, z3.shape", z3.shape, "z6.shape", z6.shape, "z9.shape", z9.shape, "z12.shape", z12.shape, "zneck.shape", zneck.shape)
+            print("after z_block, z3.shape", z3.shape)
+            print("after z_block, z6.shape", z6.shape)
+            print("after z_block, z9.shape", z9.shape)
+            print("after z_block, z12.shape", z12.shape)
+            print("after z_neck_block, zneck.shape", zneck.shape)
 
-        # z12 and zx 128px to 1024px
-        z12 = F.interpolate(z12, scale_factor=8, mode="bilinear", align_corners=False)
-        zx = F.interpolate(zx, scale_factor=8, mode="bilinear", align_corners=False)
+        # z12 and zneck 64px to 1024px
+        z12 = F.interpolate(z12, scale_factor=16, mode="bilinear", align_corners=False)
+        zneck = F.interpolate(zneck, scale_factor=16, mode="bilinear", align_corners=False)
         if self.verbose:
-            print("after interpolation, z12.shape", z12.shape, "zx.shape", zx.shape)
-        # z9 256px to 1024px
-        z9 = F.interpolate(z9, scale_factor=4, mode="bilinear", align_corners=False)
-        # z6 512px to 1024px
-        z6 = F.interpolate(z6, scale_factor=2, mode="bilinear", align_corners=False)
+            print("after interpolation, z12.shape", z12.shape, "zneck.shape", zneck.shape)
+        # z9 128px to 1024px
+        z9 = F.interpolate(z9, scale_factor=8, mode="bilinear", align_corners=False)
         if self.verbose:
-            print("after interpolation, z9.shape", z9.shape, "z6.shape", z6.shape)
+            print("after interpolation, z9.shape", z9.shape)
+        # z6 256px to 1024px
+        z6 = F.interpolate(z6, scale_factor=4, mode="bilinear", align_corners=False)
+        if self.verbose:
+            print("after interpolation, z6.shape", z6.shape)
+        # z3 512px to 1024px
+        z3 = F.interpolate(z3, scale_factor=2, mode="bilinear", align_corners=False)
+        if self.verbose:
+            print("after interpolation, z3.shape", z3.shape)
 
         out = torch.cat([zneck, z12, z9, z6, z3], dim=1) # B, 1024px, 256*5ch
         if self.verbose:
