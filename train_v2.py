@@ -26,6 +26,18 @@ from model import decoder_Deconv_encoder_MedSAM
 from model import decoder_PyramidPooling_encoder_MedSAM
 from dataset import PairedMRCTDataset_train
 
+# load the random seed
+random_seed = cfg["random_seed"]
+torch.manual_seed(random_seed)
+torch.cuda.manual_seed(random_seed)
+torch.cuda.manual_seed_all(random_seed)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+import random
+import numpy as np
+np.random.seed(random_seed)
+random.seed(random_seed)
+
 # load the model as the "model_name"
 if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
     model = decoder_PyramidPooling_encoder_MedSAM(
@@ -105,14 +117,19 @@ dataset_train = PairedMRCTDataset_train(
      path_MR=cfg["data_path_MR"],
      path_CT=cfg["data_path_CT"],
      stage="train", 
+     subset_fraction=cfg["subset_fraction"],
     #  transform=train_transform,
 )
 dataset_val = PairedMRCTDataset_train(
      path_MR=cfg["data_path_MR"],
      path_CT=cfg["data_path_CT"],
      stage="val", 
+     subset_fraction=cfg["subset_fraction"],
     #  transform=val_transform,
 )
+dataset_train.save_used_samples(root_dir+"used_samples_train.txt")
+dataset_val.save_used_samples(root_dir+"used_samples_val.txt")
+
 train_loader = DataLoader(
     dataset_train, 
     batch_size=cfg["batch_size"], 

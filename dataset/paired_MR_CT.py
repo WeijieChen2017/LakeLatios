@@ -40,18 +40,36 @@ def paird_random_augmentation(mr, ct):
 
 
 class PairedMRCTDataset_train(Dataset):
-    def __init__(self, path_MR, path_CT, stage="train", transform=None):
+    def __init__(self, path_MR, path_CT, stage="train", transform=None, subset_fraction=1.0):
         self.path_MR = path_MR
         self.path_CT = path_CT
+        self.subset_fraction = subset_fraction
         self.transform = transform
-        self.list_MR = sorted(glob.glob(self.path_MR+"/"+stage+"/*.npy"))
-        self.list_CT = sorted(glob.glob(self.path_CT+"/"+stage+"/*.npy"))
+        list_MR_full = sorted(glob.glob(self.path_MR+"/"+stage+"/*.npy"))
+        list_CT_full = sorted(glob.glob(self.path_CT+"/"+stage+"/*.npy"))
         # check whether the length of the two lists are the same
         assert len(self.list_MR) == len(self.list_CT)
         # check whether the file names are the same
         for i in range(len(self.list_MR)):
             assert self.list_MR[i].split("/")[-1] == self.list_CT[i].split("/")[-1]
         self.data_path = list(zip(self.list_MR, self.list_CT))
+
+        # Selecting a subset of data
+        total_samples = len(list_MR_full)
+        step = int(1 / subset_fraction)
+        indices = range(0, total_samples, step)  # Taking every nth index
+
+        self.list_MR = [list_MR_full[i] for i in indices]
+        self.list_CT = [list_CT_full[i] for i in indices]
+        self.data_path = list(zip(self.list_MR, self.list_CT))
+
+        # Optionally, track the selected samples/indices
+        self.used_samples = indices  # or self.list_MR to track by file paths
+
+    def save_used_samples(self, filename):
+        with open(filename, "w") as f:
+            for item in self.used_samples:
+                f.write("%s\n" % item)
 
     def __len__(self):
         return len(self.list_MR)
