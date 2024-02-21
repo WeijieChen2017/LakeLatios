@@ -46,6 +46,7 @@ if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
         rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
         window_size=cfg["window_size"],
         global_attn_indexes=cfg["global_attn_indexes"],
+        verbose=True,
     )
 elif cfg["model_name"] == "decoder_UNETR_encoder_MedSAM":
     model = decoder_UNETR_encoder_MedSAM(
