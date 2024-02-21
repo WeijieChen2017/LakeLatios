@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # run the parser to get the cfg path
     parser = argparse.ArgumentParser(description="Load configuration file path.")
     # Add an argument for the configuration file path with a default value
-    parser.add_argument("--cfg_path", type=str, default="config_0219.json", help="Path to the configuration file.")
+    parser.add_argument("--cfg_path", type=str, default="UNETR.json", help="Path to the configuration file.")
     
     # Parse the command-line arguments
     args = parser.parse_args()
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     import json
     # load the cfg
     # cfg_path = "config_0221.json"
-    cfg_path = args.cfg_path
+    cfg_path = "config/"+args.cfg_path
     cfg = json.load(open(cfg_path))
     print(cfg)
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
