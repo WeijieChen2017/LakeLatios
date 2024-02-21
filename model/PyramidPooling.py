@@ -207,8 +207,8 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         )
 
         self.catconv = nn.Sequential(
-            DWConv(256+256+256+128+64, 256),
-            yellow_block(256, 32),
+            DWConv(256+256+256+128+64, 32),
+            yellow_block(32, 32),
         )
         
         self.decoder_x = nn.Sequential(
