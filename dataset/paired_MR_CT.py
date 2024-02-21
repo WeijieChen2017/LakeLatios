@@ -45,22 +45,21 @@ class PairedMRCTDataset_train(Dataset):
         self.path_CT = path_CT
         self.subset_fraction = subset_fraction
         self.transform = transform
-        list_MR_full = sorted(glob.glob(self.path_MR+"/"+stage+"/*.npy"))
-        list_CT_full = sorted(glob.glob(self.path_CT+"/"+stage+"/*.npy"))
+        self.list_MR_full = sorted(glob.glob(self.path_MR+"/"+stage+"/*.npy"))
+        self.list_CT_full = sorted(glob.glob(self.path_CT+"/"+stage+"/*.npy"))
         # check whether the length of the two lists are the same
-        assert len(self.list_MR) == len(self.list_CT)
+        assert len(self.list_MR_full) == len(self.list_CT_full)
         # check whether the file names are the same
-        for i in range(len(self.list_MR)):
-            assert self.list_MR[i].split("/")[-1] == self.list_CT[i].split("/")[-1]
-        self.data_path = list(zip(self.list_MR, self.list_CT))
+        for i in range(len(self.list_MR_full)):
+            assert self.list_MR_full[i].split("/")[-1] == self.list_CT_full[i].split("/")[-1]
 
         # Selecting a subset of data
-        total_samples = len(list_MR_full)
+        total_samples = len(self.list_MR_full)
         step = int(1 / subset_fraction)
         indices = range(0, total_samples, step)  # Taking every nth index
 
-        self.list_MR = [list_MR_full[i] for i in indices]
-        self.list_CT = [list_CT_full[i] for i in indices]
+        self.list_MR = [self.list_MR_full[i] for i in indices]
+        self.list_CT = [self.ist_CT_full[i] for i in indices]
         self.data_path = list(zip(self.list_MR, self.list_CT))
 
         # Optionally, track the selected samples/indices
