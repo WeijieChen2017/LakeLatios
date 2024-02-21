@@ -35,26 +35,28 @@ def viz_ViT_heads(ViT_heads, save_path):
         axs[i].hist(data.flatten(), bins=100)
         axs[i].set_title(head_names[i])
         # set the range from -1 to 1
-        axs[i].set_xlim(-1, 1)
+        axs[i].set_xlim(-2, 2)
+        # set the y axis to log scale
+        axs[i].set_yscale('log')
     plt.savefig(save_path+"/data_distribution.png")
     plt.close()
 
-    # plot the cosine similarity in one column
-    for i in range(15):
+    # # plot the cosine similarity in one column
+    # for i in range(15):
 
-        data = ViT_heads[i]
-        # 64, 64, emb to 64*64, emb
-        data = np.reshape(data, (64*64, -1))
-        px_cos_sim = np.zeros((64*64, 64*64))
-        for j in range(64*64):
-            for k in range(64*64):
-                px_cos_sim[j, k] = np.dot(data[j], data[k]) / (np.linalg.norm(data[j]) * np.linalg.norm(data[k]))
+    #     data = ViT_heads[i]
+    #     # 64, 64, emb to 64*64, emb
+    #     data = np.reshape(data, (64*64, -1))
+    #     px_cos_sim = np.zeros((64*64, 64*64))
+    #     for j in range(64*64):
+    #         for k in range(64*64):
+    #             px_cos_sim[j, k] = np.dot(data[j], data[k]) / (np.linalg.norm(data[j]) * np.linalg.norm(data[k]))
         
-        fig, axs = plt.subplots(1, 1, figsize=(5, 5))
-        axs.imshow(px_cos_sim, cmap='gray')
-        axs.set_title(head_names[i])
-        plt.savefig(save_path+f"/cosine_similarity_{i}.png")
-        plt.close()
+    #     fig, axs = plt.subplots(1, 1, figsize=(5, 5))
+    #     axs.imshow(px_cos_sim, cmap='gray')
+    #     axs.set_title(head_names[i])
+    #     plt.savefig(save_path+f"/cosine_similarity_{i}.png")
+    #     plt.close()
 
     
 
