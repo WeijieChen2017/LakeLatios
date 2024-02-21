@@ -88,7 +88,7 @@ class blue_block(nn.Module):
     def forward(self, x):
         return self.blocks(x)
 
-class decoder_UNETR_encoder_MedSAM(nn.Module):
+class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
     def __init__(
         self,
         img_size: int = 1024,
