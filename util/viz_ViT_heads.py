@@ -72,7 +72,8 @@ def viz_ViT_heads_zneck_z12_z9_z6_z3_out(ViT_heads, save_path):
     head_names = ['neck', 'head 12', 'head 9', 'head 6', 'head 3', 'out']
     for i in range(3):
         for j in range(2):
-            data = ViT_heads[i*2+j]
+            data = ViT_heads[i*3+j]
+            print(head_names[i*3+j], data.shape)
             # take mean over the last dimension
             data = np.squeeze(np.mean(data, axis=-1))
             axs[i, j].imshow(data, cmap='gray')
