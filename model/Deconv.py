@@ -46,6 +46,7 @@ class decoder_Deconv_encoder_MedSAM(nn.Module):
         window_size: int = 0,
         global_attn_indexes: Tuple[int, ...] = (),
         verbose: bool = False,
+        BN: bool = False,
     ) -> None:
         """
         Args:
@@ -123,14 +124,14 @@ class decoder_Deconv_encoder_MedSAM(nn.Module):
 
         #([2, 256, 64, 64])
         self.deconv = nn.Sequential(
-            blue_block(256, 256), # 64px -> 128px
-            yellow_block(256, 128), # 128px -> 128px
-            blue_block(128, 128), # 128px -> 256px
-            yellow_block(128, 64), # 256px -> 256px
-            blue_block(64, 64), # 256px -> 512px
-            yellow_block(64, 32), # 512px -> 512px
-            blue_block(32, 32), # 512px -> 1024px
-            yellow_block(32, out_chans), # 1024px -> 1024px
+            blue_block(256, 256, BN), # 64px -> 128px
+            yellow_block(256, 128, BN), # 128px -> 128px
+            blue_block(128, 128, BN), # 128px -> 256px
+            yellow_block(128, 64, BN), # 256px -> 256px
+            blue_block(64, 64, BN), # 256px -> 512px
+            yellow_block(64, 32, BN), # 512px -> 512px
+            blue_block(32, 32, BN), # 512px -> 1024px
+            yellow_block(32, out_chans, BN), # 1024px -> 1024px
             nn.Conv2d(out_chans, out_chans, kernel_size=1, bias=False),
         )
 
