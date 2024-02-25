@@ -57,7 +57,7 @@ if __name__ == "__main__":
     random.seed(random_seed)
 
     # load the model as the "model_name"
-    if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
+    if cfg["model_name"] == "decoder_UNETR_encoder_MedSAM":
         model = decoder_PyramidPooling_encoder_MedSAM(
             img_size=cfg["img_size"],
             patch_size=cfg["patch_size"],
