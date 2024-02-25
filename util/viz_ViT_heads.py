@@ -78,7 +78,7 @@ def viz_ViT_heads_zneck_z12_z9_z6_z3_out(ViT_heads, save_path):
             data = np.squeeze(np.mean(data, axis=-1))
             axs[i, j].imshow(data, cmap='gray')
             axs[i, j].axis('off')
-            axs[i, j].set_title(head_names[i*5+j])
+            axs[i, j].set_title(head_names[i*3+j])
     plt.savefig(save_path+"/intensity.png")
     plt.close()
 
