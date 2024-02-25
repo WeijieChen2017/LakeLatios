@@ -42,38 +42,84 @@ class yellow_block(nn.Module):
     def __init__(self, in_chans, out_chans, n_blocks=2):
         super(yellow_block, self).__init__()
         self.skip = in_chans == out_chans
-        self.block_list = []
-        self.block_list.append(nn.Sequential(
+        self.blocks = nn.ModuleList()
+
+        # First block: adjusting input channels to output channels
+        self.blocks.append(nn.Sequential(
             nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1, bias=False),
-            LayerNorm2d(out_chans),
-            nn.GELU(),
+            nn.BatchNorm2d(out_chans),  # Opting for BatchNorm2d for reasons previously discussed
+            nn.ReLU(inplace=True),  # Using ReLU for efficiency
         ))
-        for i in range(n_blocks-1):
-            self.block_list.append(nn.Sequential(
+
+        # Additional blocks: only out_chans to out_chans
+        for _ in range(n_blocks - 1):
+            self.blocks.append(nn.Sequential(
                 nn.Conv2d(out_chans, out_chans, kernel_size=3, padding=1, bias=False),
-                LayerNorm2d(out_chans),
-                nn.GELU(),
+                nn.BatchNorm2d(out_chans),
+                nn.ReLU(inplace=True),
             ))
-        self.blocks = nn.Sequential(*self.block_list)
 
     def forward(self, x):
+        out = x
+        for block in self.blocks:
+            out = block(out)
+        
+        # Implementing the skip connection
         if self.skip:
-            return x + self.blocks(x)
-        else:
-            return self.blocks(x)
+            out += x
+        return out
 
 class green_block(nn.Module):
     def __init__(self, in_chans, out_chans):
         super(green_block, self).__init__()
         self.blocks = nn.Sequential(
-            # use convtranspose2d to upsample
+            # ConvTranspose2d is kept for upsampling
             nn.ConvTranspose2d(in_chans, out_chans, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False),
-            LayerNorm2d(out_chans),
-            nn.GELU(),
+            nn.BatchNorm2d(out_chans),  # Changing LayerNorm to BatchNorm for spatial data
+            nn.ReLU(inplace=True),  # Changing GELU to ReLU for efficiency
         )
 
     def forward(self, x):
         return self.blocks(x)
+    
+
+
+# class yellow_block(nn.Module):
+#     def __init__(self, in_chans, out_chans, n_blocks=2):
+#         super(yellow_block, self).__init__()
+#         self.skip = in_chans == out_chans
+#         self.block_list = []
+#         self.block_list.append(nn.Sequential(
+#             nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1, bias=False),
+#             LayerNorm2d(out_chans),
+#             nn.GELU(),
+#         ))
+#         for i in range(n_blocks-1):
+#             self.block_list.append(nn.Sequential(
+#                 nn.Conv2d(out_chans, out_chans, kernel_size=3, padding=1, bias=False),
+#                 LayerNorm2d(out_chans),
+#                 nn.GELU(),
+#             ))
+#         self.blocks = nn.Sequential(*self.block_list)
+
+#     def forward(self, x):
+#         if self.skip:
+#             return x + self.blocks(x)
+#         else:
+#             return self.blocks(x)
+
+# class green_block(nn.Module):
+#     def __init__(self, in_chans, out_chans):
+#         super(green_block, self).__init__()
+#         self.blocks = nn.Sequential(
+#             # use convtranspose2d to upsample
+#             nn.ConvTranspose2d(in_chans, out_chans, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False),
+#             LayerNorm2d(out_chans),
+#             nn.GELU(),
+#         )
+
+#     def forward(self, x):
+#         return self.blocks(x)
 
 class blue_block(nn.Module):
     def __init__(self, in_chans, out_chans):
