@@ -30,11 +30,13 @@ class DWConv(nn.Module):
             # Depthwise convolution
             nn.Conv2d(in_chans, in_chans, kernel_size=3, padding=1, groups=in_chans, bias=False),
             nn.BatchNorm2d(in_chans),  # Changing LayerNorm to BatchNorm
-            nn.ReLU(inplace=False),  # Changing GELU to ReLU
+            # nn.ReLU(inplace=False),  # Changing GELU to ReLU
+            nn.GELU(),
             # Pointwise convolution
             nn.Conv2d(in_chans, out_chans, kernel_size=1, bias=False),
             nn.BatchNorm2d(out_chans),  # Applying BatchNorm again for the output channels
-            nn.ReLU(inplace=False),   # Consistent activation function usage
+            # nn.ReLU(inplace=False),   # Consistent activation function usage
+            nn.GELU(),
         )
 
     def forward(self, x):
@@ -65,7 +67,8 @@ class yellow_block(nn.Module):
         self.blocks.append(nn.Sequential(
             nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1, bias=False),
             nn.BatchNorm2d(out_chans),  # Opting for BatchNorm2d for reasons previously discussed
-            nn.ReLU(inplace=False),   # Using ReLU for efficiency
+            # nn.ReLU(inplace=False),   # Using ReLU for efficiency
+            nn.GELU(),
         ))
 
         # Additional blocks: only out_chans to out_chans
@@ -73,7 +76,8 @@ class yellow_block(nn.Module):
             self.blocks.append(nn.Sequential(
                 nn.Conv2d(out_chans, out_chans, kernel_size=3, padding=1, bias=False),
                 nn.BatchNorm2d(out_chans),
-                nn.ReLU(inplace=False), 
+                # nn.ReLU(inplace=False), 
+                nn.GELU(),
             ))
 
     def forward(self, x):
@@ -93,7 +97,8 @@ class green_block(nn.Module):
             # ConvTranspose2d is kept for upsampling
             nn.ConvTranspose2d(in_chans, out_chans, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False),
             nn.BatchNorm2d(out_chans),  # Changing LayerNorm to BatchNorm for spatial data
-            nn.ReLU(),   # Changing GELU to ReLU for efficiency
+            # nn.ReLU(),   # Changing GELU to ReLU for efficiency
+            nn.GELU(),
         )
 
     def forward(self, x):
