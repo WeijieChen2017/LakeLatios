@@ -37,6 +37,7 @@ class AdjustedYellowBlock(nn.Module):
                 nn.GELU(),
             ))
             in_chans = out_chans  # Adjust for the first loop, subsequent loops have matching in and out channels
+        print("The norm layer is: ", self.norm_layer.__name__)
 
     def forward(self, x):
         out = x
