@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # run the parser to get the cfg path
     parser = argparse.ArgumentParser(description="Load configuration file path.")
     # Add an argument for the configuration file path with a default value
-    parser.add_argument("--cfg_path", type=str, default="UNETR.json", help="Path to the configuration file.")
+    parser.add_argument("--cfg_path", type=str, default="PyramidPooling.json", help="Path to the configuration file.")
     
     # Parse the command-line arguments
     args = parser.parse_args()
