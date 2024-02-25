@@ -74,7 +74,7 @@ if __name__ == "__main__":
             rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
-            # verbose=True,
+            verbose=True,
         )
     else:
         raise ValueError("model_name not found !")
