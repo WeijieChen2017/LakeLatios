@@ -37,6 +37,7 @@ if __name__ == "__main__":
     from matplotlib import pyplot as plt
 
     from model import output_ViTheads_encoder_MedSAM
+    from model import decoder_PyramidPooling_encoder_MedSAM
     from dataset import PairedMRCTDataset_train
     from util import viz_ViT_heads
 
@@ -53,8 +54,8 @@ if __name__ == "__main__":
     random.seed(random_seed)
 
     # load the model as the "model_name"
-    if cfg["model_name"] == "output_ViTheads_encoder_MedSAM":
-        model = output_ViTheads_encoder_MedSAM(
+    if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
+        model = decoder_PyramidPooling_encoder_MedSAM(
             img_size=cfg["img_size"],
             patch_size=cfg["patch_size"],
             in_chans=cfg["in_chans"],
