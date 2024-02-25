@@ -304,7 +304,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         out = self.decoder_3(out) # B, 512px, 32ch
         if self.verbose:
             print("after decoder_3 out.shape", out.shape)
-            iT_heads.append(out.cpu().detach().numpy())
+            ViT_heads.append(out.cpu().detach().numpy())
 
         out = torch.cat([out, zx], dim=1) # B, 1024px, 64ch
         if self.verbose:
