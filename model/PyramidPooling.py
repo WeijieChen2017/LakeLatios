@@ -27,16 +27,33 @@ class DWConv(nn.Module):
     def __init__(self, in_chans, out_chans):
         super(DWConv, self).__init__()
         self.conv = nn.Sequential(
+            # Depthwise convolution
             nn.Conv2d(in_chans, in_chans, kernel_size=3, padding=1, groups=in_chans, bias=False),
-            LayerNorm2d(in_chans),
-            nn.GELU(),
+            nn.BatchNorm2d(in_chans),  # Changing LayerNorm to BatchNorm
+            nn.ReLU(),  # Changing GELU to ReLU
+            # Pointwise convolution
             nn.Conv2d(in_chans, out_chans, kernel_size=1, bias=False),
-            LayerNorm2d(out_chans),
-            nn.GELU(),
+            nn.BatchNorm2d(out_chans),  # Applying BatchNorm again for the output channels
+            nn.ReLU(),   # Consistent activation function usage
         )
 
     def forward(self, x):
         return self.conv(x)
+
+# class DWConv(nn.Module):
+#     def __init__(self, in_chans, out_chans):
+#         super(DWConv, self).__init__()
+#         self.conv = nn.Sequential(
+#             nn.Conv2d(in_chans, in_chans, kernel_size=3, padding=1, groups=in_chans, bias=False),
+#             LayerNorm2d(in_chans),
+#             nn.GELU(),
+#             nn.Conv2d(in_chans, out_chans, kernel_size=1, bias=False),
+#             LayerNorm2d(out_chans),
+#             nn.GELU(),
+#         )
+
+#     def forward(self, x):
+#         return self.conv(x)
 
 class yellow_block(nn.Module):
     def __init__(self, in_chans, out_chans, n_blocks=2):
@@ -48,7 +65,7 @@ class yellow_block(nn.Module):
         self.blocks.append(nn.Sequential(
             nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1, bias=False),
             nn.BatchNorm2d(out_chans),  # Opting for BatchNorm2d for reasons previously discussed
-            nn.ReLU(inplace=True),  # Using ReLU for efficiency
+            nn.ReLU(),   # Using ReLU for efficiency
         ))
 
         # Additional blocks: only out_chans to out_chans
@@ -56,7 +73,7 @@ class yellow_block(nn.Module):
             self.blocks.append(nn.Sequential(
                 nn.Conv2d(out_chans, out_chans, kernel_size=3, padding=1, bias=False),
                 nn.BatchNorm2d(out_chans),
-                nn.ReLU(inplace=True),
+                nn.ReLU(), 
             ))
 
     def forward(self, x):
@@ -76,7 +93,7 @@ class green_block(nn.Module):
             # ConvTranspose2d is kept for upsampling
             nn.ConvTranspose2d(in_chans, out_chans, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False),
             nn.BatchNorm2d(out_chans),  # Changing LayerNorm to BatchNorm for spatial data
-            nn.ReLU(inplace=True),  # Changing GELU to ReLU for efficiency
+            nn.ReLU(),   # Changing GELU to ReLU for efficiency
         )
 
     def forward(self, x):
