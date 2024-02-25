@@ -48,7 +48,6 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         window_size: int = 0,
         global_attn_indexes: Tuple[int, ...] = (),
         verbose: bool = False,
-        output_ViTheads: bool = False,
     ) -> None:
         """
         Args:
@@ -72,7 +71,6 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         self.img_size = img_size
         self.global_attn_indexes = global_attn_indexes
         self.verbose = verbose
-        self.output_ViTheads = output_ViTheads
 
         # ENCODER modules
         self.patch_embed = PatchEmbed(
@@ -274,7 +272,6 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         # if self.verbose:
             # print("after interpolation, z3.shape", z3.shape)
 
-        if self.output_ViTheads:
             Viz_Heads = [
                 zneck.permute(0, 2, 3, 1).cpu().detach().numpy(),
                 z12.permute(0, 2, 3, 1).cpu().detach().numpy(),
@@ -289,7 +286,6 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         out = self.catconv(out)
         if self.verbose:
             print("after catconv, out.shape", out.shape)
-        if self.output_ViTheads:
             Viz_Heads.append(out.permute(0, 2, 3, 1).cpu().detach().numpy())
         
         # out 512px to 1024px
@@ -303,7 +299,7 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         if self.verbose:
             print("after decoder_out, out.shape", out.shape)
 
-        if self.output_ViTheads:
+        if self.verbose:
             return out, Viz_Heads
         else:
             return out

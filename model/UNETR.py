@@ -266,13 +266,13 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         if self.verbose:
             print("after z_block, z3.shape", z3.shape, "z6.shape", z6.shape, "z9.shape", z9.shape, "z12.shape", z12.shape, "zneck.shape", zneck.shape)
 
-        ViT_heads = [
-            zneck.cpu().detach().numpy(), 
-            z12.cpu().detach().numpy(), 
-            z9.cpu().detach().numpy(), 
-            z6.cpu().detach().numpy(), 
-            z3.cpu().detach().numpy()
-        ]
+            ViT_heads = [
+                zneck.cpu().detach().numpy(), 
+                z12.cpu().detach().numpy(), 
+                z9.cpu().detach().numpy(), 
+                z6.cpu().detach().numpy(), 
+                z3.cpu().detach().numpy()
+            ]
 
         out = torch.cat([zneck, z12], dim=1) # B, 64px, 512ch
         if self.verbose:
@@ -280,7 +280,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         out = self.decoder_12(out) # B, 64px, 256ch
         if self.verbose:
             print("after decoder_12 out.shape", out.shape)
-        ViT_heads.append(out.cpu().detach().numpy())
+            ViT_heads.append(out.cpu().detach().numpy())
 
         out = torch.cat([out, z9], dim=1) # B, 128px, 512ch
         if self.verbose:
@@ -288,7 +288,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         out = self.decoder_9(out) # B, 128px, 128ch
         if self.verbose:
             print("after decoder_9 out.shape", out.shape)
-        ViT_heads.append(out.cpu().detach().numpy())
+            ViT_heads.append(out.cpu().detach().numpy())
         
         out = torch.cat([out, z6], dim=1) # B, 256px, 256ch
         if self.verbose:
@@ -296,7 +296,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         out = self.decoder_6(out) # B, 256px, 64ch
         if self.verbose:
             print("after decoder_6 out.shape", out.shape)
-        ViT_heads.append(out.cpu().detach().numpy())
+            ViT_heads.append(out.cpu().detach().numpy())
 
         out = torch.cat([out, z3], dim=1) # B, 512px, 128ch
         if self.verbose:
@@ -304,7 +304,7 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         out = self.decoder_3(out) # B, 512px, 32ch
         if self.verbose:
             print("after decoder_3 out.shape", out.shape)
-        ViT_heads.append(out.cpu().detach().numpy())
+            iT_heads.append(out.cpu().detach().numpy())
 
         out = torch.cat([out, zx], dim=1) # B, 1024px, 64ch
         if self.verbose:
@@ -312,9 +312,12 @@ class decoder_UNETR_encoder_MedSAM(nn.Module):
         out = self.decoder_out(out) # B, 1024px, 1ch
         if self.verbose:
             print("after decoder_out out.shape", out.shape)
-        ViT_heads.append(out.cpu().detach().numpy())
+            # ViT_heads.append(out.cpu().detach().numpy())
 
-        return out, ViT_heads
+        if self.verbose:
+            return out, ViT_heads
+        else:
+            return out
     
 # x.shape torch.Size([2, 3, 1024, 1024])
 # zx.shape torch.Size([2, 32, 1024, 1024])
