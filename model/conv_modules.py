@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-default_BN = True
+default_BN = False
 
 class AdjustedDWConv(nn.Module):
     def __init__(self, in_chans, out_chans, BN=default_BN):
