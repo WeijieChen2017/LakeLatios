@@ -30,6 +30,6 @@
     "save_step": 10,
     "plot_step": 1,
     "print_batch_step": 1000,
-    "subset_fraction": 0.1,
+    "subset_fraction": 0.01,
     "random_seed": 42
 }

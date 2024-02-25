@@ -1,0 +1,73 @@
+import torch
+import torch.nn as nn
+
+class AdjustedDWConv(nn.Module):
+    def __init__(self, in_chans, out_chans):
+        super(AdjustedDWConv, self).__init__()
+        self.conv = nn.Sequential(
+            # Depthwise convolution
+            nn.Conv2d(in_chans, in_chans, kernel_size=3, padding=1, groups=in_chans, bias=False),
+            nn.InstanceNorm2d(in_chans),
+            nn.GELU(),
+            
+            # Pointwise convolution
+            nn.Conv2d(in_chans, out_chans, kernel_size=1, bias=False),
+            nn.InstanceNorm2d(out_chans),
+            nn.GELU(),
+        )
+
+    def forward(self, x):
+        return self.conv(x)
+    
+class AdjustedYellowBlock(nn.Module):
+    def __init__(self, in_chans, out_chans, n_blocks=2):
+        super(AdjustedYellowBlock, self).__init__()
+        self.skip = in_chans == out_chans
+        self.blocks = nn.ModuleList()
+
+        for _ in range(n_blocks):
+            self.blocks.append(nn.Sequential(
+                nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1, bias=False),
+                nn.InstanceNorm2d(out_chans),
+                nn.GELU(),
+            ))
+            in_chans = out_chans  # Adjust for the first loop, subsequent loops have matching in and out channels
+
+    def forward(self, x):
+        out = x
+        for block in self.blocks:
+            out = block(out)
+        
+        if self.skip:
+            out += x
+        return out
+    
+
+class AdjustedGreenBlock(nn.Module):
+    def __init__(self, in_chans, out_chans):
+        super(AdjustedGreenBlock, self).__init__()
+        self.blocks = nn.Sequential(
+            nn.ConvTranspose2d(in_chans, out_chans, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False),
+            nn.InstanceNorm2d(out_chans),
+            nn.GELU(),
+        )
+
+    def forward(self, x):
+        return self.blocks(x)
+    
+class AdjustedBlueBlock(nn.Module):
+    def __init__(self, in_chans, out_chans):
+        super(AdjustedBlueBlock, self).__init__()
+        # Initialize the adjusted green_block with GELU and InstanceNorm
+        self.green = AdjustedGreenBlock(in_chans, out_chans)
+        # Initialize the adjusted yellow_block with GELU and InstanceNorm
+        self.yellow = AdjustedYellowBlock(out_chans, out_chans)
+        # Sequentially combine the two blocks
+        self.blocks = nn.Sequential(
+            self.green,
+            self.yellow,
+        )
+
+    def forward(self, x):
+        # Pass the input through the sequential blocks
+        return self.blocks(x)

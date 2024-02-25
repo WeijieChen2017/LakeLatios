@@ -4,6 +4,10 @@ import torch.nn.functional as F
 
 from typing import Optional, Tuple, Type
 from .image_encoder import PatchEmbed, Block, LayerNorm2d
+from .conv_modules import AdjustedDWConv as DWConv
+from .conv_modules import AdjustedYellowBlock as yellow_block
+from .conv_modules import AdjustedBlueBlock as blue_block
+from .conv_modules import AdjustedGreenBlock as green_block
 
 # x.shape torch.Size([2, 3, 1024, 1024])
 # after patch_embed x.shape torch.Size([2, 64, 64, 768])
@@ -22,139 +26,6 @@ from .image_encoder import PatchEmbed, Block, LayerNorm2d
 # after block 11 torch.Size([2, 64, 64, 768])
 # after neck x.shape torch.Size([2, 256, 64, 64])
 # torch.Size([2, 256, 64, 64])
-
-class DWConv(nn.Module):
-    def __init__(self, in_chans, out_chans):
-        super(DWConv, self).__init__()
-        self.conv = nn.Sequential(
-            # Depthwise convolution
-            nn.Conv2d(in_chans, in_chans, kernel_size=3, padding=1, groups=in_chans, bias=False),
-            nn.BatchNorm2d(in_chans),  # Changing LayerNorm to BatchNorm
-            # nn.ReLU(inplace=False),  # Changing GELU to ReLU
-            nn.GELU(),
-            # Pointwise convolution
-            nn.Conv2d(in_chans, out_chans, kernel_size=1, bias=False),
-            nn.BatchNorm2d(out_chans),  # Applying BatchNorm again for the output channels
-            # nn.ReLU(inplace=False),   # Consistent activation function usage
-            nn.GELU(),
-        )
-
-    def forward(self, x):
-        return self.conv(x)
-
-# class DWConv(nn.Module):
-#     def __init__(self, in_chans, out_chans):
-#         super(DWConv, self).__init__()
-#         self.conv = nn.Sequential(
-#             nn.Conv2d(in_chans, in_chans, kernel_size=3, padding=1, groups=in_chans, bias=False),
-#             LayerNorm2d(in_chans),
-#             nn.GELU(),
-#             nn.Conv2d(in_chans, out_chans, kernel_size=1, bias=False),
-#             LayerNorm2d(out_chans),
-#             nn.GELU(),
-#         )
-
-#     def forward(self, x):
-#         return self.conv(x)
-
-class yellow_block(nn.Module):
-    def __init__(self, in_chans, out_chans, n_blocks=2):
-        super(yellow_block, self).__init__()
-        self.skip = in_chans == out_chans
-        self.blocks = nn.ModuleList()
-
-        # First block: adjusting input channels to output channels
-        self.blocks.append(nn.Sequential(
-            nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(out_chans),  # Opting for BatchNorm2d for reasons previously discussed
-            # nn.ReLU(inplace=False),   # Using ReLU for efficiency
-            nn.GELU(),
-        ))
-
-        # Additional blocks: only out_chans to out_chans
-        for _ in range(n_blocks - 1):
-            self.blocks.append(nn.Sequential(
-                nn.Conv2d(out_chans, out_chans, kernel_size=3, padding=1, bias=False),
-                nn.BatchNorm2d(out_chans),
-                # nn.ReLU(inplace=False), 
-                nn.GELU(),
-            ))
-
-    def forward(self, x):
-        out = x
-        for block in self.blocks:
-            out = block(out)
-        
-        # Implementing the skip connection
-        if self.skip:
-            out += x
-        return out
-
-class green_block(nn.Module):
-    def __init__(self, in_chans, out_chans):
-        super(green_block, self).__init__()
-        self.blocks = nn.Sequential(
-            # ConvTranspose2d is kept for upsampling
-            nn.ConvTranspose2d(in_chans, out_chans, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False),
-            nn.BatchNorm2d(out_chans),  # Changing LayerNorm to BatchNorm for spatial data
-            # nn.ReLU(),   # Changing GELU to ReLU for efficiency
-            nn.GELU(),
-        )
-
-    def forward(self, x):
-        return self.blocks(x)
-    
-
-
-# class yellow_block(nn.Module):
-#     def __init__(self, in_chans, out_chans, n_blocks=2):
-#         super(yellow_block, self).__init__()
-#         self.skip = in_chans == out_chans
-#         self.block_list = []
-#         self.block_list.append(nn.Sequential(
-#             nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1, bias=False),
-#             LayerNorm2d(out_chans),
-#             nn.GELU(),
-#         ))
-#         for i in range(n_blocks-1):
-#             self.block_list.append(nn.Sequential(
-#                 nn.Conv2d(out_chans, out_chans, kernel_size=3, padding=1, bias=False),
-#                 LayerNorm2d(out_chans),
-#                 nn.GELU(),
-#             ))
-#         self.blocks = nn.Sequential(*self.block_list)
-
-#     def forward(self, x):
-#         if self.skip:
-#             return x + self.blocks(x)
-#         else:
-#             return self.blocks(x)
-
-# class green_block(nn.Module):
-#     def __init__(self, in_chans, out_chans):
-#         super(green_block, self).__init__()
-#         self.blocks = nn.Sequential(
-#             # use convtranspose2d to upsample
-#             nn.ConvTranspose2d(in_chans, out_chans, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False),
-#             LayerNorm2d(out_chans),
-#             nn.GELU(),
-#         )
-
-#     def forward(self, x):
-#         return self.blocks(x)
-
-class blue_block(nn.Module):
-    def __init__(self, in_chans, out_chans):
-        super(blue_block, self).__init__()
-        self.green = green_block(in_chans, out_chans)
-        self.yellow = yellow_block(out_chans, out_chans)
-        self.blocks = nn.Sequential(
-            self.green,
-            self.yellow,
-        )
-
-    def forward(self, x):
-        return self.blocks(x)
 
 class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
     def __init__(
