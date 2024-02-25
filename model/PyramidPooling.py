@@ -316,8 +316,8 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
             print("after z_neck_block, zneck.shape", zneck.shape)
 
         # z12 and zneck 64px to 1024px
-        z12 = F.interpolate(z12, scale_factor=8, mode="bilinear", align_corners=False)
-        zneck = F.interpolate(zneck, scale_factor=8, mode="bilinear", align_corners=False)
+        z12 = F.interpolate(z12, scale_factor=4, mode="bilinear", align_corners=False)
+        zneck = F.interpolate(zneck, scale_factor=4, mode="bilinear", align_corners=False)
         if self.verbose:
             print("after interpolation, z12.shape", z12.shape, "zneck.shape", zneck.shape)
         # z9 128px to 1024px
