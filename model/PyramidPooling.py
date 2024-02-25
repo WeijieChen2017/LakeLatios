@@ -334,11 +334,11 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
             # print("after interpolation, z3.shape", z3.shape)
 
         Viz_Heads = [
-            zneck.cpu().detach().numpy(),
-            z12.cpu().detach().numpy(),
-            z9.cpu().detach().numpy(),
-            z6.cpu().detach().numpy(),
-            z3.cpu().detach().numpy(),
+            zneck.permute(0, 2, 3, 1).cpu().detach().numpy(),
+            z12.permute(0, 2, 3, 1).cpu().detach().numpy(),
+            z9.permute(0, 2, 3, 1).cpu().detach().numpy(),
+            z6.permute(0, 2, 3, 1).cpu().detach().numpy(),
+            z3.permute(0, 2, 3, 1).cpu().detach().numpy(),
         ]
 
         out = torch.cat([zneck, z12, z9, z6, z3], dim=1) # B, 1024px, 256*5ch
@@ -347,7 +347,7 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         out = self.catconv(out)
         if self.verbose:
             print("after catconv, out.shape", out.shape)
-        Viz_Heads.append(out.cpu().detach().numpy())
+        Viz_Heads.append(out.permute(0, 2, 3, 1).cpu().detach().numpy())
         
         # out 512px to 1024px
         out = F.interpolate(out, scale_factor=4, mode="bilinear", align_corners=False)
