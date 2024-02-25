@@ -192,7 +192,8 @@ if __name__ == "__main__":
             CT = CT.to(device)
             optimizer.zero_grad()
             epoch_loss = 0
-            with torch.set_grad_enabled(True):
+            # with torch.set_grad_enabled(True):
+            with torch.autograd.set_detect_anomaly(True):
                 pred = model(MR)
                 loss = loss_function(pred, CT)
                 loss.backward()
