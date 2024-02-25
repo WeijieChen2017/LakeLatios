@@ -64,7 +64,38 @@ def viz_ViT_heads(ViT_heads, save_path):
     #     plt.close()
 
     
+def viz_ViT_heads_zneck_z12_z9_z6_z3_out(ViT_heads, save_path):
 
+    # save all intensity images in one figure
+    fig, axs = plt.subplots(3, 2, figsize=(20, 12))
+    # head_names = [f'patch_emb', f'pos_emb', f'head {i}' for i in range(12), f'neck']
+    head_names = ['neck', 'head 12', 'head 9', 'head 6', 'head 3', 'out']
+    for i in range(3):
+        for j in range(2):
+            data = ViT_heads[i*2+j]
+            # take mean over the last dimension
+            data = np.squeeze(np.mean(data, axis=-1))
+            axs[i, j].imshow(data, cmap='gray')
+            axs[i, j].axis('off')
+            axs[i, j].set_title(head_names[i*5+j])
+    plt.savefig(save_path+"/intensity.png")
+    plt.close()
 
-
-
+    # plot the data distribution in one column
+    # let the subplot uniformly distributed in the vertical direction
+    fig, axs = plt.subplots(6, 1, figsize=(5, 30))
+    for i in range(6):
+        data = ViT_heads[i]
+        data = np.squeeze(np.mean(data, axis=-1))
+        axs[i].hist(data.flatten(), bins=200)
+        axs[i].set_title(head_names[i])
+        # set the range from -1 to 1
+        axs[i].set_xlim(-2, 2)
+        # set the y axis to log scale
+        axs[i].set_yscale('log')
+        # adjust subplot
+        plt.subplots_adjust(hspace=0.5)
+        # tight layout
+        plt.tight_layout()
+    plt.savefig(save_path+"/data_distribution.png")
+    plt.close()

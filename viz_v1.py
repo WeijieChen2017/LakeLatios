@@ -40,6 +40,7 @@ if __name__ == "__main__":
     from model import decoder_PyramidPooling_encoder_MedSAM
     from dataset import PairedMRCTDataset_train
     from util import viz_ViT_heads
+    from util import viz_ViT_heads_zneck_z12_z9_z6_z3_out
 
     # load the random seed
     random_seed = cfg["random_seed"]
@@ -144,8 +145,8 @@ if __name__ == "__main__":
             CT = CT.to(device)
            
             with torch.set_grad_enabled(True):
-                ViT_heads_MR = model(MR) # B, 64, 64, Embed_dim
-                ViT_heads_CT = model(CT) # B, 64, 64, Embed_dim
+                _, ViT_heads_MR = model(MR) # B, 64, 64, Embed_dim
+                _, ViT_heads_CT = model(CT) # B, 64, 64, Embed_dim
 
             save_folder_MR = root_dir+f"epoch{epoch}_batch{batch_idx}_MR"
             save_folder_CT = root_dir+f"epoch{epoch}_batch{batch_idx}_CT"
@@ -153,7 +154,7 @@ if __name__ == "__main__":
                 os.makedirs(save_folder_MR)
             if not os.path.exists(save_folder_CT):
                 os.makedirs(save_folder_CT)
-            viz_ViT_heads(ViT_heads_MR, save_folder_MR)
-            viz_ViT_heads(ViT_heads_CT, save_folder_CT)
+            viz_ViT_heads_zneck_z12_z9_z6_z3_out(ViT_heads_MR, save_folder_MR)
+            viz_ViT_heads_zneck_z12_z9_z6_z3_out(ViT_heads_CT, save_folder_CT)
 
             batch_idx += 1
