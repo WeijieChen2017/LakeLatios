@@ -1,8 +1,10 @@
 import torch
 import torch.nn as nn
 
+default_BN = True
+
 class AdjustedDWConv(nn.Module):
-    def __init__(self, in_chans, out_chans, BN=False):
+    def __init__(self, in_chans, out_chans, BN=default_BN):
         super(AdjustedDWConv, self).__init__()
 
         self.norm_layer = nn.BatchNorm2d if BN else nn.InstanceNorm2d
@@ -22,7 +24,7 @@ class AdjustedDWConv(nn.Module):
         return self.conv(x)
     
 class AdjustedYellowBlock(nn.Module):
-    def __init__(self, in_chans, out_chans, n_blocks=2, BN=False):
+    def __init__(self, in_chans, out_chans, n_blocks=2, BN=default_BN):
         super(AdjustedYellowBlock, self).__init__()
         self.skip = in_chans == out_chans
         self.blocks = nn.ModuleList()
@@ -47,7 +49,7 @@ class AdjustedYellowBlock(nn.Module):
     
 
 class AdjustedGreenBlock(nn.Module):
-    def __init__(self, in_chans, out_chans, BN=False):
+    def __init__(self, in_chans, out_chans, BN=default_BN):
         super(AdjustedGreenBlock, self).__init__()
 
         self.norm_layer = nn.BatchNorm2d if BN else nn.InstanceNorm2d
@@ -61,7 +63,7 @@ class AdjustedGreenBlock(nn.Module):
         return self.blocks(x)
     
 class AdjustedBlueBlock(nn.Module):
-    def __init__(self, in_chans, out_chans, n_blocks=2, BN=False):
+    def __init__(self, in_chans, out_chans, n_blocks=2, BN=default_BN):
         super(AdjustedBlueBlock, self).__init__()
         # Initialize the adjusted green_block with GELU and InstanceNorm
         self.green = AdjustedGreenBlock(in_chans, out_chans, BN)
