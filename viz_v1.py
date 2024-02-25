@@ -38,9 +38,11 @@ if __name__ == "__main__":
 
     from model import output_ViTheads_encoder_MedSAM
     from model import decoder_PyramidPooling_encoder_MedSAM
+    from model import decoder_UNETR_encoder_MedSAM
     from dataset import PairedMRCTDataset_train
     from util import viz_ViT_heads
     from util import viz_ViT_heads_zneck_z12_z9_z6_z3_out
+    from util import viz_ViT_heads_zneck_z12_z9_z6_z3_d12_d9_d6_d3
 
     # load the random seed
     random_seed = cfg["random_seed"]
@@ -159,7 +161,7 @@ if __name__ == "__main__":
             # np.save(save_folder_CT+"/ViT_heads.npy", ViT_heads_CT)
             # print length
             print(f"ViT_heads_MR: {len(ViT_heads_MR)}, ViT_heads_CT: {len(ViT_heads_CT)}")
-            viz_ViT_heads_zneck_z12_z9_z6_z3_out(ViT_heads_MR, save_folder_MR)
-            viz_ViT_heads_zneck_z12_z9_z6_z3_out(ViT_heads_CT, save_folder_CT)
+            viz_ViT_heads_zneck_z12_z9_z6_z3_d12_d9_d6_d3(ViT_heads_MR, save_folder_MR)
+            viz_ViT_heads_zneck_z12_z9_z6_z3_d12_d9_d6_d3(ViT_heads_CT, save_folder_CT)
 
             batch_idx += 1

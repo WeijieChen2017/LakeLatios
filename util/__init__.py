@@ -1,2 +1,3 @@
 from .viz_ViT_heads import viz_ViT_heads
 from .viz_ViT_heads import viz_ViT_heads_zneck_z12_z9_z6_z3_out
+from .viz_ViT_heads import viz_ViT_heads_zneck_z12_z9_z6_z3_d12_d9_d6_d3
