@@ -194,16 +194,19 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
             yellow_block(768, 256),
         )
         self.z9_block = nn.Sequential(
-            blue_block(768, 256),
+            # blue_block(768, 256),
+            yellow_block(768, 256),
         )
         self.z6_block = nn.Sequential(
             blue_block(768, 256),
-            blue_block(256, 128),
+            # blue_block(256, 128),
+            yellow_block(256, 128),
         )
         self.z3_block = nn.Sequential(
             blue_block(768, 256),
             blue_block(256, 128),
-            blue_block(128, 64),
+            # blue_block(128, 64),
+            yellow_block(128, 64),
         )
 
         self.catconv = nn.Sequential(
@@ -341,7 +344,7 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         Viz_Heads.append(out)
         
         # out 512px to 1024px
-        out = F.interpolate(out, scale_factor=2, mode="bilinear", align_corners=False)
+        out = F.interpolate(out, scale_factor=4, mode="bilinear", align_corners=False)
         if self.verbose:
             print("after interpolation, out.shape", out.shape)
         out = torch.cat([out, zx], dim=1)
