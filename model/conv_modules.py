@@ -71,3 +71,55 @@ class AdjustedBlueBlock(nn.Module):
     def forward(self, x):
         # Pass the input through the sequential blocks
         return self.blocks(x)
+    
+
+
+# class yellow_block(nn.Module):
+#     def __init__(self, in_chans, out_chans, n_blocks=2):
+#         super(yellow_block, self).__init__()
+#         self.skip = in_chans == out_chans
+#         self.block_list = []
+#         self.block_list.append(nn.Sequential(
+#             nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1, bias=False),
+#             LayerNorm2d(out_chans),
+#             nn.GELU(),
+#         ))
+#         for i in range(n_blocks-1):
+#             self.block_list.append(nn.Sequential(
+#                 nn.Conv2d(out_chans, out_chans, kernel_size=3, padding=1, bias=False),
+#                 LayerNorm2d(out_chans),
+#                 nn.GELU(),
+#             ))
+#         self.blocks = nn.Sequential(*self.block_list)
+
+#     def forward(self, x):
+#         if self.skip:
+#             return x + self.blocks(x)
+#         else:
+#             return self.blocks(x)
+
+# class green_block(nn.Module):
+#     def __init__(self, in_chans, out_chans):
+#         super(green_block, self).__init__()
+#         self.blocks = nn.Sequential(
+#             # use convtranspose2d to upsample
+#             nn.ConvTranspose2d(in_chans, out_chans, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False),
+#             LayerNorm2d(out_chans),
+#             nn.GELU(),
+#         )
+
+#     def forward(self, x):
+#         return self.blocks(x)
+
+# class blue_block(nn.Module):
+#     def __init__(self, in_chans, out_chans):
+#         super(blue_block, self).__init__()
+#         self.green = green_block(in_chans, out_chans)
+#         self.yellow = yellow_block(out_chans, out_chans)
+#         self.blocks = nn.Sequential(
+#             self.green,
+#             self.yellow,
+#         )
+
+#     def forward(self, x):
+#         return self.blocks(x)
