@@ -2,12 +2,15 @@ import torch
 import torch.nn as nn
 
 default_BN = True
+default_norm_layer = nn.LayerNorm
 
 class AdjustedDWConv(nn.Module):
     def __init__(self, in_chans, out_chans, BN=default_BN):
         super(AdjustedDWConv, self).__init__()
 
         self.norm_layer = nn.BatchNorm2d if BN else nn.InstanceNorm2d
+        if default_norm_layer is not None:
+            self.norm_layer = default_norm_layer
         self.conv = nn.Sequential(
             # Depthwise convolution
             nn.Conv2d(in_chans, in_chans, kernel_size=3, padding=1, groups=in_chans, bias=False),
@@ -30,6 +33,8 @@ class AdjustedYellowBlock(nn.Module):
         self.blocks = nn.ModuleList()
 
         self.norm_layer = nn.BatchNorm2d if BN else nn.InstanceNorm2d
+        if default_norm_layer is not None:
+            self.norm_layer = default_norm_layer
         for _ in range(n_blocks):
             self.blocks.append(nn.Sequential(
                 nn.Conv2d(in_chans, out_chans, kernel_size=3, padding=1, bias=False),
@@ -54,6 +59,8 @@ class AdjustedGreenBlock(nn.Module):
         super(AdjustedGreenBlock, self).__init__()
 
         self.norm_layer = nn.BatchNorm2d if BN else nn.InstanceNorm2d
+        if default_norm_layer is not None:
+            self.norm_layer = default_norm_layer
         self.blocks = nn.Sequential(
             nn.ConvTranspose2d(in_chans, out_chans, kernel_size=3, stride=2, padding=1, output_padding=1, bias=False),
             self.norm_layer(out_chans),
