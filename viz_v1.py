@@ -157,7 +157,8 @@ if __name__ == "__main__":
             # save ViT_heads
             # np.save(save_folder_MR+"/ViT_heads.npy", ViT_heads_MR)
             # np.save(save_folder_CT+"/ViT_heads.npy", ViT_heads_CT)
-
+            # print length
+            print(f"ViT_heads_MR: {len(ViT_heads_MR)}, ViT_heads_CT: {len(ViT_heads_CT)}")
             viz_ViT_heads_zneck_z12_z9_z6_z3_out(ViT_heads_MR, save_folder_MR)
             viz_ViT_heads_zneck_z12_z9_z6_z3_out(ViT_heads_CT, save_folder_CT)
 
