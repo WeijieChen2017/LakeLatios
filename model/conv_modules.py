@@ -61,12 +61,12 @@ class AdjustedGreenBlock(nn.Module):
         return self.blocks(x)
     
 class AdjustedBlueBlock(nn.Module):
-    def __init__(self, in_chans, out_chans):
+    def __init__(self, in_chans, out_chans, n_blocks=2, BN=False):
         super(AdjustedBlueBlock, self).__init__()
         # Initialize the adjusted green_block with GELU and InstanceNorm
-        self.green = AdjustedGreenBlock(in_chans, out_chans)
+        self.green = AdjustedGreenBlock(in_chans, out_chans, BN)
         # Initialize the adjusted yellow_block with GELU and InstanceNorm
-        self.yellow = AdjustedYellowBlock(out_chans, out_chans)
+        self.yellow = AdjustedYellowBlock(out_chans, out_chans, n_blocks, BN)
         # Sequentially combine the two blocks
         self.blocks = nn.Sequential(
             self.green,
