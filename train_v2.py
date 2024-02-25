@@ -32,6 +32,7 @@ if __name__ == "__main__":
     root_dir = cfg["root_dir"]
     if not os.path.exists(root_dir):
         os.makedirs(root_dir)
+    torch.autograd.set_detect_anomaly(True)
 
     # load libraries
     import torch.nn as nn
