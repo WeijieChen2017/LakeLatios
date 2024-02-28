@@ -98,6 +98,7 @@ def test_model(model, test_loader, device, cfg):
             pred = model(MR)
             loss = loss_function(pred, CT)
             # save the prediction in the save_dir
+            print(cfg["root_dir"], filename)
             save_name = os.path.join(cfg["root_dir"], filename)
             pred = pred.squeeze(0).detach().cpu().numpy()
             np.save(save_name, pred)
