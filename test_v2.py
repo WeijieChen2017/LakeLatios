@@ -88,6 +88,9 @@ def test_model(model, test_loader, device, cfg):
     model.eval()
     loss_function = nn.L1Loss()
     total_loss = 0.0
+    # output the evaluation info
+    n_test = len(test_loader)
+    print(f"Start testing on {n_test} samples.")
     with torch.no_grad():
         for batch in test_loader:
             MR, filename = batch["MR"].to(device)
