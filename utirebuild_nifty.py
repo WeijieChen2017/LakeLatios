@@ -16,9 +16,10 @@ file_name_list = []
 for filename in file_list:
     file_name_list.append(filename.split("/")[-1].split(".")[0])
     print(filename.split("/")[-1].split(".")[0])
+n_file = len(file_name_list)
 
 # iterate all the files
-for idx, filename in enumerate(file_list):
+for idx, filename in enumerate(file_name_list):
     MR_path = data_folder + "/MR/" + filename + ".nii.gz"
     CT_path = data_folder + "/CT/" + filename + ".nii.gz"
     MR_file = nib.load(MR_path)
@@ -26,7 +27,7 @@ for idx, filename in enumerate(file_list):
     MR_data = MR_file.get_fdata()
     CT_data = CT_file.get_fdata()
     # print the progress
-    print(f"processing {idx+1}/{len(file_list)}: ", filename)
+    print(f"processing {idx+1}/{n_file}: ", filename)
     print("MR_data.shape: ", MR_data.shape, "CT_data.shape: ", CT_data.shape)
 
     # load all predictions
