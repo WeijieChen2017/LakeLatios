@@ -196,7 +196,7 @@ class PairedMRCTDataset_test(Dataset):
             MR = self.transform(MR)
             CT = self.transform(CT)
         # random augmentation
-        MR, CT = paird_random_augmentation(MR, CT)
+        # MR, CT = paird_random_augmentation(MR, CT)
         # squeeze the first dimension
         MR = MR.squeeze(0)
         CT = CT.squeeze(0)
