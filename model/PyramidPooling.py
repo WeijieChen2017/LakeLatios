@@ -256,7 +256,7 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
             print("after z_block, z6.shape", z6.shape, "mean and std:", z6.mean(), z6.std())
             print("after z_block, z9.shape", z9.shape, "mean and std:", z9.mean(), z9.std())
             print("after z_block, z12.shape", z12.shape, "mean and std:", z12.mean(), z12.std())
-            print("after z_neck_block, zneck.shape", zneck.shape, "mean and std:", zneck.mean(), zneck.std()
+            print("after z_neck_block, zneck.shape", zneck.shape, "mean and std:", zneck.mean(), zneck.std())
 
         # z12 and zneck 64px to 1024px
         z12 = F.interpolate(z12, scale_factor=4, mode="bilinear", align_corners=False)
