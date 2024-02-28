@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-default_BN = True
-default_norm_layer = nn.LayerNorm
-# default_norm_layer = None
+default_BN = False
+# default_norm_layer = nn.LayerNorm
+default_norm_layer = None
 
 class AdjustedDWConv(nn.Module):
     def __init__(self, in_chans, out_chans, BN=default_BN):
