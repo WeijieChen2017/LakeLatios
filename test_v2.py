@@ -109,7 +109,7 @@ def test_model(model, test_loader, device, cfg):
             # iterate all the filenames in the batch
             for idx_batch in range(len(filename)):
                 save_name = os.path.join(cfg["root_dir"], filename[idx_batch])
-                save_data = np.squeeze(pred[idx_batch, :, :, :])
+                save_data = np.squeeze(pred[idx_batch, :, :, :]) * 4024 - 1024# convert back to HU
                 np.save(save_name, save_data)
                 print(f"Saved prediction for {filename[idx_batch]} with loss {loss}")
             # write the loss to a file
