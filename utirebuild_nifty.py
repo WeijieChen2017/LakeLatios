@@ -35,7 +35,9 @@ for idx, filename in enumerate(file_name_list):
     idx_z = CT_data.shape[2]
     for idx in range(idx_z):
         pred_path = pred_folder + filename + "_{:04d}".format(idx) + ".npy"
-        pred_data[:, :, idx] = np.load(pred_path, allow_pickle=True)
+        # load is 1024x1024, and we need to downsample it to 256x256
+        pred_hr = np.load(pred_path, allow_pickle=True)
+        pred_data[:, :, idx] = np.reshape(pred_hr, (256, 256))
 
     # save the prediction as nifty
     save_path = save_folder + filename + ".nii.gz"
