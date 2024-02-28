@@ -40,8 +40,12 @@ for idx, filename in enumerate(file_name_list):
     for idx in range(idx_z):
         pred_path = pred_folder + filename + "_{:04d}".format(idx) + ".npy"
         # load is 1024x1024, and we need to downsample it to 256x256
-        pred_hr = np.load(pred_path, allow_pickle=True)
-        pred_data[:, :, idx] = resize(pred_hr, (256, 256), anti_aliasing=True)
+        # try to load the prediction
+        try:
+            pred_hr = np.load(pred_path, allow_pickle=True)
+            pred_data[:, :, idx] = resize(pred_hr, (256, 256), anti_aliasing=True)
+        except:
+            print("file not found: ", pred_path)
 
     # save the prediction as nifty
     save_path = save_folder + filename + ".nii.gz"
