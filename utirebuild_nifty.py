@@ -7,7 +7,7 @@ import nibabel as nib
 import glob
 
 # find all nifty files
-data_folder = "./data/nifty/CT/"
+data_folder = "./data/MR2CT/nifty/CT/"
 file_list = glob.glob(data_folder + "*.nii.gz")
 
 # create a list to store all filename
