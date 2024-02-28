@@ -252,25 +252,25 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         z12 = self.z12_block(z12.permute(0, 3, 1, 2)) # B, 256, 128, 128
         zneck = self.z_neck_block(x) # B, 256, 128, 128
         if self.verbose:
-            print("after z_block, z3.shape", z3.shape)
-            print("after z_block, z6.shape", z6.shape)
-            print("after z_block, z9.shape", z9.shape)
-            print("after z_block, z12.shape", z12.shape)
-            print("after z_neck_block, zneck.shape", zneck.shape)
+            print("after z_block, z3.shape", z3.shape, "mean and std:", z3.mean(), z3.std())
+            print("after z_block, z6.shape", z6.shape, "mean and std:", z6.mean(), z6.std())
+            print("after z_block, z9.shape", z9.shape, "mean and std:", z9.mean(), z9.std())
+            print("after z_block, z12.shape", z12.shape, "mean and std:", z12.mean(), z12.std())
+            print("after z_neck_block, zneck.shape", zneck.shape, "mean and std:", zneck.mean(), zneck.std()
 
         # z12 and zneck 64px to 1024px
         z12 = F.interpolate(z12, scale_factor=4, mode="bilinear", align_corners=False)
         zneck = F.interpolate(zneck, scale_factor=4, mode="bilinear", align_corners=False)
         if self.verbose:
-            print("after interpolation, z12.shape", z12.shape, "zneck.shape", zneck.shape)
+            print("after interpolation, z12.shape", z12.shape, "zneck.shape", zneck.shape, "mean and std:", z12.mean(), z12.std(), zneck.mean(), zneck.std())
         # z9 128px to 1024px
         z9 = F.interpolate(z9, scale_factor=4, mode="bilinear", align_corners=False)
         if self.verbose:
-            print("after interpolation, z9.shape", z9.shape)
+            print("after interpolation, z9.shape", z9.shape, "mean and std:", z9.mean(), z9.std())
         # z6 256px to 1024px
         z6 = F.interpolate(z6, scale_factor=2, mode="bilinear", align_corners=False)
         if self.verbose:
-            print("after interpolation, z6.shape", z6.shape)
+            print("after interpolation, z6.shape", z6.shape, "mean and std:", z6.mean(), z6.std())
         # z3 512px to 1024px
         # z3 = F.interpolate(z3, scale_factor=2, mode="bilinear", align_corners=False)
         # if self.verbose:
@@ -286,22 +286,22 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
 
         out = torch.cat([zneck, z12, z9, z6, z3], dim=1) # B, 1024px, 256*5ch
         if self.verbose:
-            print("after cat, out.shape", out.shape)
+            print("after cat, out.shape", out.shape, "mean and std:", out.mean(), out.std())
         out = self.catconv(out)
         if self.verbose:
-            print("after catconv, out.shape", out.shape)
+            print("after catconv, out.shape", out.shape, "mean and std:", out.mean(), out.std())
             Viz_Heads.append(out.permute(0, 2, 3, 1).cpu().detach().numpy())
         
         # out 512px to 1024px
         out = F.interpolate(out, scale_factor=4, mode="bilinear", align_corners=False)
         if self.verbose:
-            print("after interpolation, out.shape", out.shape)
+            print("after interpolation, out.shape", out.shape, "mean and std:", out.mean(), out.std())
         out = torch.cat([out, zx], dim=1)
         if self.verbose:
-            print("after cat, out.shape", out.shape)
+            print("after cat, out.shape", out.shape, "mean and std:", out.mean(), out.std())
         out = self.decoder_out(out)
         if self.verbose:
-            print("after decoder_out, out.shape", out.shape)
+            print("after decoder_out, out.shape", out.shape, "mean and std:", out.mean(), out.std())
 
         if self.verbose:
             return out, Viz_Heads

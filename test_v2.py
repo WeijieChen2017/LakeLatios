@@ -78,7 +78,7 @@ def load_model(cfg, device):
         raise ValueError("model_name not found !")
     
     # Load the encoder
-    model.load_pretrain(cfg["pretrain_path"])
+    # model.load_pretrain(cfg["pretrain_path"])
     # Load the decoder
     model.load_pretrain(cfg["decoder_path"], remove_prefix="")
 
