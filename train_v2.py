@@ -253,8 +253,8 @@ if __name__ == "__main__":
                 f.write(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}\n")
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
-                torch.save(model.state_dict(), "best_model.pth")
-                torch.save(optimizer.state_dict(), "best_optimizer.pth")
+                torch.save(model.state_dict(), root_dir+f"best_model.pth")
+                torch.save(optimizer.state_dict(), root_dir+f"best_optimizer.pth")
                 print("Model was saved !")
             else:
                 print("Model was not saved !")

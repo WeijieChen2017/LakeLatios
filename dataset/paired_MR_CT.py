@@ -136,23 +136,81 @@ class PairedMRCTDataset_train(Dataset):
         sample = {"MR": MR, "CT": CT}
 
         return sample
-    
-# define the training and validation transform
-# resize to 1024x1024
-# random horizontal flip
-# random vertical flip
-# random rotation
-# H, W, C -> C, H, W
-# has pre-normalized to 0 mean and 1 std
-# trainval_transform = transforms.Compose([
-#     transforms.Resize((1024, 1024), interpolation=2),
-#     transforms.ToTensor(),
-# ])
 
-# define the test transform
-# resize to 1024x1024
-# normalize to 0 mean and 1 std
-# test_transform = transforms.Compose([
-#     transforms.Resize((1024, 1024)),
-#     transforms.ToTensor(),
-# ])
+
+class PairedMRCTDataset_test(Dataset):
+    def __init__(self, path_MR, path_CT, stage="train", transform=None, subset_fraction=1.0, out_channels=1):
+        self.path_MR = path_MR
+        self.path_CT = path_CT
+        self.subset_fraction = subset_fraction
+        self.transform = transform
+        self.out_channels = out_channels
+        self.list_MR_full = sorted(glob.glob(self.path_MR+"/"+stage+"/*.npy"))
+        self.list_CT_full = sorted(glob.glob(self.path_CT+"/"+stage+"/*.npy"))
+        # check whether the length of the two lists are the same
+        assert len(self.list_MR_full) == len(self.list_CT_full)
+        # check whether the file names are the same
+        for i in range(len(self.list_MR_full)):
+            assert self.list_MR_full[i].split("/")[-1] == self.list_CT_full[i].split("/")[-1]
+
+        # Selecting a subset of data
+        total_samples = len(self.list_MR_full)
+        step = int(1 / subset_fraction)
+        indices = range(0, total_samples, step)  # Taking every nth index
+
+        self.list_MR = [self.list_MR_full[i] for i in indices]
+        self.list_CT = [self.list_CT_full[i] for i in indices]
+        self.data_path = list(zip(self.list_MR, self.list_CT))
+
+        # Optionally, track the selected samples/indices
+        self.used_samples = indices  # or self.list_MR to track by file paths
+
+    def save_used_samples(self, filename):
+        with open(filename, "w") as f:
+            for item in self.used_samples:
+                f.write("%s\n" % item)
+
+    def __len__(self):
+        return len(self.list_MR)
+
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+
+        MR = np.load(self.data_path[idx][0], allow_pickle=True)
+        CT = np.load(self.data_path[idx][1], allow_pickle=True)
+
+        # convert to tensor
+        MR = torch.from_numpy(MR).float()
+        CT = torch.from_numpy(CT).float()
+        # add first dimension
+        MR = MR.unsqueeze(0)
+        CT = CT.unsqueeze(0)
+
+        # resize from 3x256x256 to 3x1024x1024
+        MR = transforms.functional.resize(MR, (1024, 1024), interpolation=2, antialias=True)
+        CT = transforms.functional.resize(CT, (1024, 1024), interpolation=2, antialias=True)
+
+        # transform
+        if self.transform:
+            MR = self.transform(MR)
+            CT = self.transform(CT)
+        # random augmentation
+        MR, CT = paird_random_augmentation(MR, CT)
+        # squeeze the first dimension
+        MR = MR.squeeze(0)
+        CT = CT.squeeze(0)
+        
+        if self.out_channels == 1:
+            # select CT in the middle slice from 3x1024x1024 to 1024x1024
+            CT = CT[1, :, :]
+            CT = CT.unsqueeze(0)
+
+        # normalize to 0 mean and 1 std
+        MR = transforms.functional.normalize(MR, mean=0.0, std=1.0)
+        CT = transforms.functional.normalize(CT, mean=0.0, std=1.0)
+
+        sample = {"MR": MR, "CT": CT}
+        filename = self.data_path[idx][0].split("/")[-1]
+
+        return sample, filename
