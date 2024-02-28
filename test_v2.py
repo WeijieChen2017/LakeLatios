@@ -31,7 +31,7 @@ def load_model(cfg, device):
             rel_pos_zero_init=cfg["rel_pos_zero_init"] == "True",
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
-            verbose=True,
+            # verbose=True,
         )
     # Add the other model options here as in your training script
     elif cfg["model_name"] == "decoder_UNETR_encoder_MedSAM":
@@ -80,7 +80,8 @@ def load_model(cfg, device):
     # Load the encoder
     # model.load_pretrain(cfg["pretrain_path"])
     # Load the decoder
-    model.load_pretrain(cfg["decoder_path"], remove_prefix="")
+    # model.load_pretrain(cfg["decoder_path"], remove_prefix="") # this did not load all the weights
+    model.load_from_checkpoint(cfg["decoder_path"])
 
     model.to(device)
     return model

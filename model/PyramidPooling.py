@@ -172,12 +172,17 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         model_dict = self.state_dict()
         pretrain_dict = {k[len(remove_prefix):]: v for k, v in pretrain_dict.items() if k[len(remove_prefix):] in model_dict}
         model_dict.update(pretrain_dict)
-        # print all keys which are not loaded
-        for k in model_dict:
-            if k not in pretrain_dict:
-                print(f"not loaded: {k}")
+        # # print all keys which are not loaded
+        # for k in model_dict:
+        #     if k not in pretrain_dict:
+        #         print(f"not loaded: {k}")
         self.load_state_dict(model_dict)
         print(f"load pretrain from {pretrain_path}")
+    
+    def load_from_checkpoint(self, checkpoint_path):
+        checkpoint = torch.load(checkpoint_path, map_location="cpu")
+        self.load_state_dict(checkpoint["model"])
+        print(f"load from checkpoint {checkpoint_path}")
     
     def _freeze_backbone(self):
         for param in self.patch_embed.parameters():
