@@ -31,6 +31,7 @@ def load_model(cfg, device):
             rel_pos_zero_init=cfg["rel_pos_zero_init"] == "True",
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
+            verbose=True,
         )
     # Add the other model options here as in your training script
     elif cfg["model_name"] == "decoder_UNETR_encoder_MedSAM":

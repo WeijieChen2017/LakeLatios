@@ -172,6 +172,10 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
         model_dict = self.state_dict()
         pretrain_dict = {k[len(remove_prefix):]: v for k, v in pretrain_dict.items() if k[len(remove_prefix):] in model_dict}
         model_dict.update(pretrain_dict)
+        # print all updated keys
+        if self.verbose:
+            for k, v in pretrain_dict.items():
+                print("load pretrain from", pretrain_path, "key", k, "shape", v.shape)
         self.load_state_dict(model_dict)
         print(f"load pretrain from {pretrain_path}")
     
