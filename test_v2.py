@@ -104,17 +104,17 @@ def test_model(model, test_loader, device, cfg):
             # elif modality == "CT":
             #     img_data = np.clip(img_data, -1024, 3000)
             #     img_data = img_data / 4024
-            loss = loss.item() * 4024
+            loss = loss.item() * 4024 / cfg["batch_size"]
             total_loss += loss
             # iterate all the filenames in the batch
             for idx_batch in range(len(filename)):
                 save_name = os.path.join(cfg["root_dir"], filename[idx_batch])
                 save_data = np.squeeze(pred[idx_batch, :, :, :])
                 np.save(save_name, save_data)
-                print(f"Saved prediction for {filename} with loss {loss}")
+                print(f"Saved prediction for {filename[idx_batch]} with loss {loss}")
             # write the loss to a file
             with open(os.path.join(cfg["root_dir"], "loss.txt"), "a") as f:
-                f.write(f"{filename}, {loss}\n")
+                f.write(f"{filename[idx_batch]}, {loss}\n")
     avg_loss = total_loss / len(test_loader)
     print(f"Test Loss: {avg_loss}")
     # write the average loss to a file
