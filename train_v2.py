@@ -248,7 +248,7 @@ if __name__ == "__main__":
                         print(f"Epoch {epoch+1}/{cfg['epochs']} Batch {idx_batch_val+1}/{n_val_batch}, loss: {text_loss}")
                 val_loss = epoch_val_loss / len(val_loader)
 
-            print(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {loss.item()}, val_loss: {val_loss}")
+            print(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}")
             with open(root_dir+"val_loss.txt", "a") as f:
                 f.write(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}\n")
             if val_loss < best_val_loss:

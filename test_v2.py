@@ -97,12 +97,21 @@ def test_model(model, test_loader, device, cfg):
             CT = batch["CT"].to(device)
             pred = model(MR)
             loss = loss_function(pred, CT)
-            # save the prediction in the save_dir
-            save_name = os.path.join(cfg["root_dir"], filename[0])
-            pred = pred.squeeze(0).detach().cpu().numpy()
-            np.save(save_name, pred)
-            print(f"Saved prediction for {filename}")
+            pred = pred.detach().cpu().numpy()
+            # if modality == "MR":
+            #     img_data = np.clip(img_data, 0, 3000)
+            #     img_data = img_data / 3000
+            # elif modality == "CT":
+            #     img_data = np.clip(img_data, -1024, 3000)
+            #     img_data = img_data / 4024
+            loss = loss.item() * 4024
             total_loss += loss.item()
+            # iterate all the filenames in the batch
+            for idx_batch in range(len(filename)):
+                save_name = os.path.join(cfg["root_dir"], filename[idx_batch])
+                save_data = np.squeeze(pred[idx_batch, :, :, :])
+                np.save(save_name, save_data)
+                print(f"Saved prediction for {filename} with loss {loss.item()}")
             # write the loss to a file
             with open(os.path.join(cfg["root_dir"], "loss.txt"), "a") as f:
                 f.write(f"{filename}, {loss.item()}\n")

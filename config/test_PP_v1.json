@@ -22,7 +22,7 @@
     "root_dir": "./results/test_PP_v1/",
     "data_path_MR": "./data/MR2CT/MR_x_2d/",
     "data_path_CT": "./data/MR2CT/CT_y_2d/",
-    "batch_size": 1,
+    "batch_size": 4,
     "num_workers": 1,
     "gpu_list": "0",
     "subset_fraction": 0.1,
