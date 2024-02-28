@@ -92,9 +92,9 @@ def test_model(model, test_loader, device, cfg):
     n_test = len(test_loader)
     print(f"Start testing on {n_test} samples.")
     with torch.no_grad():
-        for batch in test_loader:
-            MR, filename = batch["MR"].to(device)
-            CT, _ = batch["CT"].to(device)
+        for batch, filename in test_loader:
+            MR = batch["MR"].to(device)
+            CT = batch["CT"].to(device)
             pred = model(MR)
             loss = loss_function(pred, CT)
             # save the prediction in the save_dir
