@@ -111,10 +111,10 @@ def test_model(model, test_loader, device, cfg):
                 save_name = os.path.join(cfg["root_dir"], filename[idx_batch])
                 save_data = np.squeeze(pred[idx_batch, :, :, :])
                 np.save(save_name, save_data)
-                print(f"Saved prediction for {filename} with loss {loss.item()}")
+                print(f"Saved prediction for {filename} with loss {loss}")
             # write the loss to a file
             with open(os.path.join(cfg["root_dir"], "loss.txt"), "a") as f:
-                f.write(f"{filename}, {loss.item()}\n")
+                f.write(f"{filename}, {loss}\n")
     avg_loss = total_loss / len(test_loader)
     print(f"Test Loss: {avg_loss}")
     # write the average loss to a file
