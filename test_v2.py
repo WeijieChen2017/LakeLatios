@@ -81,7 +81,6 @@ def load_model(cfg, device):
     # Load the decoder
     model.load_pretrain(cfg["decoder_path"], remove_prefix="")
 
-    model.load_state_dict(torch.load(cfg["best_model_path"]))
     model.to(device)
     return model
 
