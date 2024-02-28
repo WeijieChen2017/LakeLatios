@@ -97,6 +97,8 @@ def test_model(model, test_loader, device, cfg):
             CT = batch["CT"].to(device)
             pred = model(MR)
             loss = loss_function(pred, CT)
+            MR = MR.detach().cpu().numpy()
+            CT = CT.detach().cpu().numpy()
             pred = pred.detach().cpu().numpy()
             # if modality == "MR":
             #     img_data = np.clip(img_data, 0, 3000)
@@ -110,8 +112,32 @@ def test_model(model, test_loader, device, cfg):
             for idx_batch in range(len(filename)):
                 save_name = os.path.join(cfg["root_dir"], filename[idx_batch])
                 save_data = np.squeeze(pred[idx_batch, :, :, :]) * 4024 - 1024# convert back to HU
-                np.save(save_name, save_data)
+                # np.save(save_name, save_data)
                 print(f"Saved prediction for {filename[idx_batch]} with loss {loss}")
+
+                # plot input, ground truth and prediction
+                plt.figure(figsize=(15, 5), dpi=100)
+                plt.subplot(1, 3, 1)
+                img_MR = np.squeeze(MR[idx_batch, :, :, :])
+                plt.imshow(img_MR, cmap="gray")
+                plt.title("MR")
+                plt.axis("off")
+
+                plt.subplot(1, 3, 2)
+                img_CT = np.squeeze(CT[idx_batch, :, :, :])
+                plt.imshow(img_CT, cmap="gray")
+                plt.title("CT")
+                plt.axis("off")
+
+                plt.subplot(1, 3, 3)
+                img_pred = np.squeeze(pred[idx_batch, :, :, :])
+                plt.imshow(img_pred, cmap="gray")
+                plt.title("Prediction")
+                plt.axis("off")
+
+                plt.savefig(os.path.join(cfg["root_dir"], filename[idx_batch].split(".")[0] + ".png"))
+                plt.close()
+
             # write the loss to a file
             with open(os.path.join(cfg["root_dir"], "loss.txt"), "a") as f:
                 f.write(f"{filename[idx_batch]}, {loss}\n")
