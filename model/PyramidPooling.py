@@ -215,37 +215,38 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
 
         if self.verbose:
-            print("x.shape", x.shape)
+            print("x.shape", x.shape, "mean and std:", x.mean(), x.std())
 
         zx = self.decoder_x(x)
         if self.verbose:
-            print("zx.shape", zx.shape)
+            print("zx.shape", zx.shape, "mean and std:", zx.mean(), zx.std())
 
         x = self.patch_embed(x)
         if self.verbose:
-            print("after patch_embed x.shape", x.shape)
+            print("after patch_embed x.shape", x.shape, "mean and std:", x.mean(), x.std())
 
         if self.pos_embed is not None:
             x = x + self.pos_embed
         if self.verbose:
-            print("after pos_embed x.shape", x.shape)
+            print("after pos_embed x.shape", x.shape, "mean and std:", x.mean(), x.std())   
 
         ViT_heads = []
         for i, blk in enumerate(self.blocks):
             x = blk(x)
             if self.verbose:
-                print("after block", i, x.shape)
+                print("after block", i, x.shape, "mean and std:", x.mean(), x.std())
             if i in self.global_attn_indexes:
                 ViT_heads.append(x)
 
         x = self.neck(x.permute(0, 3, 1, 2))
         if self.verbose:
-            print("after neck x.shape", x.shape)
+            print("after neck x.shape", x.shape, "mean and std:", x.mean(), x.std())
 
         # z3, z6, z9, z12 = ViT_heads
         [z3, z6, z9, z12] = ViT_heads
         if self.verbose:
             print("z3.shape", z3.shape, "z6.shape", z6.shape, "z9.shape", z9.shape, "z12.shape", z12.shape)
+            print("mean and std:", z3.mean(), z3.std(), z6.mean(), z6.std(), z9.mean(), z9.std(), z12.mean(), z12.std())
         z3 = self.z3_block(z3.permute(0, 3, 1, 2)) # B, 256, 1024, 1024
         z6 = self.z6_block(z6.permute(0, 3, 1, 2)) # B, 256, 512, 512
         z9 = self.z9_block(z9.permute(0, 3, 1, 2)) # B, 256, 256, 256
