@@ -8,6 +8,9 @@ import nibabel as nib
 import glob
 from skimage.transform import resize
 
+if not os.path.exists(save_folder):
+    os.makedirs(save_folder)
+
 # find all nifty files
 data_folder = "./data/MR2CT/nifty/"
 file_list = sorted(glob.glob(data_folder + "/CT/*.nii.gz"))
