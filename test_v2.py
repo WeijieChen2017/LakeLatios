@@ -118,7 +118,7 @@ def test_model(model, test_loader, device, cfg):
                 # plot input, ground truth and prediction
                 plt.figure(figsize=(15, 5), dpi=100)
                 plt.subplot(1, 3, 1)
-                img_MR = np.squeeze(MR[idx_batch, 1 :, :])
+                img_MR = np.squeeze(MR[idx_batch, 1, :, :])
                 plt.imshow(img_MR, cmap="gray")
                 plt.title("MR")
                 plt.axis("off")
