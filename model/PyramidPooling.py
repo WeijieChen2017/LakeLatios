@@ -181,7 +181,7 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
     
     def load_from_checkpoint(self, checkpoint_path):
         checkpoint = torch.load(checkpoint_path, map_location="cpu")
-        self.load_state_dict(checkpoint["model"])
+        self.load_state_dict(checkpoint)
         print(f"load from checkpoint {checkpoint_path}")
     
     def _freeze_backbone(self):
