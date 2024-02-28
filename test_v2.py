@@ -98,8 +98,7 @@ def test_model(model, test_loader, device, cfg):
             pred = model(MR)
             loss = loss_function(pred, CT)
             # save the prediction in the save_dir
-            print(cfg["root_dir"], filename)
-            save_name = os.path.join(cfg["root_dir"], filename)
+            save_name = os.path.join(cfg["root_dir"], filename[0])
             pred = pred.squeeze(0).detach().cpu().numpy()
             np.save(save_name, pred)
             print(f"Saved prediction for {filename}")
@@ -119,6 +118,18 @@ if __name__ == "__main__":
     args = parser.parse_args()
     cfg = json.load(open(args.cfg_path))
     
+    # load the random seed
+    random_seed = cfg["random_seed"]
+    torch.manual_seed(random_seed)
+    torch.cuda.manual_seed(random_seed)
+    torch.cuda.manual_seed_all(random_seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    import random
+    import numpy as np
+    np.random.seed(random_seed)
+    random.seed(random_seed)
+
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
