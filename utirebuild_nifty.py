@@ -1,5 +1,6 @@
 # load all nifty in "./data/nifty/CT/"
 save_folder = "./results/test_PP_v1_nifty/"
+pred_folder = "./results/test_PP_v1/"
 
 import numpy as np
 import os
@@ -7,8 +8,8 @@ import nibabel as nib
 import glob
 
 # find all nifty files
-data_folder = "./data/MR2CT/nifty/CT/"
-file_list = glob.glob(data_folder + "*.nii.gz")
+data_folder = "./data/MR2CT/nifty/"
+file_list = sorted(glob.glob(data_folder + "/CT/*.nii.gz"))
 
 # create a list to store all filename
 file_name_list = []
@@ -16,12 +17,29 @@ for filename in file_list:
     file_name_list.append(filename.split("/")[-1].split(".")[0])
     print(filename.split("/")[-1].split(".")[0])
 
-# # iterate all the files
-# for filename in file_list:
-#     img = nib.load(filename)
-#     img_data = img.get_fdata()
-#     print("img_data.shape: ", img_data.shape)
+# iterate all the files
+for idx, filename in enumerate(file_list):
+    MR_path = data_folder + "/MR/" + filename + ".nii.gz"
+    CT_path = data_folder + "/CT/" + filename + ".nii.gz"
+    MR_file = nib.load(MR_path)
+    CT_file = nib.load(CT_path)
+    MR_data = MR_file.get_fdata()
+    CT_data = CT_file.get_fdata()
+    # print the progress
+    print(f"processing {idx+1}/{len(file_list)}: ", filename)
+    print("MR_data.shape: ", MR_data.shape, "CT_data.shape: ", CT_data.shape)
 
-#     # save the file
-#     savename = os.path.join(save_folder, filename.split("/")[-1].split(".")[0] + ".npy")
-#     np.save(savename, img_data)
+    # load all predictions
+    pred_data = np.zeros(CT_data.shape)
+    idx_z = CT_data.shape[2]
+    for idx in range(idx_z):
+        pred_path = pred_folder + filename + "_{:04d}".format(idx) + ".npy"
+        pred_data[:, :, idx] = np.load(pred_path, allow_pickle=True)
+
+    # save the prediction as nifty
+    save_path = save_folder + filename + ".nii.gz"
+    pred_file = nib.Nifti1Image(pred_data, CT_file.affine, CT_file.header)
+    nib.save(pred_file, save_path)
+    print("save prediction as nifty: ", save_path)
+    print("")
+
