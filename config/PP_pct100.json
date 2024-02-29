@@ -1,5 +1,5 @@
 {
-    "model_name": "decoder_PP_pct100_encoder_MedSAM",
+    "model_name": "decoder_PyramidPooling_encoder_MedSAM",
     "pretrain_path": "pretrain/medsam_vit_b.pth",
     "img_size": 1024,
     "patch_size": 16,
@@ -18,7 +18,7 @@
     "rel_pos_zero_init": "True",
     "window_size": 0,
     "global_attn_indexes": [2, 5, 8, 11],
-    "root_dir": "./proj/decoder_PyramidPooling/",
+    "root_dir": "./proj/decoder_PP_pct100/",
     "data_path_MR": "./data/MR2CT/MR_x_2d/",
     "data_path_CT": "./data/MR2CT/CT_y_2d/",
     "batch_size": 4,
