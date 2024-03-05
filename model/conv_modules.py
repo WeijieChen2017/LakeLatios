@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-default_BN = False
+default_BN = True
 # default_norm_layer = nn.LayerNorm
 default_norm_layer = None
 
