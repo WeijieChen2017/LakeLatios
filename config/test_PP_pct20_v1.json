@@ -25,6 +25,6 @@
     "batch_size": 4,
     "num_workers": 1,
     "gpu_list": "0",
-    "subset_fraction": 1,
+    "subset_fraction": 0.2,
     "random_seed": 42
 }
