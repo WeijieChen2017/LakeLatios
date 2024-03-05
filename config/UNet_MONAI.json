@@ -1,6 +1,5 @@
 {
     "model_name": "UNetMONAI",
-    "pretrain_path": "pretrain/medsam_vit_b.pth",
     "img_size": 1024,
     "root_dir": "./proj/decoder_UNetMONAI/",
     "data_path_MR": "./data/MR2CT/MR_x_2d/",
