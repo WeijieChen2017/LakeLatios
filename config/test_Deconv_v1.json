@@ -1,7 +1,7 @@
 {
-    "model_name": "decoder_PyramidPooling_encoder_MedSAM",
+    "model_name": "decoder_Deconv_encoder_MedSAM",
     "pretrain_path": "pretrain/medsam_vit_b.pth",
-    "decoder_path": "./proj/decoder_PyramidPooling/model_270.pth",
+    "decoder_path": "./proj/decoder_Deconv/best_model.pth",
     "img_size": 1024,
     "patch_size": 16,
     "in_chans": 3,
@@ -19,7 +19,7 @@
     "rel_pos_zero_init": "True",
     "window_size": 0,
     "global_attn_indexes": [2, 5, 8, 11],
-    "root_dir": "./results/test_PP_v1/",
+    "root_dir": "./results/test_Deconv_v1/",
     "data_path_MR": "./data/MR2CT/MR_x_2d/",
     "data_path_CT": "./data/MR2CT/CT_y_2d/",
     "batch_size": 4,
