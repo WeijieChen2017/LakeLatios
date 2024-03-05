@@ -215,6 +215,11 @@ class decoder_PyramidPooling_encoder_MedSAM(nn.Module):
                     print("init layernorm for", m)
                 nn.init.constant_(m.bias, 0)
                 nn.init.constant_(m.weight, 1.0)
+            elif isinstance(m, nn.InstanceNorm2d):
+                if self.verbose:
+                    print("init instancenorm for", m)
+                nn.init.constant_(m.bias, 0)
+                nn.init.constant_(m.weight, 1.0)
         print("init weights done")
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:

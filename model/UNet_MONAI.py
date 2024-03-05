@@ -1,9 +1,10 @@
+import torch
 from torch import nn
 from monai.networks.nets import UNet
 
 class UNet_MONAI(nn.Module):
     def __init__(self, 
-                spatial_dims=1024,
+                spatial_dims=2,
                 in_channels=3,
                 out_channels=1, 
                 channels=(16, 32, 64, 128, 256),
@@ -47,6 +48,40 @@ class UNet_MONAI(nn.Module):
             bias=self.bias,
             adn_ordering=self.adn_ordering
         )
+
+    def _init_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                if self.verbose:
+                    print("init conv2d for", m)
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                if self.verbose:
+                    print("init linear for", m)
+                nn.init.normal_(m.weight, std=0.01)
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.LayerNorm):
+                if self.verbose:
+                    print("init layernorm for", m)
+                nn.init.constant_(m.bias, 0)
+                nn.init.constant_(m.weight, 1.0)
+            elif isinstance(m, nn.InstanceNorm2d):
+                if self.verbose:
+                    print("init instancenorm for", m)
+                nn.init.constant_(m.bias, 0)
+                nn.init.constant_(m.weight, 1.0)
+        print("init weights done")
+
+    def load_from_checkpoint(self, checkpoint_path):
+        checkpoint = torch.load(checkpoint_path, map_location="cpu")
+        self.load_state_dict(checkpoint)
+        print(f"load from checkpoint {checkpoint_path}")
+    
+    def load_pretrain(self, pretrain_path):
+        pass
 
     def forward(self, x):
         x = self.model(x)

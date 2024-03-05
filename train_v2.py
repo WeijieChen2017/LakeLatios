@@ -1,11 +1,9 @@
 # here we load the pretrained model and finetune it
 
-
+import time
 import argparse
 
 if __name__ == "__main__":
-
-
 
     # run the parser to get the cfg path
     parser = argparse.ArgumentParser(description="Load configuration file path.")
@@ -44,6 +42,7 @@ if __name__ == "__main__":
     from model import decoder_UNETR_encoder_MedSAM
     from model import decoder_Deconv_encoder_MedSAM
     from model import decoder_PyramidPooling_encoder_MedSAM
+    from model import UNet_MONAI
     from dataset import PairedMRCTDataset_train
 
     # load the random seed
@@ -120,6 +119,22 @@ if __name__ == "__main__":
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
             BN=True if cfg["batch_size"] >= 8 else False,
+        )
+    elif cfg["model_name"] == "UNet_MONAI":
+        model = UNet_MONAI(
+            spatial_dims=cfg["spatial_dims"],
+            in_channels=cfg["in_channels"],
+            out_channels=cfg["out_channels"],
+            channels=cfg["channels"],
+            strides=cfg["strides"],
+            kernel_size=cfg["kernel_size"],
+            up_kernel_size=cfg["up_kernel_size"],
+            num_res_units=cfg["num_res_units"],
+            act=cfg["act"], 
+            norm=cfg["norm"],
+            dropout=cfg["dropout"],
+            bias=cfg["bias"],
+            adn_ordering=cfg["adn_ordering"],
         )
     else:
         raise ValueError("model_name not found !")
@@ -223,8 +238,9 @@ if __name__ == "__main__":
         # print the loss
         print(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}")
         # save the loss
+        time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         with open(root_dir+"loss.txt", "a") as f:
-            f.write(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}\n")
+            f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}\n")
         # save the model and optimizer
         if (epoch+1) % cfg["save_step"] == 0:
             torch.save(model.state_dict(), root_dir+f"model_{epoch+1}.pth")
@@ -249,8 +265,9 @@ if __name__ == "__main__":
                 val_loss = epoch_val_loss / len(val_loader)
 
             print(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}")
+            time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             with open(root_dir+"val_loss.txt", "a") as f:
-                f.write(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}\n")
+                f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}\n")
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 torch.save(model.state_dict(), root_dir+f"best_model.pth")
