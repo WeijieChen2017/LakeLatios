@@ -3,7 +3,8 @@ import torch.nn as nn
 
 default_BN = False
 # default_norm_layer = nn.LayerNorm
-default_norm_layer = nn.BatchNorm2d
+# default_norm_layer = nn.BatchNorm2d
+default_norm_layer = nn.InstanceNorm2d
 
 class AdjustedDWConv(nn.Module):
     def __init__(self, in_chans, out_chans, BN=default_BN):
