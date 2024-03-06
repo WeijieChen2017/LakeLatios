@@ -23,7 +23,7 @@ list_wo_timestamp = [
 list_w_timestamp = [
     "proj/UNetMONAI_pct5",
     "proj/UNetMONAI_pct20",
-    "proj/UNetMONAI_pct100",
+    # "proj/UNetMONAI_pct100",
 ]
 
 list_model = list_wo_timestamp + list_w_timestamp
