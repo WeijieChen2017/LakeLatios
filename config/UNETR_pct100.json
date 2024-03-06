@@ -29,8 +29,8 @@
     "eval_step": 1,
     "save_step": 1,
     "plot_step": 1,
-    "print_batch_step": 500,
-    "subset_fraction": 0.05,
+    "print_batch_step": 1000,
+    "subset_fraction": 1,
     "random_seed": 42,
     "conv_norm": "InstanceNorm2d"
 }
