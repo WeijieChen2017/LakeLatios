@@ -69,7 +69,7 @@ def plot_loss_from_file(filename, output_tag):
     for idx in range(n_model):
         label = list_model[idx].split("/")[-1]
         data = loss_model[idx, :vaild_epoch[idx]]
-        plt.plot(data, label=label, alpha=0.7)
+        plt.scatter(range(1, vaild_epoch[idx]+1), data, label=label, s=1, alpha=0.5)
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.title(output_tag + " Loss")
