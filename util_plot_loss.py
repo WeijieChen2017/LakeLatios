@@ -74,7 +74,7 @@ plt.figure(figsize=(10, 5), dpi=100)
 for idx in range(n_model):
     print(idx, vaild_epoch[idx])
     label = list_model[idx].split("/")[-1]
-    data = list_model[idx, :vaild_epoch[idx]]
+    data = loss_model[idx, :vaild_epoch[idx]]
     plt.plot(data, label=label)
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
