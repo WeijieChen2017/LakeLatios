@@ -21,8 +21,9 @@ list_wo_timestamp = [
 ]
 
 list_w_timestamp = [
-    "proj/UNetMONAI_pseudo_pct5",
-    "proj/UNetMONAI_pseudo_pct20",
+    "proj/UNetMONAI_pct5",
+    "proj/UNetMONAI_pct20",
+    "proj/UNetMONAI_pct100",
 ]
 
 # in loss.txt
