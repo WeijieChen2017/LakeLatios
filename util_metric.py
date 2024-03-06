@@ -66,16 +66,21 @@ worksheet.write(3, 0, "PP_pct5")
 worksheet.write(4, 0, "PP_pct20")
 worksheet.write(5, 0, "PP_pct100")
 
+def output_str(message):
+    print(message)
+    with open("metric_record.txt", "a") as f:
+        f.write(message + "\n")
+
 for idx_model in range(n_model):
     model_folder = prediction_folder[idx_model]
     prediction_list = sorted(glob.glob(os.path.join(model_folder, "*.nii.gz")))
 
-    print("Find {} prediction cases for model: {}".format(len(prediction_list), model_name[idx_model]))
+    output_str("Find {} prediction cases for model: {}".format(len(prediction_list), model_name[idx_model]))
 
     n_sample = len(prediction_list)
     metrics = np.zeros((n_sample, n_metric))
 
-    print("Start evaluating model: ", model_name[idx_model])
+    output_str("Start evaluating model: ", model_name[idx_model])
 
     for idx_sample in range(n_sample):
         
@@ -107,7 +112,7 @@ for idx_model in range(n_model):
         metrics[idx_sample, 5] = 2 * np.sum(mask_soft_ground_truth & mask_soft_prediction) / (np.sum(mask_soft_ground_truth) + np.sum(mask_soft_prediction))
         metrics[idx_sample, 6] = 2 * np.sum(mask_bone_ground_truth & mask_bone_prediction) / (np.sum(mask_bone_ground_truth) + np.sum(mask_bone_prediction))
 
-        print(f"[{idx_sample+1}/{n_sample}] RMSE: {metrics[idx_sample, 0]:.4f}, MAE: {metrics[idx_sample, 1]:.4f}, PSNR: {metrics[idx_sample, 2]:.4f}, SSIM: {metrics[idx_sample, 3]:.4f}, DSC_AIR: {metrics[idx_sample, 4]:.4f}, DSC_SOFT: {metrics[idx_sample, 5]:.4f}, DSC_BONE: {metrics[idx_sample, 6]:.4f}")
+        output_str(f"[{idx_sample+1}/{n_sample}] RMSE: {metrics[idx_sample, 0]:.4f}, MAE: {metrics[idx_sample, 1]:.4f}, PSNR: {metrics[idx_sample, 2]:.4f}, SSIM: {metrics[idx_sample, 3]:.4f}, DSC_AIR: {metrics[idx_sample, 4]:.4f}, DSC_SOFT: {metrics[idx_sample, 5]:.4f}, DSC_BONE: {metrics[idx_sample, 6]:.4f}")
 
     # save the metrics
     metrics_mean = np.mean(metrics, axis=0)
@@ -115,13 +120,13 @@ for idx_model in range(n_model):
     # the output should be mean +/- std with four decimal places
     for idx_metric in range(n_metric):
         worksheet.write(idx_model+1, idx_metric+1, "{:.4f} +/- {:.4f}".format(metrics_mean[idx_metric], metrics_std[idx_metric]))
-    print("Model: ", model_name[idx_model])
-    print("RMSE: {:.4f} +/- {:.4f}".format(metrics_mean[0], metrics_std[0]))
-    print("MAE: {:.4f} +/- {:.4f}".format(metrics_mean[1], metrics_std[1]))
-    print("PSNR: {:.4f} +/- {:.4f}".format(metrics_mean[2], metrics_std[2]))
-    print("SSIM: {:.4f} +/- {:.4f}".format(metrics_mean[3], metrics_std[3]))
-    print("DSC_AIR: {:.4f} +/- {:.4f}".format(metrics_mean[4], metrics_std[4]))
-    print("DSC_SOFT: {:.4f} +/- {:.4f}".format(metrics_mean[5], metrics_std[5]))
-    print("DSC_BONE: {:.4f} +/- {:.4f}".format(metrics_mean[6], metrics_std[6]))
+    output_str("Model: ", model_name[idx_model])
+    output_str("RMSE: {:.4f} +/- {:.4f}".format(metrics_mean[0], metrics_std[0]))
+    output_str("MAE: {:.4f} +/- {:.4f}".format(metrics_mean[1], metrics_std[1]))
+    output_str("PSNR: {:.4f} +/- {:.4f}".format(metrics_mean[2], metrics_std[2]))
+    output_str("SSIM: {:.4f} +/- {:.4f}".format(metrics_mean[3], metrics_std[3]))
+    output_str("DSC_AIR: {:.4f} +/- {:.4f}".format(metrics_mean[4], metrics_std[4]))
+    output_str("DSC_SOFT: {:.4f} +/- {:.4f}".format(metrics_mean[5], metrics_std[5]))
+    output_str("DSC_BONE: {:.4f} +/- {:.4f}".format(metrics_mean[6], metrics_std[6]))
 
 workbook.close()
