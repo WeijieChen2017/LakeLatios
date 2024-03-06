@@ -26,6 +26,8 @@ list_w_timestamp = [
     "proj/UNetMONAI_pct100",
 ]
 
+list_model = list_wo_timestamp + list_w_timestamp
+
 # in loss.txt
 # we need to extract the epoch and loss
 
@@ -68,8 +70,8 @@ for idx, folder in enumerate(list_w_timestamp):
 # plot the loss, label is the folder name
 plt.figure(figsize=(10, 5), dpi=100)
 for idx in range(n_model):
-    label = list_wo_timestamp[idx].split("/")[-1]
-    data = loss_wo_timestamp[idx, :vaild_epoch[idx]]
+    label = list_model[idx].split("/")[-1]
+    data = list_model[idx, :vaild_epoch[idx]]
     plt.plot(data, label=label)
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
