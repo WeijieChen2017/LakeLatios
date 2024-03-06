@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 
 list_wo_timestamp = [
     "proj/decoder_Deconv",
-    "proj/decoder_PP_pct100",
     "proj/decoder_PP_pct20",
+    "proj/decoder_PP_pct100",
     "proj/decoder_PyramidPooling",
     "proj/decoder_UNETR",
 ]
@@ -66,26 +66,28 @@ def plot_loss_from_file(filename, output_tag):
 
     list_interpolate = [0, 1, 2]
     # print all loss in list_interpolate
-    for idx_itpl in list_interpolate:
-        print(f"Loss for {list_model[idx_itpl]}: {loss_model[idx_itpl, :vaild_epoch[idx_itpl]]}")
+    # for idx_itpl in list_interpolate:
+    #     print(f"Loss for {list_model[idx_itpl]}: {loss_model[idx_itpl, :vaild_epoch[idx_itpl]]}")
     # given the valid epoch, we can interpolate the loss
     # if there is zero before the first valid epoch, we can interpolate the loss
-    # for idx_itpl in list_interpolate:
-    #     start_epoch = np.where(loss_model[idx_itpl, :] > 0)[0][0]
-    #     end_epoch = np.where(loss_model[idx_itpl, :] > 0)[0][1]
-    #     while len(np.where(loss_model[idx_itpl, end_epoch:] > 0)[0] > 0):
-    #         if end_epoch == start_epoch + 1:
-    #             start_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][0]
-    #             end_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][1]
-    #         else:
-    #             # we use quadratic interpolation between start_epoch and end_epoch
-    #             point_1 = (start_epoch, loss_model[idx_itpl, start_epoch])
-    #             point_2 = (end_epoch, loss_model[idx_itpl, end_epoch])
-    #             print(f"Interpolate {idx_itpl} from {start_epoch}[{loss_model[idx_itpl, start_epoch]}] to {end_epoch}[{loss_model[idx_itpl, end_epoch]}]")
-    #             for idx in range(start_epoch+1, end_epoch):
-    #                 loss_model[idx_itpl, idx] = np.interp(idx, [point_1[0], point_2[0]], [point_1[1], point_2[1]])
-    #             start_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][0]
-    #             end_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][1]
+    for idx_itpl in list_interpolate:
+        loss_model[idx_itpl, :0] = 0.1
+        start_epoch = np.where(loss_model[idx_itpl, :] > 0)[0][0]
+        end_epoch = np.where(loss_model[idx_itpl, :] > 0)[0][1]
+        print(f"Start epoch: {start_epoch}, end epoch: {end_epoch}")
+        while len(np.where(loss_model[idx_itpl, end_epoch:] > 0)[0] > 0):
+            if end_epoch == start_epoch + 1:
+                start_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][0]
+                end_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][1]
+            else:
+                # we use quadratic interpolation between start_epoch and end_epoch
+                point_1 = (start_epoch, loss_model[idx_itpl, start_epoch])
+                point_2 = (end_epoch, loss_model[idx_itpl, end_epoch])
+                print(f"Interpolate {idx_itpl} from {start_epoch}[{loss_model[idx_itpl, start_epoch]}] to {end_epoch}[{loss_model[idx_itpl, end_epoch]}]")
+                for idx in range(start_epoch+1, end_epoch):
+                    loss_model[idx_itpl, idx] = np.interp(idx, [point_1[0], point_2[0]], [point_1[1], point_2[1]])
+                start_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][0]
+                end_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][1]
 
     # plot the loss, label is the folder name
     plt.figure(figsize=(10, 5), dpi=100)
