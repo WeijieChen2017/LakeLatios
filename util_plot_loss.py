@@ -82,6 +82,7 @@ def plot_loss_from_file(filename, output_tag):
                 # we use quadratic interpolation between start_epoch and end_epoch
                 point_1 = (start_epoch, loss_model[idx_itpl, start_epoch])
                 point_2 = (end_epoch, loss_model[idx_itpl, end_epoch])
+                print(f"Interpolate {idx_itpl} from {start_epoch}[{loss_model[idx_itpl, start_epoch]}] to {end_epoch}[{loss_model[idx_itpl, end_epoch]}]")
                 for idx in range(start_epoch+1, end_epoch):
                     loss_model[idx_itpl, idx] = np.interp(idx, [point_1[0], point_2[0]], [point_1[1], point_2[1]])
                 start_epoch = end_epoch
