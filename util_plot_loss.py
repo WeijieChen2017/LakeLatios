@@ -73,7 +73,7 @@ def plot_loss_from_file(filename, output_tag):
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.title(output_tag + " Loss")
-    save_name = output_tag + "_loss_wo_timestamp.png"
+    save_name = "Loss_" + output_tag + "_loss_wo_timestamp.png"
     plt.legend()
     plt.yscale("log")
     plt.savefig(save_name)
