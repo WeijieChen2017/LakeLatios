@@ -72,6 +72,7 @@ print(f"vaild_epoch: {vaild_epoch}")
 # plot the loss, label is the folder name
 plt.figure(figsize=(10, 5), dpi=100)
 for idx in range(n_model):
+    print(idx, vaild_epoch[idx])
     label = list_model[idx].split("/")[-1]
     data = list_model[idx, :vaild_epoch[idx]]
     plt.plot(data, label=label)
