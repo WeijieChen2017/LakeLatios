@@ -32,7 +32,7 @@ list_w_timestamp = [
 n_wo_timestamp = len(list_wo_timestamp)
 max_epoch = 300
 loss_wo_timestamp = np.zeros((n_wo_timestamp, max_epoch))
-vaild_epoch = np.zeros(n_wo_timestamp)
+vaild_epoch = np.zeros(n_wo_timestamp, dtype=int)
 for idx, folder in enumerate(list_wo_timestamp):
     loss_file = folder + "/loss.txt"
     model_name = folder.split("/")[-1]
