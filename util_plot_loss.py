@@ -48,6 +48,7 @@ for idx, folder in enumerate(list_wo_timestamp):
             vaild_epoch[idx] = epoch
             print(f"Epoch {epoch}, loss: {loss}")
 
+print(vaild_epoch)
 
 # plot the loss, label is the folder name
 plt.figure(figsize=(10, 5), dpi=100)
