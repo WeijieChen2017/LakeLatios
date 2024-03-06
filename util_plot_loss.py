@@ -35,6 +35,8 @@ loss_wo_timestamp = np.zeros((n_wo_timestamp, max_epoch))
 vaild_epoch = np.zeros(n_wo_timestamp)
 for idx, folder in enumerate(list_wo_timestamp):
     loss_file = folder + "/loss.txt"
+    model_name = folder.split("/")[-1]
+    print(f"Loading {loss_file} for {model_name}")
     with open(loss_file, "r") as f:
         lines = f.readlines()
         for line in lines:
@@ -44,6 +46,7 @@ for idx, folder in enumerate(list_wo_timestamp):
             loss = float(loss.split(": ")[1])
             loss_wo_timestamp[idx, epoch-1] = loss
             vaild_epoch[idx] = epoch
+            print(f"Epoch {epoch}, loss: {loss}")
 
 
 # plot the loss, label is the folder name
