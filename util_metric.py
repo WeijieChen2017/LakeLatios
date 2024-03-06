@@ -115,5 +115,13 @@ for idx_model in range(n_model):
     # the output should be mean +/- std with four decimal places
     for idx_metric in range(n_metric):
         worksheet.write(idx_model+1, idx_metric+1, "{:.4f} +/- {:.4f}".format(metrics_mean[idx_metric], metrics_std[idx_metric]))
+    print("Model: ", model_name[idx_model])
+    print("RMSE: {:.4f} +/- {:.4f}".format(metrics_mean[0], metrics_std[0]))
+    print("MAE: {:.4f} +/- {:.4f}".format(metrics_mean[1], metrics_std[1]))
+    print("PSNR: {:.4f} +/- {:.4f}".format(metrics_mean[2], metrics_std[2]))
+    print("SSIM: {:.4f} +/- {:.4f}".format(metrics_mean[3], metrics_std[3]))
+    print("DSC_AIR: {:.4f} +/- {:.4f}".format(metrics_mean[4], metrics_std[4]))
+    print("DSC_SOFT: {:.4f} +/- {:.4f}".format(metrics_mean[5], metrics_std[5]))
+    print("DSC_BONE: {:.4f} +/- {:.4f}".format(metrics_mean[6], metrics_std[6]))
 
 workbook.close()
