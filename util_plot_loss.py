@@ -64,6 +64,31 @@ def plot_loss_from_file(filename, output_tag):
                 loss_model[n_wo_timestamp+idx, epoch-1] = loss
                 vaild_epoch[n_wo_timestamp+idx] = epoch
 
+    list_interpolate = [0, 1, 2]
+    # given the valid epoch, we can interpolate the loss
+    # if there is zero before the first valid epoch, we can interpolate the loss
+    for idx_itpl in list_interpolate:
+        start_epoch = 0
+        end_epoch = np.where(loss_model[idx_itpl, :] > 0)[0][0]
+        if end_epoch == 0:
+            end_epoch = 1
+        while end_epoch < vaild_epoch[idx_itpl]:
+            if end_epoch == start_epoch + 1:
+                start_epoch = end_epoch
+                end_epoch = np.where(loss_model[idx_itpl, start_epoch:] > 0)[0][0] + start_epoch
+                if end_epoch == start_epoch:
+                    end_epoch += 1
+            else:
+                # we use quadratic interpolation between start_epoch and end_epoch
+                point_1 = (start_epoch, loss_model[idx_itpl, start_epoch])
+                point_2 = (end_epoch, loss_model[idx_itpl, end_epoch])
+                for idx in range(start_epoch+1, end_epoch):
+                    loss_model[idx_itpl, idx] = np.interp(idx, [point_1[0], point_2[0]], [point_1[1], point_2[1]])
+                start_epoch = end_epoch
+                end_epoch = np.where(loss_model[idx_itpl, start_epoch:] > 0)[0][0] + start_epoch
+                if end_epoch == start_epoch:
+                    end_epoch += 1
+
     # plot the loss, label is the folder name
     plt.figure(figsize=(10, 5), dpi=100)
     for idx in range(n_model):
