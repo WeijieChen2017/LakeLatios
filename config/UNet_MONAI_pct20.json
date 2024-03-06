@@ -2,7 +2,7 @@
     "model_name": "UNet_MONAI",
     "pretrain_path": "None",
     "img_size": 1024,
-    "root_dir": "./proj/decoder_UNetMONAI/",
+    "root_dir": "./proj/decoder_UNetMONAI_pct20/",
     "data_path_MR": "./data/MR2CT/MR_x_2d/",
     "data_path_CT": "./data/MR2CT/CT_y_2d/",
     "batch_size": 16,
