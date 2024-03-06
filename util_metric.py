@@ -32,6 +32,7 @@ from skimage.metrics import structural_similarity as ssim
 
 ground_truth_folder = "data/MR2CT/nifty/CT"
 ground_truth_list = sorted(glob.glob(os.path.join(ground_truth_folder, "*.nii.gz")))
+print("Find {} ground truth cases.".format(len(ground_truth_list)))
 
 model_name = [
     "UNETR",
@@ -66,6 +67,8 @@ worksheet.write(5, 0, "PP_pct100")
 for idx_model in range(n_model):
     model_folder = prediction_folder[idx_model]
     prediction_list = sorted(glob.glob(os.path.join(model_folder, "*.nii.gz")))
+
+    print("Find {} prediction cases for model: {}".format(len(prediction_list), model_name[idx_model]))
 
     n_sample = len(prediction_list)
     n_metric = len(metric)
