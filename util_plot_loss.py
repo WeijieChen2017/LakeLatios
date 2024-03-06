@@ -93,7 +93,7 @@ def plot_loss_from_file(filename, output_tag):
                     start_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][0] + end_epoch
                     if start_epoch < vaild_epoch[idx_itpl]:
                         print(start_epoch)
-                        print(np.where(loss_model[idx_itpl, start_epoch:] > 0)
+                        print(np.where(loss_model[idx_itpl, start_epoch:] > 0))
                         end_epoch = np.where(loss_model[idx_itpl, start_epoch:] > 0)[0][1] + end_epoch
 
     # plot the loss, label is the folder name
