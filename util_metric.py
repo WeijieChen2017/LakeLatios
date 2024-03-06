@@ -29,6 +29,7 @@ import numpy as np
 import nibabel as nib
 import xlsxwriter
 from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio as psnr
 
 ground_truth_folder = "data/MR2CT/nifty/CT"
 ground_truth_list = sorted(glob.glob(os.path.join(ground_truth_folder, "*.nii.gz")))
@@ -92,7 +93,7 @@ for idx_model in range(n_model):
         # compute the metrics
         metrics[idx_sample, 0] = np.sqrt(np.mean((ground_truth - prediction) ** 2))
         metrics[idx_sample, 1] = np.mean(np.abs(ground_truth - prediction))
-        metrics[idx_sample, 2] = 10 * np.log10(1 / np.mean((ground_truth - prediction) ** 2))
+        metrics[idx_sample, 2] = psnr(ground_truth, prediction, data_range=4000)
         metrics[idx_sample, 3] = ssim(ground_truth, prediction, data_range=4000)
         
         mask_air_ground_truth = ground_truth < -500
