@@ -35,7 +35,7 @@ n_wo_timestamp = len(list_wo_timestamp)
 n_w_timestamp = len(list_w_timestamp)
 n_model = n_wo_timestamp + n_w_timestamp
 max_epoch = 300
-loss_wo_timestamp = np.zeros((n_model, max_epoch))
+loss_model = np.zeros((n_model, max_epoch))
 vaild_epoch = np.zeros(n_model, dtype=int)
 
 # each line in list_wo_timestamp is like Epoch 1/300, loss: 4.489071458006995e-07
@@ -72,9 +72,8 @@ print(f"vaild_epoch: {vaild_epoch}")
 # plot the loss, label is the folder name
 plt.figure(figsize=(10, 5), dpi=100)
 for idx in range(n_model):
-    print(idx, vaild_epoch[idx])
     label = list_model[idx].split("/")[-1]
-    data = list_model[idx, :vaild_epoch[idx]]
+    data = loss_model[idx, :vaild_epoch[idx]]
     plt.plot(data, label=label)
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
