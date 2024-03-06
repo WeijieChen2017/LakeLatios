@@ -75,7 +75,7 @@ def plot_loss_from_file(filename, output_tag):
         start_epoch = np.where(loss_model[idx_itpl, :] > 0)[0][0]
         end_epoch = np.where(loss_model[idx_itpl, :] > 0)[0][1]
         print(f"Start epoch: {start_epoch}, end epoch: {end_epoch}")
-        while len(np.where(loss_model[idx_itpl, end_epoch:] > 0)[0] > 0):
+        while len(np.where(loss_model[idx_itpl, end_epoch:] > 0)[0] > 0) and end_epoch < vaild_epoch[idx_itpl]:
             if end_epoch == start_epoch + 1:
                 start_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][0] + end_epoch
                 end_epoch = np.where(loss_model[idx_itpl, start_epoch:] > 0)[0][1] + end_epoch
