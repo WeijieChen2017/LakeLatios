@@ -79,7 +79,7 @@ def plot_loss_from_file(filename, output_tag):
             while len(np.where(loss_model[idx_itpl, end_epoch:] > 0)[0] > 0) and start_epoch < vaild_epoch[idx_itpl] and end_epoch < vaild_epoch[idx_itpl]:
                 if end_epoch == start_epoch + 1:
                     start_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][0] + end_epoch
-                    if start_epoch < vaild_epoch[idx_itpl]:
+                    if start_epoch < vaild_epoch[idx_itpl] and len(np.where(loss_model[idx_itpl, start_epoch:] > 0)[0]) > 1:
                         end_epoch = np.where(loss_model[idx_itpl, start_epoch:] > 0)[0][1] + end_epoch
                     # print(np.where(loss_model[idx_itpl, end_epoch+1:] > 0))
                     print(f"Skip {idx_itpl} from {start_epoch} to {end_epoch}")
@@ -91,9 +91,7 @@ def plot_loss_from_file(filename, output_tag):
                     for idx in range(start_epoch+1, end_epoch):
                         loss_model[idx_itpl, idx] = np.interp(idx, [point_1[0], point_2[0]], [point_1[1], point_2[1]])
                     start_epoch = np.where(loss_model[idx_itpl, end_epoch:] > 0)[0][0] + end_epoch
-                    if start_epoch < vaild_epoch[idx_itpl]:
-                        print(start_epoch)
-                        print(np.where(loss_model[idx_itpl, start_epoch:] > 0))
+                    if start_epoch < vaild_epoch[idx_itpl] and len(np.where(loss_model[idx_itpl, start_epoch:] > 0)[0]) > 1:
                         end_epoch = np.where(loss_model[idx_itpl, start_epoch:] > 0)[0][1] + end_epoch
 
     # plot the loss, label is the folder name
