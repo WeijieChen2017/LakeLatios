@@ -1,6 +1,6 @@
 # load all nifty in "./data/nifty/CT/"
-save_folder = "./results/test_Deconv_v1_nifty/"
-pred_folder = "./results/test_Deconv_v1/"
+save_folder = "./results/nifiti_test_PP_pct20_v1/"
+pred_folder = "./results/test_PP_pct20_v1/"
 
 import numpy as np
 import os
