@@ -1,10 +1,10 @@
-# train_1 -> GPU:6
-# train_2 -> GPU:3
-# train_3 -> GPU:7
+# train_1 -> GPU:6 killed
+# train_2 -> GPU:3 killed
+# train_3 -> GPU:7 killed
 
 # Mar 5 2:42 PM
-# eval_1 -> GPU:2
-# eval_2 -> GPU:6
+# eval_1 -> GPU:2 killed
+# eval_2 -> GPU:6 killed
 # eval_3 -> GPU:7
 
 # load from checkpoint ./proj/decoder_UNETR/best_model.pth
@@ -29,3 +29,5 @@
 
 # eval_31 -> GPU:7
 # eval_32 -> GPU:7
+# UNETR_pct20 -> GPU:0
+# UNETR_pct100 -> GPU:2
