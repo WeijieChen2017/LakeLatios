@@ -67,6 +67,8 @@ for idx, folder in enumerate(list_w_timestamp):
             loss_wo_timestamp[n_wo_timestamp+idx, epoch-1] = loss
             vaild_epoch[n_wo_timestamp+idx] = epoch
 
+print(f"vaild_epoch: {vaild_epoch}")
+
 # plot the loss, label is the folder name
 plt.figure(figsize=(10, 5), dpi=100)
 for idx in range(n_model):
