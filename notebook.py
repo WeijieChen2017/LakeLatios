@@ -27,6 +27,7 @@
 # Start testing on 2233 samples.
 # Test Loss: 36.82605276931957
 
+# eval_30 -> GPU:6
 # eval_31 -> GPU:7
 # eval_32 -> GPU:7
 # UNETR_pct20 -> GPU:0
