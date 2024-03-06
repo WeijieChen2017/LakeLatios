@@ -79,6 +79,7 @@ def plot_loss_from_file(filename, output_tag):
             if end_epoch == start_epoch + 1:
                 start_epoch = np.where(loss_model[idx_itpl, end_epoch+1:] > 0)[0][0]
                 end_epoch = np.where(loss_model[idx_itpl, end_epoch+1:] > 0)[0][1]
+                print(f"Skip {idx_itpl} from {start_epoch} to {end_epoch}")
             else:
                 # we use quadratic interpolation between start_epoch and end_epoch
                 point_1 = (start_epoch, loss_model[idx_itpl, start_epoch])
