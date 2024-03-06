@@ -11,7 +11,7 @@ prediction_folder = [
 ]
 
 metric = [
-    "RMSE"
+    "RMSE",
     "MAE",
     "PSNR",
     "SSIM",
@@ -42,6 +42,7 @@ model_name = [
     "PP_pct100",
 ]
 n_model = len(model_name)
+n_metric = len(metric)
 
 # create a workbook and add a worksheet
 workbook = xlsxwriter.Workbook(savename)
@@ -71,7 +72,6 @@ for idx_model in range(n_model):
     print("Find {} prediction cases for model: {}".format(len(prediction_list), model_name[idx_model]))
 
     n_sample = len(prediction_list)
-    n_metric = len(metric)
     metrics = np.zeros((n_sample, n_metric))
 
     print("Start evaluating model: ", model_name[idx_model])
