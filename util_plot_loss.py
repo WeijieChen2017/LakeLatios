@@ -49,7 +49,7 @@ for idx, folder in enumerate(list_wo_timestamp):
             # ValueError: could not convert string to float: 'loss: 7.096514131411594e-06\n'
             epoch = int(epoch.split(" ")[1].split("/")[0])
             loss = float(loss.split(": ")[1])
-            loss_wo_timestamp[idx, epoch-1] = loss
+            loss_model[idx, epoch-1] = loss
             vaild_epoch[idx] = epoch
 
 # each line in list_w_timestamp is like %2024-03-05 22:15:29% -> Epoch 1/300, loss: 0.0001564910279885503
@@ -64,7 +64,7 @@ for idx, folder in enumerate(list_w_timestamp):
             epoch = int(epoch.split(">")[1].split("/")[0].split("Epoch ")[1])
             # ValueError: could not convert string to float: 'loss: 7.096514131411594e-06\n'
             loss = float(loss.split(": ")[1])
-            loss_wo_timestamp[n_wo_timestamp+idx, epoch-1] = loss
+            loss_model[n_wo_timestamp+idx, epoch-1] = loss
             vaild_epoch[n_wo_timestamp+idx] = epoch
 
 print(f"vaild_epoch: {vaild_epoch}")
@@ -72,8 +72,9 @@ print(f"vaild_epoch: {vaild_epoch}")
 # plot the loss, label is the folder name
 plt.figure(figsize=(10, 5), dpi=100)
 for idx in range(n_model):
+    print(idx, vaild_epoch[idx])
     label = list_model[idx].split("/")[-1]
-    data = loss_model[idx, :vaild_epoch[idx]]
+    data = list_model[idx, :vaild_epoch[idx]]
     plt.plot(data, label=label)
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
