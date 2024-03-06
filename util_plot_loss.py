@@ -39,8 +39,9 @@ for idx, folder in enumerate(list_wo_timestamp):
         lines = f.readlines()
         for line in lines:
             epoch, loss = line.split(", ")
+            # ValueError: could not convert string to float: 'loss: 7.096514131411594e-06\n'
             epoch = int(epoch.split(" ")[1].split("/")[0])
-            loss = float(loss)
+            loss = float(loss.split(": ")[1])
             loss_wo_timestamp[idx, epoch-1] = loss
             vaild_epoch[idx] = epoch
 
