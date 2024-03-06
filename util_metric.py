@@ -30,7 +30,7 @@ import nibabel as nib
 import xlsxwriter
 from skimage.metrics import structural_similarity as ssim
 
-ground_truth_folder = "/data/MR2CT/nifty/CT"
+ground_truth_folder = "data/MR2CT/nifty/CT"
 ground_truth_list = sorted(glob.glob(os.path.join(ground_truth_folder, "*.nii.gz")))
 
 model_name = [
