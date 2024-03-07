@@ -169,7 +169,7 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
 
         # create the .hdf5 file and compress the MedSAM_embedding dict
         
-        with h5py.File(os.path.join(case_path, "MedSAM_embedding.hdf5"), "w") as f:
+        with h5py.File(os.path.join(case_path, "MedSAM_embedding_gzip.hdf5"), "w") as f:
             for key in MedSAM_embedding.keys():
                 grp = f.create_group(key)
                 grp.create_dataset("mr_emb_head_3", data=MedSAM_embedding[key]["mr_emb"]["head_3"], compression="gzip", compression_opts=4)
@@ -179,6 +179,17 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
                 grp.create_dataset("mr_emb_head_neck", data=MedSAM_embedding[key]["mr_emb"]["head_neck"], compression="gzip", compression_opts=4)
                 grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"], compression="gzip", compression_opts=4)
                 grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="gzip", compression_opts=4)
+        
+        with h5py.File(os.path.join(case_path, "MedSAM_embedding_lzf.hdf5"), "w") as f:
+            for key in MedSAM_embedding.keys():
+                grp = f.create_group(key)
+                grp.create_dataset("mr_emb_head_3", data=MedSAM_embedding[key]["mr_emb"]["head_3"], compression="LZF", compression_opts=4)
+                grp.create_dataset("mr_emb_head_6", data=MedSAM_embedding[key]["mr_emb"]["head_6"], compression="LZF", compression_opts=4)
+                grp.create_dataset("mr_emb_head_9", data=MedSAM_embedding[key]["mr_emb"]["head_9"], compression="LZF", compression_opts=4)
+                grp.create_dataset("mr_emb_head_12", data=MedSAM_embedding[key]["mr_emb"]["head_12"], compression="LZF", compression_opts=4)
+                grp.create_dataset("mr_emb_head_neck", data=MedSAM_embedding[key]["mr_emb"]["head_neck"], compression="LZF", compression_opts=4)
+                grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"], compression="LZF", compression_opts=4)
+                grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="LZF", compression_opts=4)
         
         print(f"[{data_folder}][{idx_case+1}/{n_cases}] Saved MedSAM_embedding.hdf5")
                 
