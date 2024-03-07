@@ -32,3 +32,8 @@
 # eval_32 -> GPU:7
 # UNETR_pct20 -> GPU:0
 # UNETR_pct100 -> GPU:2
+
+# Mar 7
+# train_GPU_5 killed
+# train_GPU_1 -> GPU:1
+# data_embed -> GPU:5
