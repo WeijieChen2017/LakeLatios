@@ -100,22 +100,22 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
     n_cases = len(case_list)
 
     for idx_case, case_path in enumerate(case_list):
-        print(f"[{idx_case+1}/{n_cases}] Processing {case_path}")
+        print(f"[{data_folder}][{idx_case+1}/{n_cases}] Processing {case_path}")
         mr_file = nib.load(os.path.join(case_path, "mr.nii.gz"))
         ct_file = nib.load(os.path.join(case_path, "ct.nii.gz"))
         mr_data = mr_file.get_fdata()
         ct_data = ct_file.get_fdata()
         res_x, res_y, res_z = mr_data.shape
-        print(f"[{idx_case+1}/{n_cases}] MR shape: {mr_data.shape}, CT shape: {ct_data.shape}")
+        print(f"[{data_folder}][{idx_case+1}/{n_cases}] MR shape: {mr_data.shape}, CT shape: {ct_data.shape}")
 
         # normalise mr and ct to [0, 1]
         mr_data = np.clip(mr_data, 0, 3000) / 3000
         ct_data = np.clip(ct_data+1000, 0, 4000) / 4000
-        print(f"[{idx_case+1}/{n_cases}] Normalised MR and CT")
+        print(f"[{data_folder}][{idx_case+1}/{n_cases}] Normalised MR and CT")
 
         # pad mr_data
         mr_data = np.pad(mr_data, ((0, 0), (0, 0), (1, 1)), mode="constant")
-        print(f"[{idx_case+1}/{n_cases}] Padded MR")
+        print(f"[{data_folder}][{idx_case+1}/{n_cases}] Padded MR")
 
         # create the MedSAM_embedding dict
         MedSAM_embedding = {}
@@ -125,7 +125,7 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
             mr_slice = mr_data[:, :, idx_z-1:idx_z+2] # (256, 256, 3)
             mr_slice = torch.from_numpy(mr_slice).float().unsqueeze(0) # (1, 256, 256, 3)
             mr_slice = mr_slice.permute(0, 3, 1, 2).to(device) # (1, 3, 256, 256)
-            print(f"[{idx_case+1}/{n_cases}][{idx_z}/{res_z}] MR slice shape: {mr_slice.shape}")
+            print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] MR slice shape: {mr_slice.shape}")
 
             # input the MR into the MedSAM model encoder, and get the output
             with torch.no_grad():
@@ -140,7 +140,7 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
                 head_9 = head_9.squeeze(0).permute(2, 3, 0, 1).cpu().numpy()
                 head_12 = head_12.squeeze(0).permute(2, 3, 0, 1).cpu().numpy()
                 head_neck = head_neck.squeeze(0).permute(2, 3, 0, 1).cpu().numpy()
-                print(f"[{idx_case+1}/{n_cases}][{idx_z}/{res_z}] MR embedding shape: {head_3.shape}, {head_6.shape}, {head_9.shape}, {head_12.shape}, {head_neck.shape}")
+                print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] MR embedding shape: {head_3.shape}, {head_6.shape}, {head_9.shape}, {head_12.shape}, {head_neck.shape}")
 
             # save the results into a dict named "MedSAM_embedding"
             ct_slice = ct_data[:, :, idx_z-1:idx_z] # (256, 256, 1)
@@ -158,7 +158,7 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
                 "mr": mr_slice,
                 "ct": ct_slice,
             }
-            print(f"[{idx_case+1}/{n_cases}][{idx_z}/{res_z}] Saved MR and CT")
+            print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] Saved MR and CT")
 
         # create the .hdf5 file and save it
         with h5py.File(os.path.join(case_path, "MedSAM_embedding.hdf5"), "w") as f:
@@ -172,6 +172,6 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
                 grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"])
                 grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"])
         
-        print(f"[{idx_case+1}/{n_cases}] Saved MedSAM_embedding.hdf5")
+        print(f"[{data_folder}][{idx_case+1}/{n_cases}] Saved MedSAM_embedding.hdf5")
                 
 
