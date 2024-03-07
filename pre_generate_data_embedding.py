@@ -126,6 +126,8 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
             mr_slice = mr_data[:, :, idx_z-1:idx_z+2] # (256, 256, 3)
             mr_slice = torch.from_numpy(mr_slice).float().unsqueeze(0) # (1, 256, 256, 3)
             mr_slice = mr_slice.permute(0, 3, 1, 2).to(device) # (1, 3, 256, 256)
+            # interpolate the MR slice to (1, 3, 1024, 1024)
+            mr_slice = F.interpolate(mr_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
             print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] MR slice shape: {mr_slice.shape}")
 
             # input the MR into the MedSAM model encoder, and get the output
@@ -147,7 +149,11 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
             ct_slice = ct_data[:, :, idx_z-1:idx_z] # (256, 256, 1)
             ct_slice = np.squeeze(ct_slice) # (256, 256)
             ct_slice = np.expand_dims(ct_slice, axis=0) # (1, 256, 256)
-            mr_slice = mr_slice.detach().cpu().numpy() # (1, 3, 256, 256)
+            # interpolate the CT slice to (1, 1024, 1024)
+            ct_slice = torch.from_numpy(ct_slice).float().unsqueeze(0)
+            ct_slice = F.interpolate(ct_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
+            ct_slice = ct_slice.detach().cpu().numpy() # (1, 1024, 1024)
+            mr_slice = mr_slice.detach().cpu().numpy() # (1, 3, 1024, 1024)
             MedSAM_embedding[str(idx_z)] = {
                 "mr_emb":{
                     "head_3": head_3,
