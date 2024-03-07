@@ -175,6 +175,6 @@ class MedSAM_encoder(nn.Module):
         z9 = z9.permute(0, 3, 1, 2) # B, 768, 64, 64
         z12 = z12.permute(0, 3, 1, 2) # B, 768, 64, 64
         if self.verbose:
-            print("after permutation, z3.shape", z3.shape, "z6.shape", z6.shape, "z9.shape", z9.shape, "z12.shape", z12.shape, "zneck.shape", zneck.shape)
+            print("after permutation, z3.shape", z3.shape, "z6.shape", z6.shape, "z9.shape", z9.shape, "z12.shape", z12.shape, "x_neck.shape", x_neck.shape)
 
         return z3, z6, z9, z12, x_neck
