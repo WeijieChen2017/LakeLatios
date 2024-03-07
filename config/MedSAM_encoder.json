@@ -1,0 +1,21 @@
+{
+    "model_name": "MedSAM_encoder",
+    "pretrain_path": "pretrain/medsam_vit_b.pth",
+    "img_size": 1024,
+    "patch_size": 16,
+    "in_chans": 3,
+    "out_chans": 1,
+    "out_chans_pretrain": 256,
+    "embed_dim": 768,
+    "depth": 12,
+    "num_heads": 12,
+    "mlp_ratio": 4.0,
+    "qkv_bias": "True",
+    "norm_layer": "nn.LayerNorm",
+    "act_layer": "nn.GELU",
+    "use_abs_pos": "True",
+    "use_rel_pos": "False",
+    "rel_pos_zero_init": "True",
+    "window_size": 0,
+    "global_attn_indexes": [2, 5, 8, 11]
+}
