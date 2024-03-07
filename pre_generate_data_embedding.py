@@ -167,17 +167,18 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
             }
             print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] Saved MR and CT")
 
-        # create the .hdf5 file and save it
+        # create the .hdf5 file and compress the MedSAM_embedding dict
+        
         with h5py.File(os.path.join(case_path, "MedSAM_embedding.hdf5"), "w") as f:
             for key in MedSAM_embedding.keys():
                 grp = f.create_group(key)
-                grp.create_dataset("mr_emb_head_3", data=MedSAM_embedding[key]["mr_emb"]["head_3"])
-                grp.create_dataset("mr_emb_head_6", data=MedSAM_embedding[key]["mr_emb"]["head_6"])
-                grp.create_dataset("mr_emb_head_9", data=MedSAM_embedding[key]["mr_emb"]["head_9"])
-                grp.create_dataset("mr_emb_head_12", data=MedSAM_embedding[key]["mr_emb"]["head_12"])
-                grp.create_dataset("mr_emb_head_neck", data=MedSAM_embedding[key]["mr_emb"]["head_neck"])
-                grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"])
-                grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"])
+                grp.create_dataset("mr_emb_head_3", data=MedSAM_embedding[key]["mr_emb"]["head_3"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr_emb_head_6", data=MedSAM_embedding[key]["mr_emb"]["head_6"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr_emb_head_9", data=MedSAM_embedding[key]["mr_emb"]["head_9"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr_emb_head_12", data=MedSAM_embedding[key]["mr_emb"]["head_12"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr_emb_head_neck", data=MedSAM_embedding[key]["mr_emb"]["head_neck"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"], compression="gzip", compression_opts=4)
+                grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="gzip", compression_opts=4)
         
         print(f"[{data_folder}][{idx_case+1}/{n_cases}] Saved MedSAM_embedding.hdf5")
                 
