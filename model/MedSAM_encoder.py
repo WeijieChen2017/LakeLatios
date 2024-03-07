@@ -4,9 +4,6 @@ import torch.nn.functional as F
 
 from typing import Optional, Tuple, Type
 from .image_encoder import PatchEmbed, Block, LayerNorm2d
-from .conv_modules import AdjustedYellowBlock as yellow_block
-from .conv_modules import AdjustedBlueBlock as blue_block
-from .conv_modules import AdjustedGreenBlock as green_block
 
 # x.shape torch.Size([2, 3, 1024, 1024])
 # after patch_embed x.shape torch.Size([2, 64, 64, 768])
@@ -147,10 +144,6 @@ class MedSAM_encoder(nn.Module):
 
         if self.verbose:
             print("x.shape", x.shape)
-
-        zx = self.decoder_x(x)
-        if self.verbose:
-            print("zx.shape", zx.shape)
 
         x = self.patch_embed(x)
         if self.verbose:
