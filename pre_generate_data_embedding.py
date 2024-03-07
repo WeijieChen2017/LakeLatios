@@ -138,11 +138,11 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
                 # head_9: (1, 256, 256, 768)
                 # head_12: (1, 256, 256, 768)
                 # head_neck: (1, 256, 256, 256)
-                head_3 = head_3.squeeze(0).permute(2, 3, 0, 1).cpu().numpy()
-                head_6 = head_6.squeeze(0).permute(2, 3, 0, 1).cpu().numpy()
-                head_9 = head_9.squeeze(0).permute(2, 3, 0, 1).cpu().numpy()
-                head_12 = head_12.squeeze(0).permute(2, 3, 0, 1).cpu().numpy()
-                head_neck = head_neck.squeeze(0).permute(2, 3, 0, 1).cpu().numpy()
+                head_3 = head_3.permute(0, 3, 1, 2).detach().cpu().numpy()
+                head_6 = head_6.permute(0, 3, 1, 2).detach().cpu().numpy()
+                head_9 = head_9.permute(0, 3, 1, 2).detach().cpu().numpy()
+                head_12 = head_12.permute(0, 3, 1, 2).detach().cpu().numpy()
+                head_neck = head_neck.permute(0, 3, 1, 2).detach().cpu().numpy()
                 print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] MR embedding shape: {head_3.shape}, {head_6.shape}, {head_9.shape}, {head_12.shape}, {head_neck.shape}")
 
             # save the results into a dict named "MedSAM_embedding"
