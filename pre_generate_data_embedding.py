@@ -100,18 +100,24 @@ data_folder_list = [
 ]
 
 # take the user input to determine which data folder to process
-input_user = input("Which data folder to process? (1: MIMRTL_Brain, 2: SynthRad_Brain, 3: SynthRad_Pelvis) ")
+input_user = input("Which data folder to process?\n1: MIMRTL_Brain 33-218\n2: MIMRTL_Brain 219-404\n3: MIMRTL_Brain 405-590\n4: MIMRTL_Brain 591-777\n5: SynthRad_Brain 23-181\n6: SynthRad_Pelvis 0-All\n")
 if input_user == "1":
     data_folder_to_process, start_case_num, end_case_num = data_folder_list[0]
 elif input_user == "2":
     data_folder_to_process, start_case_num, end_case_num = data_folder_list[1]
 elif input_user == "3":
     data_folder_to_process, start_case_num, end_case_num = data_folder_list[2]
+elif input_user == "4":
+    data_folder_to_process, start_case_num, end_case_num = data_folder_list[3]
+elif input_user == "5":
+    data_folder_to_process, start_case_num, end_case_num = data_folder_list[4]
+elif input_user == "6":
+    data_folder_to_process, start_case_num, end_case_num = data_folder_list[5]
 else:
-    print("Invalid input. Please run the script again.")
+    print("Invalid input, exit.")
     exit()
 
-for data_folder in data_folder_to_process:
+for data_folder in [data_folder_to_process]:
     print(f"Processing {data_folder}")
     folder_name = data_folder.split("/")[-1]
     case_list = sorted(glob.glob(os.path.join(data_folder, "*/")))
