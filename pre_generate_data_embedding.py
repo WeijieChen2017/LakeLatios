@@ -138,6 +138,11 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
                 # head_9: (1, 768, 64, 64)
                 # head_12: (1, 768, 64, 64)
                 # head_neck: (1, 256, 64, 64)
+                head_3 = head_3.detach().cpu().numpy()
+                head_6 = head_6.detach().cpu().numpy()
+                head_9 = head_9.detach().cpu().numpy()
+                head_12 = head_12.detach().cpu().numpy()
+                head_neck = head_neck.detach().cpu().numpy()
 
                 # head_3 = head_3.permute(0, 3, 1, 2).detach().cpu().numpy()
                 # head_6 = head_6.permute(0, 3, 1, 2).detach().cpu().numpy()
