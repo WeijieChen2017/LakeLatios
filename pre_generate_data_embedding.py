@@ -91,46 +91,51 @@ print("Model loaded from ", cfg["pretrain_path"])
 
 
 data_folder_list = [
-    "data/MIMRTL_Brain",
-    "data/SynthRad_Brain",
-    "data/SynthRad_Pelvis",
+    ["data/MIMRTL_Brain", 33, 218],
+    ["data/MIMRTL_Brain", 219, 404],
+    ["data/MIMRTL_Brain", 405, 590],
+    ["data/MIMRTL_Brain", 591, 777],
+    ["data/SynthRad_Brain", 23, 181],
+    ["data/SynthRad_Pelvis", 0, -1],
 ]
 
 # take the user input to determine which data folder to process
-input_user = input("Which data folder to process? (1: MIMRTL_Brain, 2: SynthRad_Brain, 3: SynthRad_Pelvis, 4: All) ")
+input_user = input("Which data folder to process? (1: MIMRTL_Brain, 2: SynthRad_Brain, 3: SynthRad_Pelvis) ")
 if input_user == "1":
-    data_folder_to_process = [data_folder_list[0]]
+    data_folder_to_process, start_case_num, end_case_num = data_folder_list[0]
 elif input_user == "2":
-    data_folder_to_process = [data_folder_list[1]]
+    data_folder_to_process, start_case_num, end_case_num = data_folder_list[1]
 elif input_user == "3":
-    data_folder_to_process = [data_folder_list[2]]
-elif input_user == "4":
-    data_folder_to_process = data_folder_list
+    data_folder_to_process, start_case_num, end_case_num = data_folder_list[2]
+else:
+    print("Invalid input. Please run the script again.")
+    exit()
 
 for data_folder in data_folder_to_process:
     print(f"Processing {data_folder}")
     folder_name = data_folder.split("/")[-1]
     case_list = sorted(glob.glob(os.path.join(data_folder, "*/")))
+    case_list = case_list[start_case_num:end_case_num]
     n_cases = len(case_list)
 
     for idx_case, case_path in enumerate(case_list):
         start_time = time.time()
-        print(f"[{data_folder}][{idx_case+1}/{n_cases}] Processing {case_path}")
+        print(f"[{data_folder}][{idx_case+1+start_case_num}/{n_cases+start_case_num}] Processing {case_path}")
         mr_file = nib.load(os.path.join(case_path, "mr.nii.gz"))
         ct_file = nib.load(os.path.join(case_path, "ct.nii.gz"))
         mr_data = mr_file.get_fdata()
         ct_data = ct_file.get_fdata()
         res_x, res_y, res_z = mr_data.shape
-        print(f"[{data_folder}][{idx_case+1}/{n_cases}] MR shape: {mr_data.shape}, CT shape: {ct_data.shape}")
+        print(f"[{data_folder}][{idx_case+1+start_case_num}/{n_cases+start_case_num}] MR shape: {mr_data.shape}, CT shape: {ct_data.shape}")
 
         # normalise mr and ct to [0, 1]
         mr_data = np.clip(mr_data, 0, 3000) / 3000
         ct_data = np.clip(ct_data+1000, 0, 4000) / 4000
-        print(f"[{data_folder}][{idx_case+1}/{n_cases}] Normalised MR and CT")
+        print(f"[{data_folder}][{idx_case+1+start_case_num}/{n_cases+start_case_num}] Normalised MR and CT")
 
         # pad mr_data
         mr_data = np.pad(mr_data, ((0, 0), (0, 0), (1, 1)), mode="constant")
-        print(f"[{data_folder}][{idx_case+1}/{n_cases}] Padded MR")
+        print(f"[{data_folder}][{idx_case+1+start_case_num}/{n_cases+start_case_num}] Padded MR")
 
         # create the MedSAM_embedding dict
         MedSAM_embedding = {}
@@ -142,7 +147,7 @@ for data_folder in data_folder_to_process:
             mr_slice = mr_slice.permute(0, 3, 1, 2).to(device) # (1, 3, 256, 256)
             # interpolate the MR slice to (1, 3, 1024, 1024)
             mr_slice = F.interpolate(mr_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
-            print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] MR slice shape: {mr_slice.shape}")
+            print(f"[{data_folder}][{idx_case+1+start_case_num}/{n_cases+start_case_num}][{idx_z}/{res_z}] MR slice shape: {mr_slice.shape}")
 
             # input the MR into the MedSAM model encoder, and get the output
             with torch.no_grad():
@@ -163,7 +168,7 @@ for data_folder in data_folder_to_process:
                 # head_9 = head_9.permute(0, 3, 1, 2).detach().cpu().numpy()
                 # head_12 = head_12.permute(0, 3, 1, 2).detach().cpu().numpy()
                 # head_neck = head_neck.permute(0, 3, 1, 2).detach().cpu().numpy()
-                print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] MR embedding shape: {head_3.shape}, {head_6.shape}, {head_9.shape}, {head_12.shape}, {head_neck.shape}")
+                print(f"[{data_folder}][{idx_case+1+start_case_num}/{n_cases+start_case_num}][{idx_z}/{res_z}] MR embedding shape: {head_3.shape}, {head_6.shape}, {head_9.shape}, {head_12.shape}, {head_neck.shape}")
 
             # save the results into a dict named "MedSAM_embedding"
             ct_slice = ct_data[:, :, idx_z-1:idx_z] # (256, 256, 1)
@@ -185,7 +190,7 @@ for data_folder in data_folder_to_process:
                 "mr": mr_slice,
                 "ct": ct_slice,
             }
-            print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] Saved MR and CT")
+            print(f"[{data_folder}][{idx_case+1+start_case_num}/{n_cases+start_case_num}][{idx_z}/{res_z}] Saved MR and CT")
 
         # create the .hdf5 file and compress the MedSAM_embedding dict
         
@@ -213,11 +218,11 @@ for data_folder in data_folder_to_process:
         #         grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"], compression="lzf")
         #         grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="lzf")
         
-        print(f"[{data_folder}][{idx_case+1}/{n_cases}] Saved MedSAM_embedding.hdf5")
+        print(f"[{data_folder}][{idx_case+1+start_case_num}/{n_cases+start_case_num}] Saved MedSAM_embedding.hdf5")
         end_time = time.time()
         # write to txt file and record the time in seconds
         with open(os.path.join("./"+folder_name+"_time.txt"), "a") as f:
-            f.write(f"Case {idx_case+1}/{n_cases}: {end_time-start_time:.4f} seconds\n")
+            f.write(f"Case {idx_case+1+start_case_num}/{n_cases+start_case_num}: {end_time-start_time:.4f} seconds\n")
                 
 
 # [data/MIMRTL_Brain][1/777][121/124] MR slice shape: torch.Size([1, 3, 1024, 1024])

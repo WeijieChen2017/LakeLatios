@@ -61,4 +61,11 @@
 # GPU_00 -> GPU:0
 # GPU_10 -> GPU:1
 # GPU_20 -> GPU:2
+# GPU_30 -> GPU:3
+# GPU_40 -> GPU:4
+# GPU_50 -> GPU:5
+# GPU_60 -> GPU:6
+# GPU_70 -> GPU:7
+# GPU_71 -> GPU:7
+
 
