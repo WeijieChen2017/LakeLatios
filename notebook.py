@@ -59,4 +59,6 @@
 # Mar 8:
 # GPU_playground -> GPU:0
 # GPU_00 -> GPU:0
+# GPU_10 -> GPU:1
+# GPU_20 -> GPU:2
 
