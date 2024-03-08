@@ -41,6 +41,7 @@ if __name__ == "__main__":
 
     from model import decoder_UNETR
     from model import decoder_Deconv
+    from model import decoder_PP
 
     # load the random seed
     random_seed = cfg["random_seed"]
@@ -63,6 +64,12 @@ if __name__ == "__main__":
         )
     elif cfg["model_name"] == "decoder_Deconv":
         model = decoder_Deconv(
+            img_size = cfg["img_size"],
+            out_chans = cfg["out_chans"],
+            verbose = True if cfg["verbose"] == "True" else False,
+        )
+    elif cfg["model_name"] == "decoder_PP":
+        model = decoder_PP(
             img_size = cfg["img_size"],
             out_chans = cfg["out_chans"],
             verbose = True if cfg["verbose"] == "True" else False,
