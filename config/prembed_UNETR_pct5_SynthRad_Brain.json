@@ -3,6 +3,8 @@
     "root_dir": "./proj/prembed_UNETR_pct5_MB/",
     "data_folder": "data/MIMRTL_Brain",
     "verbose": "False",
+    "img_size": 1024,
+    "out_chans": 1,
     "batch_size": 4,
     "num_workers": 4,
     "lr": 0.0001,
