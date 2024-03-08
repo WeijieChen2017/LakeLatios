@@ -37,3 +37,21 @@
 # train_GPU_5 killed
 # train_GPU_1 -> GPU:1
 # data_embed -> GPU:5
+# SynthRad_Brain: 181 cases
+# train:val:test = 0.7:0.15:0.15
+# train: 181 * 0.7 = 126
+# val: 181 * 0.15 = 27
+# test: 181 * 0.15 = 27
+# 5% train: 126 * 5% = 6
+# 20% train: 126 * 20% = 25
+# 100% train: 126 * 100% = 126
+
+
+# MIMRTL_Brain: 777 cases
+# train:val:test = 0.7:0.15:0.15
+# train: 777 * 0.7 = 543
+# val: 777 * 0.15 = 116
+# test: 777 * 0.15 = 116
+# 5% train: 543 * 5% = 27
+# 20% train: 543 * 20% = 108
+# 100% train: 543 * 100% = 543
