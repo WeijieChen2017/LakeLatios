@@ -182,6 +182,7 @@ if __name__ == "__main__":
             plt.savefig(root_dir+f"epoch_{epoch+1}.png")
             plt.close()
 
+        epoch_loss = np.mean(np.asarray(epoch_loss))
         # print the loss
         print(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}")
         # save the loss
@@ -240,6 +241,7 @@ if __name__ == "__main__":
                         loss = loss_function(pred, ct)
                         val_loss.append(loss.item())
 
+            val_loss = np.mean(np.asarray(val_loss))
             print(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}")
             time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             with open(root_dir+"val_loss.txt", "a") as f:

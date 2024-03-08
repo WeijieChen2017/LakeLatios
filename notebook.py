@@ -67,5 +67,8 @@
 # GPU_60 -> GPU:6
 # GPU_70 -> GPU:7
 # GPU_71 -> GPU:7
+# GPU_72 -> GPU:7
+# GPU_73 -> GPU:7
+# GPU_74 -> GPU:7
 
 
