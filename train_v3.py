@@ -132,13 +132,13 @@ if __name__ == "__main__":
 
             # load the data
             for idx_train_batch in range(n_train_batch):
-                mr = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
-                ct = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["ct"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
-                mr_emb_head_3 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_3"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
-                mr_emb_head_6 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_6"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
-                mr_emb_head_9 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_9"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
-                mr_emb_head_12 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_12"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
-                mr_emb_head_neck = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_neck"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
+                mr = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
+                ct = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["ct"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
+                mr_emb_head_3 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_3"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
+                mr_emb_head_6 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_6"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
+                mr_emb_head_9 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_9"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
+                mr_emb_head_12 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_12"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
+                mr_emb_head_neck = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_neck"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
                 
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(True):
@@ -200,13 +200,13 @@ if __name__ == "__main__":
                 
                 # load the data
                 for idx_val_batch in range(n_val_batch):
-                    mr = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
-                    ct = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["ct"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
-                    mr_emb_head_3 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_3"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
-                    mr_emb_head_6 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_6"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
-                    mr_emb_head_9 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_9"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
-                    mr_emb_head_12 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_12"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
-                    mr_emb_head_neck = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_neck"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
+                    mr = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0)).float().to(device)
+                    ct = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["ct"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0)).float().to(device)
+                    mr_emb_head_3 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_3"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0)).float().to(device)
+                    mr_emb_head_6 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_6"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0)).float().to(device)
+                    mr_emb_head_9 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_9"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0)).float().to(device)
+                    mr_emb_head_12 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_12"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0)).float().to(device)
+                    mr_emb_head_neck = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_neck"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0)).float().to(device)
 
                     with torch.set_grad_enabled(False):
                         pred = model(mr, mr_emb_head_3, mr_emb_head_6, mr_emb_head_9, mr_emb_head_12, mr_emb_head_neck)
