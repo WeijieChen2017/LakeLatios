@@ -139,7 +139,8 @@ if __name__ == "__main__":
                 mr_emb_head_9 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_9"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
                 mr_emb_head_12 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_12"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
                 mr_emb_head_neck = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_neck"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
-                
+                print(mr.size(), ct.size(), mr_emb_head_3.size(), mr_emb_head_6.size(), mr_emb_head_9.size(), mr_emb_head_12.size(), mr_emb_head_neck.size())
+
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(True):
                     pred = model(mr, mr_emb_head_3, mr_emb_head_6, mr_emb_head_9, mr_emb_head_12, mr_emb_head_neck)
