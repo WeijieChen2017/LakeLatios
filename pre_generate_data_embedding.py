@@ -189,7 +189,7 @@ for data_folder in data_folder_to_process:
 
         # create the .hdf5 file and compress the MedSAM_embedding dict
         
-        with h5py.File(os.path.join(case_path, "MedSAM_embedding_gzip9.hdf5"), "w") as f:
+        with h5py.File(os.path.join(case_path, "MedSAM_embedding_gzip.hdf5"), "w") as f:
             for key in MedSAM_embedding.keys():
                 grp = f.create_group(key)
                 grp.create_dataset("mr_emb_head_3", data=MedSAM_embedding[key]["mr_emb"]["head_3"], compression="gzip", compression_opts=4)
