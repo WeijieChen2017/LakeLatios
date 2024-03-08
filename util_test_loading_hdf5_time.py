@@ -6,7 +6,7 @@ import time
 file_list = [
     "data/MIMRTL_Brain/00001/MedSAM_embedding.hdf5", # 8.84GB
     "data/MIMRTL_Brain/00001/MedSAM_embedding_gzip.hdf5", # 6.96GB
-    "data/MIMRTL_Brain/00001/MedSAM_embedding_lzf.hdf5", # 
+    "data/MIMRTL_Brain/00001/MedSAM_embedding_lzf.hdf5", # 7.57GB
 ]
 
 for file_path in file_list:
