@@ -183,7 +183,7 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
         with h5py.File(os.path.join(case_path, "MedSAM_embedding_gzip_dict.hdf5"), "w") as f:
             for key in MedSAM_embedding.keys():
                 grp = f.create_group(key)
-                grp.create_dataset("data", data=MedSAM_embedding[key], compression="gzip", compression_opts=4)
+                grp.create_dataset("data", data={MedSAM_embedding[key]}, compression="gzip", compression_opts=4)
 
         with h5py.File(os.path.join(case_path, "MedSAM_embedding_lzf.hdf5"), "w") as f:
             for key in MedSAM_embedding.keys():
