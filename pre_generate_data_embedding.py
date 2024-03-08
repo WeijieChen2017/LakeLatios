@@ -188,8 +188,8 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
                 grp.create_dataset("mr_emb_head_9", data=MedSAM_embedding[key]["mr_emb"]["head_9"], compression="lzf")
                 grp.create_dataset("mr_emb_head_12", data=MedSAM_embedding[key]["mr_emb"]["head_12"], compression="lzf")
                 grp.create_dataset("mr_emb_head_neck", data=MedSAM_embedding[key]["mr_emb"]["head_neck"], compression="lzf")
-                grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"], compression="lzf", compression_opts=4)
-                grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="lzf", compression_opts=4)
+                grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"], compression="lzf")
+                grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="lzf")
         
         print(f"[{data_folder}][{idx_case+1}/{n_cases}] Saved MedSAM_embedding.hdf5")
                 
