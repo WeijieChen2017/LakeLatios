@@ -56,7 +56,6 @@ for idx_batch, case in enumerate(training_list):
     for idx_train_batch in range(n_train_batch):
         # data_list = [data.cpu().numpy() for data in [data1, data2, data3, data4]]
         # stacked_data = np.concatenate(data_list, axis=0)
-        for idx_slice in range(len(train_batch_list[idx_train_batch])):
-            slice_name = train_batch_list[idx_train_batch][idx_slice]
-            mr = data_hdf5[slice_name]["mr"][()]
-            print(mr.shape)
+
+        mr = np.concatenate([data_hdf5[slice_name]["mr"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)
+        print(mr.shape)
