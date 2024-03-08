@@ -45,6 +45,7 @@
 
 import os
 import glob
+import time
 import json
 import nibabel as nib
 import h5py
@@ -108,10 +109,12 @@ elif input_user == "4":
 
 for data_folder in data_folder_to_process:
     print(f"Processing {data_folder}")
+    folder_name = data_folder.split("/")[-1]
     case_list = sorted(glob.glob(os.path.join(data_folder, "*/")))
     n_cases = len(case_list)
 
     for idx_case, case_path in enumerate(case_list):
+        start_time = time.time()
         print(f"[{data_folder}][{idx_case+1}/{n_cases}] Processing {case_path}")
         mr_file = nib.load(os.path.join(case_path, "mr.nii.gz"))
         ct_file = nib.load(os.path.join(case_path, "ct.nii.gz"))
@@ -211,6 +214,10 @@ for data_folder in data_folder_to_process:
         #         grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="lzf")
         
         print(f"[{data_folder}][{idx_case+1}/{n_cases}] Saved MedSAM_embedding.hdf5")
+        end_time = time.time()
+        # write to txt file and record the time in seconds
+        with open(os.path.join("./"+folder_name+"_time.txt"), "a") as f:
+            f.write(f"Case {idx_case+1}/{n_cases}: {end_time-start_time:.4f} seconds\n")
                 
 
 # [data/MIMRTL_Brain][1/777][121/124] MR slice shape: torch.Size([1, 3, 1024, 1024])
