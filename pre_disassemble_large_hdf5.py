@@ -68,4 +68,8 @@ for data_folder in [data_folder_to_process]:
         # write to txt file and record the time in seconds
         with open(os.path.join("./"+folder_name+"_time_disassemble.txt"), "a") as f:
             f.write(f"Case {idx_case+1+start_case_num}/{n_cases+start_case_num}: {end_time-start_time:.4f} seconds\n")
+
+        # delete the original hdf5 file
+        os.remove(hdf5_path)
+        print(f"[{data_folder}][{idx_case+1+start_case_num}/{n_cases+start_case_num}] Deleted {hdf5_path}")
                 
