@@ -189,13 +189,15 @@ for data_folder in data_folder_to_process:
         with h5py.File(os.path.join(case_path, "MedSAM_embedding_gzip9.hdf5"), "w") as f:
             for key in MedSAM_embedding.keys():
                 grp = f.create_group(key)
-                grp.create_dataset("mr_emb_head_3", data=MedSAM_embedding[key]["mr_emb"]["head_3"], compression="gzip", compression_opts=9)
-                grp.create_dataset("mr_emb_head_6", data=MedSAM_embedding[key]["mr_emb"]["head_6"], compression="gzip", compression_opts=9)
-                grp.create_dataset("mr_emb_head_9", data=MedSAM_embedding[key]["mr_emb"]["head_9"], compression="gzip", compression_opts=9)
-                grp.create_dataset("mr_emb_head_12", data=MedSAM_embedding[key]["mr_emb"]["head_12"], compression="gzip", compression_opts=9)
-                grp.create_dataset("mr_emb_head_neck", data=MedSAM_embedding[key]["mr_emb"]["head_neck"], compression="gzip", compression_opts=9)
-                grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"], compression="gzip", compression_opts=9)
-                grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="gzip", compression_opts=9)
+                grp.create_dataset("mr_emb_head_3", data=MedSAM_embedding[key]["mr_emb"]["head_3"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr_emb_head_6", data=MedSAM_embedding[key]["mr_emb"]["head_6"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr_emb_head_9", data=MedSAM_embedding[key]["mr_emb"]["head_9"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr_emb_head_12", data=MedSAM_embedding[key]["mr_emb"]["head_12"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr_emb_head_neck", data=MedSAM_embedding[key]["mr_emb"]["head_neck"], compression="gzip", compression_opts=4)
+                grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"], compression="gzip", compression_opts=4)
+                grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="gzip", compression_opts=4)
+                # ratio = 9, file_size = 6.95GB
+                # ratio = 4, file_size = 6.96GB
 
         # with h5py.File(os.path.join(case_path, "MedSAM_embedding_lzf.hdf5"), "w") as f:
         #     for key in MedSAM_embedding.keys():
