@@ -56,14 +56,7 @@ for idx_batch, case in enumerate(training_list):
     for idx_train_batch in range(n_train_batch):
         # data_list = [data.cpu().numpy() for data in [data1, data2, data3, data4]]
         # stacked_data = np.concatenate(data_list, axis=0)
-
-        mr = np.concatenate([data_hdf5[train_batch_list[idx_train_batch][str(idx_slice)]]["mr"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))], axis=0)
-        ct = np.concatenate([data_hdf5[train_batch_list[idx_train_batch][str(idx_slice)]]["ct"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))], axis=0)
-        mr_emb_head_3 = np.concatenate([data_hdf5[train_batch_list[idx_train_batch][str(idx_slice)]]["mr_emb_head_3"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))], axis=0)
-        mr_emb_head_6 = np.concatenate([data_hdf5[train_batch_list[idx_train_batch][str(idx_slice)]]["mr_emb_head_6"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))], axis=0)
-        mr_emb_head_9 = np.concatenate([data_hdf5[train_batch_list[idx_train_batch][str(idx_slice)]]["mr_emb_head_9"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))], axis=0)
-        mr_emb_head_12 = np.concatenate([data_hdf5[train_batch_list[idx_train_batch][str(idx_slice)]]["mr_emb_head_12"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))], axis=0)
-        mr_emb_head_neck = np.concatenate([data_hdf5[train_batch_list[idx_train_batch][str(idx_slice)]]["mr_emb_head_neck"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))], axis=0)
-    
-        print(f"Training batch {idx_train_batch+1}/{n_train_batch} in case {idx_batch+1}/{n_train}")
-        print(f"---> mr.shape: {mr.shape}, ct.shape: {ct.shape}, mr_emb_head_3.shape: {mr_emb_head_3.shape}, mr_emb_head_6.shape: {mr_emb_head_6.shape}, mr_emb_head_9.shape: {mr_emb_head_9.shape}, mr_emb_head_12.shape: {mr_emb_head_12.shape}, mr_emb_head_neck.shape: {mr_emb_head_neck.shape}")
+        for idx_slice in range(len(train_batch_list[idx_train_batch])):
+            slice_name = train_batch_list[idx_train_batch][idx_slice]
+            mr = data_hdf5[slice_name]["mr"][()]
+            print(mr.shape)
