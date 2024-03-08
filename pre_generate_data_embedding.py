@@ -91,11 +91,22 @@ print("Model loaded from ", cfg["pretrain_path"])
 
 data_folder_list = [
     "data/MIMRTL_Brain",
-    # "data/SynthRad_Brain",
-    # "data/SynthRad_Pelvis",
+    "data/SynthRad_Brain",
+    "data/SynthRad_Pelvis",
 ]
 
-for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_Pelvis"]:
+# take the user input to determine which data folder to process
+input_user = input("Which data folder to process? (1: MIMRTL_Brain, 2: SynthRad_Brain, 3: SynthRad_Pelvis, 4: All) ")
+if input_user == "1":
+    data_folder_to_process = [data_folder_list[0]]
+elif input_user == "2":
+    data_folder_to_process = [data_folder_list[1]]
+elif input_user == "3":
+    data_folder_to_process = [data_folder_list[2]]
+elif input_user == "4":
+    data_folder_to_process = data_folder_list
+
+for data_folder in data_folder_to_process:
     print(f"Processing {data_folder}")
     case_list = sorted(glob.glob(os.path.join(data_folder, "*/")))
     n_cases = len(case_list)
@@ -200,3 +211,6 @@ for data_folder in ["data/MIMRTL_Brain", "data/SynthRad_Brain", "data/SynthRad_P
         print(f"[{data_folder}][{idx_case+1}/{n_cases}] Saved MedSAM_embedding.hdf5")
                 
 
+# [data/MIMRTL_Brain][1/777][121/124] MR slice shape: torch.Size([1, 3, 1024, 1024])
+# [data/MIMRTL_Brain][1/777][121/124] MR embedding shape: (1, 768, 64, 64), (1, 768, 64, 64), (1, 768, 64, 64), (1, 768, 64, 64), (1, 256, 64, 64)
+# [data/MIMRTL_Brain][1/777][121/124] Saved MR and CT
