@@ -139,7 +139,7 @@ if __name__ == "__main__":
                 mr_emb_head_9 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_9"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
                 mr_emb_head_12 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_12"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
                 mr_emb_head_neck = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_neck"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0)).float().to(device)
-                print(mr.size(), ct.size(), mr_emb_head_3.size(), mr_emb_head_6.size(), mr_emb_head_9.size(), mr_emb_head_12.size(), mr_emb_head_neck.size())
+                # print(mr.size(), ct.size(), mr_emb_head_3.size(), mr_emb_head_6.size(), mr_emb_head_9.size(), mr_emb_head_12.size(), mr_emb_head_neck.size())
 
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(True):
@@ -153,9 +153,9 @@ if __name__ == "__main__":
         # plot images
         if (epoch+1) % cfg["plot_step"] == 0:
             fig, ax = plt.subplots(1, 3, figsize=(15, 5))
-            ax[0].imshow(MR[0, 1, :, :].cpu().detach().numpy(), cmap="gray")
+            ax[0].imshow(mr[0, 1, :, :].cpu().detach().numpy(), cmap="gray")
             ax[0].set_title("MR")
-            ax[1].imshow(CT[0, 0, :, :].cpu().detach().numpy(), cmap="gray")
+            ax[1].imshow(ct[0, 0, :, :].cpu().detach().numpy(), cmap="gray")
             ax[1].set_title("CT")
             ax[2].imshow(pred[0, 0, :, :].cpu().detach().numpy(), cmap="gray")
             ax[2].set_title("pred")
