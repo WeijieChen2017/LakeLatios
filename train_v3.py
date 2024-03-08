@@ -103,9 +103,9 @@ if __name__ == "__main__":
     # train the model
     for epoch in range(cfg["epochs"]):
 
+        epoch_loss = []
         # training
         model.train()
-        batch_idx = 0
         for idx_batch, case in enumerate(training_list):
             hdf5_filename = case + "/MedSAM_embedding_gzip4.hdf5"
             data_hdf5 = h5py.File(hdf5_filename, "r")
@@ -128,60 +128,26 @@ if __name__ == "__main__":
                 else:
                     train_batch_list.append(slice_list[idx*batch_size:(idx+1)*batch_size])
             
+            
+
             # load the data
             for idx_train_batch in range(n_train_batch):
-                # data_list = [data.cpu().numpy() for data in [data1, data2, data3, data4]]
-                # stacked_data = np.concatenate(data_list, axis=0)
-                mr = [data_hdf5[train_batch_list[idx_train_batch[str(idx_slice)]]]["mr"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))]
-                mr = np.concatenate(mr, axis=0)
-                ct = [data_hdf5[train_batch_list[idx_train_batch[str(idx_slice)]]]["ct"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))]
-                ct = np.concatenate(ct, axis=0)
-                mr_emb_head_3 = [data_hdf5[train_batch_list[idx_train_batch[str(idx_slice)]]]["mr_emb_head_3"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))]
-                mr_emb_head_3 = np.concatenate(mr_emb_head_3, axis=0)
-                mr_emb_head_6 = [data_hdf5[train_batch_list[idx_train_batch[str(idx_slice)]]]["mr_emb_head_6"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))]
-                mr_emb_head_6 = np.concatenate(mr_emb_head_6, axis=0)
-                mr_emb_head_9 = [data_hdf5[train_batch_list[idx_train_batch[str(idx_slice)]]]["mr_emb_head_9"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))]
-                mr_emb_head_9 = np.concatenate(mr_emb_head_9, axis=0)
-                mr_emb_head_12 = [data_hdf5[train_batch_list[idx_train_batch[str(idx_slice)]]]["mr_emb_head_12"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))]
-                mr_emb_head_12 = np.concatenate(mr_emb_head_12, axis=0)
-                mr_emb_head_neck = [data_hdf5[train_batch_list[idx_train_batch[str(idx_slice)]]]["mr_emb_head_neck"][()] for idx_slice in range(len(train_batch_list[idx_train_batch]))]
-                mr_emb_head_neck = np.concatenate(mr_emb_head_neck, axis=0)
+                mr = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
+                ct = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["ct"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
+                mr_emb_head_3 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_3"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
+                mr_emb_head_6 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_6"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
+                mr_emb_head_9 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_9"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
+                mr_emb_head_12 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_12"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
+                mr_emb_head_neck = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_neck"][()] for slice_name in train_batch_list[idx_train_batch]], axis=0), dtype=torch.float32).to(device)
                 
-
-
-
-
-            for idx_slice in range(n_slice):
-                key_name = slice_list[idx_slice]
-                # grp.create_dataset("mr_emb_head_3", data=MedSAM_embedding[key]["mr_emb"]["head_3"], compression="gzip", compression_opts=4)
-                # grp.create_dataset("mr_emb_head_6", data=MedSAM_embedding[key]["mr_emb"]["head_6"], compression="gzip", compression_opts=4)
-                # grp.create_dataset("mr_emb_head_9", data=MedSAM_embedding[key]["mr_emb"]["head_9"], compression="gzip", compression_opts=4)
-                # grp.create_dataset("mr_emb_head_12", data=MedSAM_embedding[key]["mr_emb"]["head_12"], compression="gzip", compression_opts=4)
-                # grp.create_dataset("mr_emb_head_neck", data=MedSAM_embedding[key]["mr_emb"]["head_neck"], compression="gzip", compression_opts=4)
-                # grp.create_dataset("mr", data=MedSAM_embedding[key]["mr"], compression="gzip", compression_opts=4)
-                # grp.create_dataset("ct", data=MedSAM_embedding[key]["ct"], compression="gzip", compression_opts=4)
-                mr = torch.tensor(data_hdf5[key_name]["mr"][()]).unsqueeze(0).to(device)
-                ct = torch.tensor(data_hdf5[key_name]["ct"][()]).unsqueeze(0).to(device)
-                mr_emb_head_3 = torch.tensor(data_hdf5[key_name]["mr_emb_head_3"][()]).unsqueeze(0).to(device)
-                mr_emb_head_6 = torch.tensor(data_hdf5[key_name]["mr_emb_head_6"][()]).unsqueeze(0).to(device)
-                mr_emb_head_9 = torch.tensor(data_hdf5[key_name]["mr_emb_head_9"][()]).unsqueeze(0).to(device)
-                mr_emb_head_12 = torch.tensor(data_hdf5[key_name]["mr_emb_head_12"][()]).unsqueeze(0).to(device)
-                mr_emb_head_neck = torch.tensor(data_hdf5[key_name]["mr_emb_head_neck"][()]).unsqueeze(0).to(device)
-            
                 optimizer.zero_grad()
-            with torch.set_grad_enabled(True):
-                pred = model(MR)
-                loss = loss_function(pred, CT)
-                loss.backward()
-                optimizer.step()
-                text_loss = loss.item()
-                epoch_loss += text_loss
-                # print the loss every print_step, with current batch over the whole batch
-                if (batch_idx+1) % cfg["print_batch_step"] == 0:
-                    print(f"Epoch {epoch+1}/{cfg['epochs']} Batch {batch_idx+1}/{n_train_batch}, loss: {text_loss}")
-            batch_idx += 1
-
-            epoch_loss /= len(train_loader)
+                with torch.set_grad_enabled(True):
+                    pred = model(mr, mr_emb_head_3, mr_emb_head_6, mr_emb_head_9, mr_emb_head_12, mr_emb_head_neck)
+                    loss = loss_function(pred, ct)
+                    loss.backward()
+                    optimizer.step()
+                    text_loss = loss.item()
+                    epoch_loss.append(text_loss)
 
         # plot images
         if (epoch+1) % cfg["plot_step"] == 0:
@@ -209,20 +175,43 @@ if __name__ == "__main__":
         # validation
         if (epoch+1) % cfg["eval_step"] == 0:
             model.eval()
-            with torch.no_grad():
-                val_loss = 0
-                epoch_val_loss = 0
-                for idx_batch_val, batch in enumerate(val_loader):
-                    MR = batch["MR"]
-                    CT = batch["CT"]
-                    MR = MR.to(device)
-                    CT = CT.to(device)
-                    pred = model(MR)
-                    text_val_loss = loss_function(pred, CT).item()
-                    epoch_val_loss += text_val_loss
-                    if (batch_idx+1) % cfg["print_batch_step"] == 0:
-                        print(f"Epoch {epoch+1}/{cfg['epochs']} Batch {idx_batch_val+1}/{n_val_batch}, loss: {text_loss}")
-                val_loss = epoch_val_loss / len(val_loader)
+            val_loss = []
+            for idx_batch, case in enumerate(validation_list):
+                hdf5_filename = case + "/MedSAM_embedding_gzip4.hdf5"
+                data_hdf5 = h5py.File(hdf5_filename, "r")
+                n_slice = len(data_hdf5.keys())
+                slice_list = list(data_hdf5.keys())
+
+                # shuffle the slice_list
+                random.shuffle(slice_list)
+
+                # divide the slice_list into batches
+                # create the list like [batch1, batch2, ..., batch_n]
+                # batch_n may be less than batch_size
+                n_val_batch = n_slice // batch_size
+                if n_slice % batch_size != 0:
+                    n_val_batch += 1
+                val_batch_list = []
+                for idx in range(n_val_batch):
+                    if idx == n_val_batch - 1:
+                        val_batch_list.append(slice_list[idx*batch_size:])
+                    else:
+                        val_batch_list.append(slice_list[idx*batch_size:(idx+1)*batch_size])
+                
+                # load the data
+                for idx_val_batch in range(n_val_batch):
+                    mr = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
+                    ct = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["ct"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
+                    mr_emb_head_3 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_3"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
+                    mr_emb_head_6 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_6"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
+                    mr_emb_head_9 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_9"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
+                    mr_emb_head_12 = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_12"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
+                    mr_emb_head_neck = torch.from_numpy(np.concatenate([data_hdf5[slice_name]["mr_emb_head_neck"][()] for slice_name in val_batch_list[idx_val_batch]], axis=0), dtype=torch.float32).to(device)
+
+                    with torch.set_grad_enabled(False):
+                        pred = model(mr, mr_emb_head_3, mr_emb_head_6, mr_emb_head_9, mr_emb_head_12, mr_emb_head_neck)
+                        loss = loss_function(pred, ct)
+                        val_loss.append(loss.item())
 
             print(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}")
             time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
