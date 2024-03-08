@@ -91,9 +91,9 @@ print("Model loaded from ", cfg["pretrain_path"])
 
 
 data_folder_list = [
-    ["data/MIMRTL_Brain", 33, 218],
-    ["data/MIMRTL_Brain", 219, 404],
-    ["data/MIMRTL_Brain", 405, 590],
+    ["data/MIMRTL_Brain", 33, 219],
+    ["data/MIMRTL_Brain", 219, 405],
+    ["data/MIMRTL_Brain", 405, 591],
     ["data/MIMRTL_Brain", 591, 777],
     ["data/SynthRad_Brain", 23, 181],
     ["data/SynthRad_Pelvis", 0, -1],
