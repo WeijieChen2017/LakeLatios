@@ -94,7 +94,6 @@ class decoder_PP(nn.Module):
             nn.Conv2d(out_chans, out_chans, kernel_size=1, bias=False),
         )
 
-        self._freeze_backbone()
         self._init_weights()
     
     def load_from_checkpoint(self, checkpoint_path):
