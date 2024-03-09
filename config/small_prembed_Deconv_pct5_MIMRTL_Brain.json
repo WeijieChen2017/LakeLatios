@@ -1,6 +1,6 @@
 {
     "model_name": "decoder_Deconv",
-    "root_dir": "./proj/prembed_Deconv_pct5_MB/",
+    "root_dir": "./proj/small_prembed_Deconv_pct5_MB/",
     "data_folder": "data/MIMRTL_Brain",
     "verbose": "False",
     "img_size": 1024,
