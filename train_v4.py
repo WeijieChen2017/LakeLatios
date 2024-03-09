@@ -29,6 +29,7 @@ if __name__ == "__main__":
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     import torch
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print("################### device:", device, "###################")
     root_dir = cfg["root_dir"]
     if not os.path.exists(root_dir):
         os.makedirs(root_dir)
