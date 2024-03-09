@@ -9,7 +9,7 @@ if __name__ == "__main__":
     # run the parser to get the cfg path
     parser = argparse.ArgumentParser(description="Load configuration file path.")
     # Add an argument for the configuration file path with a default value
-    parser.add_argument("--cfg_path", type=str, default="prembed_UNETR_pct5_SynthRad_Brain.json", help="Path to the configuration file.")
+    parser.add_argument("--cfg_path", type=str, default="small_prembed_Deconv_pct5_MIMRTL_Brain.json.json", help="Path to the configuration file.")
     
     # Parse the command-line arguments
     args = parser.parse_args()
