@@ -6,7 +6,7 @@ import glob
 import time
 
 file_list = [
-    "data/MIMRTL_Brain/00001/*"
+    "data/MIMRTL_Brain/00001/"
 ]
 slice_list = sorted(glob.glob(os.path.join(file_list[0], "pack*.hdf5")))
 
