@@ -11,9 +11,12 @@ file_list = [
 slice_list = sorted(glob.glob(os.path.join(file_list[0], "pack*.hdf5")))
 
 for slice_path in slice_list:
-    print(f"Loading {slice_path}")
+    print(f"Loading {slice_path}", end="")
     start = time.time()
     with h5py.File(slice_path, "r") as f:
-        print(f"Keys: {list(f.keys())}")
+        only_key = list(f.keys())[0]
+        print(f"Keys: {list(f.keys())}", end="")
+        modalities = list(f[only_key].keys())
+        print(f"Modalities: {modalities}", end="")
     print(f"Loading {slice_path} takes {time.time() - start:.2f} seconds")
     print()
