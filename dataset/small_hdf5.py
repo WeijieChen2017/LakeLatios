@@ -15,7 +15,7 @@ class small_hdf5_dataset(Dataset):
         self.transform = transform
 
     def __len__(self):
-        return len(self.file_paths)
+        return len(self.file_path_list)
 
     def __getitem__(self, idx):
         with h5py.File(self.file_paths[idx], 'r') as f:
