@@ -8,7 +8,7 @@ import time
 file_list = [
     "data/MIMRTL_Brain/00001/*"
 ]
-slice_list = sorted(glob.glob(os.join(file_list[0], "pack*.hdf5")))
+slice_list = sorted(glob.glob(os.path.join(file_list[0], "pack*.hdf5")))
 
 for file_path in file_list:
     print(f"Loading {file_path}")
