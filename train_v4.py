@@ -151,28 +151,25 @@ if __name__ == "__main__":
         model.train()
         # use training_dataloader to load the data
         for idx_batch, data in enumerate(training_dataloader):
-            # data is a dict with keys in cfg["required_keys"]
-            # convert the numpy array to torch tensor
-            for key in cfg["required_keys"]:
-                data[key] = torch.from_numpy(data[key]).float().to(device)
-            
+            # data is a dict with keys in cfg["required_keys"], and the values are tensors
+
             # load the data
-            mr = data["mr"]
-            ct = data["ct"]
+            mr = data["mr"].float().to(device)
+            ct = data["ct"].float().to(device)
             if cfg["model_name"] == "decoder_Deconv":
-                mr_emb_head_neck = data["mr_emb_head_neck"]
+                mr_emb_head_neck = data["mr_emb_head_neck"].float().to(device)
             elif cfg["model_name"] == "decoder_PP":
-                mr_emb_head_3 = data["mr_emb_head_3"]
-                mr_emb_head_6 = data["mr_emb_head_6"]
-                mr_emb_head_9 = data["mr_emb_head_9"]
-                mr_emb_head_12 = data["mr_emb_head_12"]
-                mr_emb_head_neck = data["mr_emb_head_neck"]
+                mr_emb_head_3 = data["mr_emb_head_3"].float().to(device)
+                mr_emb_head_6 = data["mr_emb_head_6"].float().to(device)
+                mr_emb_head_9 = data["mr_emb_head_9"].float().to(device)
+                mr_emb_head_12 = data["mr_emb_head_12"].float().to(device)
+                mr_emb_head_neck = data["mr_emb_head_neck"].float().to(device)
             elif cfg["model_name"] == "decoder_UNETR":
-                mr_emb_head_3 = data["mr_emb_head_3"]
-                mr_emb_head_6 = data["mr_emb_head_6"]
-                mr_emb_head_9 = data["mr_emb_head_9"]
-                mr_emb_head_12 = data["mr_emb_head_12"]
-                mr_emb_head_neck = data["mr_emb_head_neck"]
+                mr_emb_head_3 = data["mr_emb_head_3"].float().to(device)
+                mr_emb_head_6 = data["mr_emb_head_6"].float().to(device)
+                mr_emb_head_9 = data["mr_emb_head_9"].float().to(device)
+                mr_emb_head_12 = data["mr_emb_head_12"].float().to(device)
+                mr_emb_head_neck = data["mr_emb_head_neck"].float().to(device)
 
             optimizer.zero_grad()
             with torch.set_grad_enabled(True):
@@ -216,25 +213,23 @@ if __name__ == "__main__":
             val_loss = []
             
             for idx_batch, data in enumerate(validation_dataloader):
-                for key in cfg["required_keys"]:
-                    data[key] = torch.from_numpy(data[key]).float().to(device)
                 
-                mr = data["mr"]
-                ct = data["ct"]
+                mr = data["mr"].float().to(device)
+                ct = data["ct"].float().to(device)
                 if cfg["model_name"] == "decoder_Deconv":
-                    mr_emb_head_neck = data["mr_emb_head_neck"]
+                    mr_emb_head_neck = data["mr_emb_head_neck"].float().to(device)
                 elif cfg["model_name"] == "decoder_PP":
-                    mr_emb_head_3 = data["mr_emb_head_3"]
-                    mr_emb_head_6 = data["mr_emb_head_6"]
-                    mr_emb_head_9 = data["mr_emb_head_9"]
-                    mr_emb_head_12 = data["mr_emb_head_12"]
-                    mr_emb_head_neck = data["mr_emb_head_neck"]
+                    mr_emb_head_3 = data["mr_emb_head_3"].float().to(device)
+                    mr_emb_head_6 = data["mr_emb_head_6"].float().to(device)
+                    mr_emb_head_9 = data["mr_emb_head_9"].float().to(device)
+                    mr_emb_head_12 = data["mr_emb_head_12"].float().to(device)
+                    mr_emb_head_neck = data["mr_emb_head_neck"].float().to(device)
                 elif cfg["model_name"] == "decoder_UNETR":
-                    mr_emb_head_3 = data["mr_emb_head_3"]
-                    mr_emb_head_6 = data["mr_emb_head_6"]
-                    mr_emb_head_9 = data["mr_emb_head_9"]
-                    mr_emb_head_12 = data["mr_emb_head_12"]
-                    mr_emb_head_neck = data["mr_emb_head_neck"]
+                    mr_emb_head_3 = data["mr_emb_head_3"].float().to(device)
+                    mr_emb_head_6 = data["mr_emb_head_6"].float().to(device)
+                    mr_emb_head_9 = data["mr_emb_head_9"].float().to(device)
+                    mr_emb_head_12 = data["mr_emb_head_12"].float().to(device)
+                    mr_emb_head_neck = data["mr_emb_head_neck"].float().to(device)
 
                 with torch.set_grad_enabled(False):
                     if cfg["model_name"] == "decoder_Deconv":
