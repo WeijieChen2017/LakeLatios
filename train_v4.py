@@ -20,7 +20,6 @@ if __name__ == "__main__":
     # ------------------- set the GPU -------------------
     import os
     import json
-    import h5py
     import random
     # load the cfg
     # cfg_path = "config_0221.json"
