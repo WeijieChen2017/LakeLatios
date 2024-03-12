@@ -51,8 +51,8 @@ for directory_path in directory_path_list:
         # Convert the modified time to a more readable format (optional)
         readable_time = time.ctime(mod_time)
     
-    # Save the modified time to the dictionary
-    mod_time_list.append(readable_time)
+        # Save the modified time to the dictionary
+        mod_time_list.append(readable_time)
 
     # Save the modified time list to the dictionary
     file_modified_times[directory_path] = mod_time_list
