@@ -1,6 +1,6 @@
 {
     "model_name": "decoder_UNETR",
-    "root_dir": "./proj/small_prembed_UNETR_pct5_MB/",
+    "root_dir": "./proj/small_prembed_UNETR_pct5_float16_MB/",
     "data_folder": "data/MIMRTL_Brain",
     "verbose": "False",
     "img_size": 1024,

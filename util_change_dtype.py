@@ -28,6 +28,7 @@ batch_size = cfg["batch_size"]
 
 # search_list = training_list + validation_list
 search_list = validation_list
+n_case = len(search_list)
 
 import h5py
 import glob
@@ -54,4 +55,4 @@ for idx_batch, case in enumerate(search_list):
                 new_hdf5[key].create_dataset(modality, data=data_hdf5[key][modality][()], dtype="float16")
         new_hdf5.close()
         data_hdf5.close()
-        print(f"[{idx_batch+1}/{n_train}] {pack_path} -> {new_hdf5_path}")
+        print(f"[{idx_batch+1}/{n_case}] {pack_path} -> {new_hdf5_path}")
