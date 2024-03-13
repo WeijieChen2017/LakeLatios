@@ -126,10 +126,15 @@ if __name__ == "__main__":
     # in each folder, there are pack_000.hdf5, pack_001.hdf5, ...
     hdf5_training_list = []
     hdf5_validation_list = []
+    # check whether there is a key in the cfg
+    if "file_affix" not in cfg:
+        search_affix = ""
+    else:
+        search_affix = cfg["file_affix"]
     for case in training_list:
-        hdf5_training_list.extend(sorted(glob.glob(case+"/*.hdf5")))
+        hdf5_training_list.extend(sorted(glob.glob(case+"/*"+search_affix+".hdf5")))
     for case in validation_list:
-        hdf5_validation_list.extend(sorted(glob.glob(case+"/*.hdf5")))
+        hdf5_validation_list.extend(sorted(glob.glob(case+"/*"+search_affix+".hdf5")))
     # save the training and validation hdf5 list into the root_dir as a txt file
     with open(root_dir+"hdf5_training_list.txt", "w") as f:
         for item in hdf5_training_list:

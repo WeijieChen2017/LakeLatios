@@ -26,10 +26,13 @@ n_train = len(training_list)
 n_val = len(validation_list)
 batch_size = cfg["batch_size"]
 
+# search_list = training_list + validation_list
+search_list = validation_list
+
 import h5py
 import glob
 
-for idx_batch, case in enumerate(training_list):
+for idx_batch, case in enumerate(search_list):
     
     # load every file like pack_000.hdf5
     pack_list = sorted(glob.glob(case+"/pack_*.hdf5"))
