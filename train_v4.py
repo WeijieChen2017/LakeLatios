@@ -43,6 +43,7 @@ if __name__ == "__main__":
     from model import decoder_UNETR
     from model import decoder_Deconv
     from model import decoder_PP
+    from model import UNet_MONAI
 
     from dataset import small_hdf5_dataset
 
@@ -78,6 +79,22 @@ if __name__ == "__main__":
             img_size = cfg["img_size"],
             out_chans = cfg["out_chans"],
             verbose = True if cfg["verbose"] == "True" else False,
+        )
+    elif cfg["model_name"] == "UNet_MONAI":
+        model = UNet_MONAI(
+            spatial_dims=cfg["spatial_dims"],
+            in_channels=cfg["in_channels"],
+            out_channels=cfg["out_channels"],
+            channels=cfg["channels"],
+            strides=cfg["strides"],
+            kernel_size=cfg["kernel_size"],
+            up_kernel_size=cfg["up_kernel_size"],
+            num_res_units=cfg["num_res_units"],
+            act=cfg["act"], 
+            norm=cfg["norm"],
+            dropout=cfg["dropout"],
+            bias=cfg["bias"],
+            adn_ordering=cfg["adn_ordering"],
         )
     else:
         raise ValueError("model_name not found !")
