@@ -1,10 +1,10 @@
 list_model = [
     "proj/small_prembed_Deconv_pct5_MB",
-    "small_prembed_Deconv_pct5_MB_io16",
-    "small_prembed_PP_pct5_MB",
-    "small_prembed_UNet_pct5_MB",
-    "small_prembed_UNETR_pct5_float16_MB",
-    "small_prembed_UNETR_pct5_MB",
+    "proj/small_prembed_Deconv_pct5_MB_io16",
+    "proj/small_prembed_PP_pct5_MB",
+    "proj/small_prembed_UNet_pct5_MB",
+    "proj/small_prembed_UNETR_pct5_float16_MB",
+    "proj/small_prembed_UNETR_pct5_MB",
 ]
 
 import os
