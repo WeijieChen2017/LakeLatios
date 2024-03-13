@@ -193,8 +193,12 @@ if __name__ == "__main__":
             with torch.set_grad_enabled(True):
                 if cfg["model_name"] == "decoder_Deconv":
                     pred = model(mr_emb_head_neck)
-                else:
+                elif cfg["model_name"] == "decoder_PP" or cfg["model_name"] == "decoder_UNETR":
                     pred = model(mr, mr_emb_head_3, mr_emb_head_6, mr_emb_head_9, mr_emb_head_12, mr_emb_head_neck)
+                elif cfg["model_name"] == "UNet_MONAI":
+                    pred = model(mr)
+                else:
+                    print("model_name not found !")
                 loss = loss_function(pred, ct)
                 loss.backward()
                 optimizer.step()
@@ -252,8 +256,12 @@ if __name__ == "__main__":
                 with torch.set_grad_enabled(False):
                     if cfg["model_name"] == "decoder_Deconv":
                         pred = model(mr_emb_head_neck)
-                    else:
+                    if cfg["model_name"] == "decoder_PP" or cfg["model_name"] == "decoder_UNETR":
                         pred = model(mr, mr_emb_head_3, mr_emb_head_6, mr_emb_head_9, mr_emb_head_12, mr_emb_head_neck)
+                    elif cfg["model_name"] == "UNet_MONAI":
+                        pred = model(mr)
+                    else:
+                        print("model_name not found !")
                     loss = loss_function(pred, ct)
                     val_loss.append(loss.item())
 
