@@ -82,5 +82,5 @@ def plot_loss_from_file(filename, list_model, output_tag):
     plt.close()
     print(f"Save {save_name}")
 
-plot_loss_from_file("loss.txt", "Train")
-plot_loss_from_file("val_loss.txt", "Validation")
+plot_loss_from_file("loss.txt", list_model, "Train")
+plot_loss_from_file("val_loss.txt", list_model, "Validation")
