@@ -29,8 +29,8 @@ def plot_loss_from_file(filename, list_model, output_tag):
                 epoch = int(epoch.split(">")[1].split("/")[0].split("Epoch ")[1])
                 # ValueError: could not convert string to float: 'loss: 7.096514131411594e-06\n'
                 loss = float(loss.split(": ")[1])
-                loss_model[n_w_timestamp+idx, epoch-1] = loss
-                vaild_epoch[n_w_timestamp+idx] = epoch
+                loss_model[idx, epoch-1] = loss
+                vaild_epoch[idx] = epoch
 
     list_interpolate = [0, 1, 2]
     # print all loss in list_interpolate
