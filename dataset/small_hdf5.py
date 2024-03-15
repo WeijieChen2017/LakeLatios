@@ -43,9 +43,11 @@ class slice_hdf5_dataset(Dataset):
 
     def __getitem__(self, idx):
         with h5py.File(self.file_path_list[idx], 'r') as f:
+            print(self.file_path_list[idx])
             data = {}
             only_key = list(f.keys())[0]
-            print(f[only_key].keys())
+            print(only_key)
+            print(f[only_key])
             for key in self.required_keys:
                 data[key] = f[only_key][key][()]
 
