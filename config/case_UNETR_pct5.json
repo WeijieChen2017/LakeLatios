@@ -34,5 +34,7 @@
     "validation_case" : 5,
     "random_seed": 42,
     "conv_norm": "InstanceNorm2d",
-    "required_keys": ["mr", "ct"]
+    "required_keys": ["mr", "ct"],
+    "file_prefix": "slice_",
+    "file_affix": ""
 }

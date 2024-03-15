@@ -175,10 +175,14 @@ if __name__ == "__main__":
         search_affix = ""
     else:
         search_affix = cfg["file_affix"]
+    if "file_prefix" not in cfg:
+        search_prefix = ""
+    else:
+        search_prefix = cfg["file_prefix"]
     for case in training_list:
-        hdf5_training_list.extend(sorted(glob.glob(case+"/*"+search_affix+".hdf5")))
+        hdf5_training_list.extend(sorted(glob.glob(case+"/"+search_prefix+"*"+search_affix+".hdf5")))
     for case in validation_list:
-        hdf5_validation_list.extend(sorted(glob.glob(case+"/*"+search_affix+".hdf5")))
+        hdf5_validation_list.extend(sorted(glob.glob(case+"/"+search_prefix+"*"+search_affix+".hdf5")))
     # save the training and validation hdf5 list into the root_dir as a txt file
     with open(root_dir+"hdf5_training_list.txt", "w") as f:
         for item in hdf5_training_list:
