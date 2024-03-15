@@ -55,7 +55,10 @@ if __name__ == "__main__":
 
     # ------------------- random seeds -------------------
     # load the random seed
-    random_seed = cfg["random_seed"]
+    if "cross_validation" not in cfg:
+        random_seed = cfg["random_seed"]
+    else:
+        random_seed = random_id
     torch.manual_seed(random_seed)
     torch.cuda.manual_seed(random_seed)
     torch.cuda.manual_seed_all(random_seed)
