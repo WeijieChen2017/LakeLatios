@@ -30,7 +30,13 @@ if __name__ == "__main__":
     import torch
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("################### device:", device, "###################")
-    root_dir = cfg["root_dir"]
+    if "cross_validation" not in cfg:
+        root_dir = cfg["root_dir"]
+    else:
+        # generate an random 3-digit number according to current time as the cross_validation
+        random_id = int(time.time() % 1000)
+        root_dir = cfg["root_dir"] + f"cv{}".format(random_id)
+    print("------------------- root_dir:", root_dir, "-------------------")
     if not os.path.exists(root_dir):
         os.makedirs(root_dir)
     # torch.autograd.set_detect_anomaly(True)

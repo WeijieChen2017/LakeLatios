@@ -1,7 +1,8 @@
 {
     "model_name": "UNet_MONAI",
-    "root_dir": "./proj/case_UNet_pct1_MB/",
+    "root_dir": "./proj/case_UNet_pct1_MB",
     "data_folder": "data/MIMRTL_Brain",
+    "cross_validation": "True",
     "verbose": "False",
 
     "spatial_dims": 2,
