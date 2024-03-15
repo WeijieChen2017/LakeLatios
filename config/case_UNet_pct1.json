@@ -33,5 +33,7 @@
     "validation_case" : 1,
     "shuffle_case": "True",
     "random_seed": 42,
-    "required_keys": ["mr", "ct"]
+    "required_keys": ["mr", "ct"],
+    "file_prefix": "slice_",
+    "file_affix": ""
 }
