@@ -9,7 +9,7 @@ if __name__ == "__main__":
     # run the parser to get the cfg path
     parser = argparse.ArgumentParser(description="Load configuration file path.")
     # Add an argument for the configuration file path with a default value
-    parser.add_argument("--cfg_path", type=str, default="case_UNETR_pct5.json", help="Path to the configuration file.")
+    parser.add_argument("--cfg_path", type=str, default="case_UNet_pct1.json", help="Path to the configuration file.")
     
     # Parse the command-line arguments
     args = parser.parse_args()
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     else:
         # generate an random 3-digit number according to current time as the cross_validation
         random_id = int(time.time() % 1000)
-        root_dir = cfg["root_dir"] + f"cv{}".format(random_id)
+        root_dir = cfg["root_dir"] + f"cv{random_id}/"
     print("------------------- root_dir:", root_dir, "-------------------")
     if not os.path.exists(root_dir):
         os.makedirs(root_dir)
