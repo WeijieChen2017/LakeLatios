@@ -255,6 +255,8 @@ if __name__ == "__main__":
                 pred = model(mr)
                 loss = loss_function(pred, ct)
                 loss.backward()
+                # grad clipping
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                 optimizer.step()
                 text_loss = loss.item()
                 epoch_loss.append(text_loss)
