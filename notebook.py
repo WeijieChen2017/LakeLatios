@@ -73,4 +73,13 @@
 # GPU_75 -> GPU:7
 
 
-
+# Mar 14:
+# 3495093.GPU_11	(03/14/2024 10:37:46 PM)	(Detached) -> UNet_pct1_cv
+# 3470023.GPU_34	(03/14/2024 10:30:32 PM)	(Detached) -> UNet_pct1_cv
+# 3468772.GPU_33	(03/14/2024 10:30:26 PM)	(Detached) -> UNet_pct1_cv
+# 3467883.GPU_32	(03/14/2024 10:30:23 PM)	(Detached) -> UNet_pct1_cv
+# 3467264.GPU_31	(03/14/2024 10:30:11 PM)	(Detached) -> UNet_pct1_cv
+# 3185008.GPU_20	(03/09/2024 02:12:41 AM)	(Detached) -> PP_slice_pct5
+# 3182296.GPU_10	(03/09/2024 02:11:57 AM)	(Detached) -> Deconv_slice_pct5
+# 3177737.GPU_00	(03/09/2024 02:10:34 AM)	(Detached) -> UNETR_slice_pct5
+# 34853.playground	(03/08/2024 12:50:38 AM)	(Detached)

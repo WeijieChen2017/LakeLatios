@@ -1,10 +1,13 @@
 list_model = [
-    "proj/small_prembed_Deconv_pct5_MB",
-    "proj/small_prembed_Deconv_pct5_MB_io16",
-    "proj/small_prembed_PP_pct5_MB",
-    "proj/small_prembed_UNet_pct5_MB",
-    "proj/small_prembed_UNETR_pct5_float16_MB",
-    "proj/small_prembed_UNETR_pct5_MB",
+    # "case_Deconv_pct5_MB",
+    "case_PP_pct5_MB",
+    "case_UNet_pct1_MB_cv26",
+    "case_UNet_pct1_MB_cv43",
+    "case_UNet_pct1_MB_cv47",
+    "case_UNet_pct1_MB_cv49",
+    "case_UNet_pct1_MB_cv660",
+    "case_UNet_pct5_MB",
+    # "case_UNETR_pct5_MB",
 ]
 
 import os
