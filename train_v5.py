@@ -70,6 +70,8 @@ if __name__ == "__main__":
     random.seed(random_seed)
 
     # ------------------- create the model -------------------
+    if "verbose" in cfg:
+        verbose = True if cfg["verbose"] == "True" else False
        # load the model as the "model_name"
     if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
         model = decoder_PyramidPooling_encoder_MedSAM(
@@ -90,7 +92,7 @@ if __name__ == "__main__":
             rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
-            # verbose=True,
+            verbose=verbose,
         )
     elif cfg["model_name"] == "decoder_UNETR_encoder_MedSAM":
         model = decoder_UNETR_encoder_MedSAM(
@@ -111,6 +113,7 @@ if __name__ == "__main__":
             rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
+            verbose=verbose,
         )
     elif cfg["model_name"] == "decoder_Deconv_encoder_MedSAM":
         model = decoder_Deconv_encoder_MedSAM(
@@ -132,6 +135,7 @@ if __name__ == "__main__":
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
             BN=True if cfg["batch_size"] >= 8 else False,
+            verbose=verbose,
         )
     elif cfg["model_name"] == "UNet_MONAI":
         model = UNet_MONAI(
