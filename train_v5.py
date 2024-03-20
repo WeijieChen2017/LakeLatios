@@ -201,15 +201,19 @@ if __name__ == "__main__":
         search_prefix = ""
     else:
         search_prefix = cfg["file_prefix"]
+    if "remove_head_tail" not in cfg:
+        remove_head_tail = 1
+    else:
+        remove_head_tail = cfg["remove_head_tail"]
     for case in training_list:
         found_hdf5 = sorted(glob.glob(case+"/"+search_prefix+"*"+search_affix+".hdf5"))
         # remove the first and last one
-        found_hdf5 = found_hdf5[1:-1]
+        found_hdf5 = found_hdf5[remove_head_tail:-remove_head_tail]
         hdf5_training_list.extend(found_hdf5)
     for case in validation_list:
         found_hdf5 = sorted(glob.glob(case+"/"+search_prefix+"*"+search_affix+".hdf5"))
         # remove the first and last one
-        found_hdf5 = found_hdf5[1:-1]
+        found_hdf5 = found_hdf5[remove_head_tail:-remove_head_tail]
         hdf5_validation_list.extend(found_hdf5)
     # save the training and validation hdf5 list into the root_dir as a txt file
     with open(root_dir+"hdf5_training_list.txt", "w") as f:
@@ -261,8 +265,8 @@ if __name__ == "__main__":
                 pred = model(mr)
                 loss = loss_function(pred, ct)
                 loss.backward()
-                # grad clipping
-                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                # # grad clipping
+                # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                 optimizer.step()
                 text_loss = loss.item()
                 epoch_loss.append(text_loss)
