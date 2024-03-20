@@ -24,7 +24,7 @@ def plot_loss_from_file(filename, list_model, output_tag):
 
     # each line in list_w_timestamp is like %2024-03-05 22:15:29% -> Epoch 1/300, loss: 0.0001564910279885503
     for idx, folder in enumerate(list_model):
-        loss_file = folder + "/" + filename
+        loss_file = "proj/" + folder + "/" + filename
         print(f"Read {loss_file}")
         with open(loss_file, "r") as f:
             lines = f.readlines()
