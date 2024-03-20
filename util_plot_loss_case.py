@@ -11,6 +11,7 @@ list_model = [
 ]
 
 import os
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -80,7 +81,8 @@ def plot_loss_from_file(filename, list_model, output_tag):
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.title(output_tag + " Loss")
-    save_name = "Loss_" + output_tag + "_loss_case.png"
+    time_tag = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
+    save_name = "Loss_" + output_tag + "_loss_case_"+time_tag+".png"
     plt.legend()
     plt.yscale("log")
     plt.savefig(save_name)
