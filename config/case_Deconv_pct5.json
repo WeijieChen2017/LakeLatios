@@ -19,7 +19,7 @@
     "rel_pos_zero_init": "True",
     "window_size": 0,
     "global_attn_indexes": [2, 5, 8, 11],
-    "verbose": "False",
+    "verbose": "True",
     "batch_size": 8,
     "num_workers": 4,
     "lr": 0.0001,
