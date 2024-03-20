@@ -210,5 +210,9 @@ class decoder_Deconv_encoder_MedSAM(nn.Module):
         x = self.deconv(x)
         if self.verbose:
             print("after deconv x.shape", x.shape)
+            # check whether the output is valid
+            print("mean and std:", x.mean(), x.std())
+            # check whether the output is nan
+            print("nan count:", torch.isnan(x).sum())
 
         return x
