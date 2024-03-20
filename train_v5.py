@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     # ------------------- create the model -------------------
     if "model_verbose" in cfg:
-        model_verbose = True if cfg["verbose"] == "True" else False
+        model_verbose = True if cfg["model_verbose"] == "True" else False
        # load the model as the "model_name"
     if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
         model = decoder_PyramidPooling_encoder_MedSAM(
