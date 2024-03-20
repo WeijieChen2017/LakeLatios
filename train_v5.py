@@ -254,6 +254,9 @@ if __name__ == "__main__":
                 epoch_loss.append(text_loss)
                 if verbose:
                     print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
+                    # pause the program
+                    input("Press Enter to continue...")
+
 
         # plot images
         if (epoch+1) % cfg["plot_step"] == 0:
