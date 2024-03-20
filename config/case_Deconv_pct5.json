@@ -23,7 +23,7 @@
     "training_verbose": "True",
     "batch_size": 2,
     "num_workers": 4,
-    "lr": 5e-5,
+    "lr": 1e-5,
     "epochs": 300,
     "gpu_list": "0",
     "eval_step": 1,
