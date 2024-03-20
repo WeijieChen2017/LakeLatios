@@ -69,10 +69,16 @@ if __name__ == "__main__":
     np.random.seed(random_seed)
     random.seed(random_seed)
 
-    # ------------------- create the model -------------------
+    # ------------------- verbose -------------------
+    # model_verbose
     if "model_verbose" in cfg:
         model_verbose = True if cfg["model_verbose"] == "True" else False
-       # load the model as the "model_name"
+    # training_verbose
+    if "training_verbose" in cfg:
+        training_verbose = True if cfg["training_verbose"] == "True" else False
+
+    # ------------------- create the model -------------------
+    # load the model as the "model_name"
     if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
         model = decoder_PyramidPooling_encoder_MedSAM(
             img_size=cfg["img_size"],
@@ -207,8 +213,8 @@ if __name__ == "__main__":
         for item in hdf5_validation_list:
             f.write("%s\n" % item)
     # create the dataset and dataloader
-    training_dataset = slice_hdf5_dataset(hdf5_training_list, required_keys=cfg["required_keys"])
-    validation_dataset = slice_hdf5_dataset(hdf5_validation_list, required_keys=cfg["required_keys"])
+    training_dataset = slice_hdf5_dataset(hdf5_training_list, required_keys=cfg["required_keys"], training_verbose=training_verbose)
+    validation_dataset = slice_hdf5_dataset(hdf5_validation_list, required_keys=cfg["required_keys"], training_verbose=training_verbose)
 
     from torch.utils.data import DataLoader
     training_dataloader = DataLoader(training_dataset, batch_size=cfg["batch_size"], shuffle=True)
@@ -228,10 +234,6 @@ if __name__ == "__main__":
     batch_size = cfg["batch_size"]
     # output the parameters
     print(f"n_train: {n_train}, n_val: {n_val}), batch_size: {batch_size}")
-
-    # training_verbose
-    if "training_verbose" in cfg:
-        training_verbose = True if cfg["training_verbose"] == "True" else False
 
     # ------------------- start training -------------------
     # train the model
