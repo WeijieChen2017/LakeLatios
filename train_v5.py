@@ -161,8 +161,9 @@ if __name__ == "__main__":
     data_folder = cfg["data_folder"]
     import glob
     case_list = sorted(glob.glob(data_folder+"/*"))
-    if cfg["shuffle_case"] == "True":
-        random.shuffle(case_list)
+    if "shuffle_case" in cfg:
+        if cfg["shuffle_case"] == "True":
+            random.shuffle(case_list)
     training_list = case_list[:training_case]
     validation_list = case_list[training_case:training_case+validation_case]
     # save the training and validation list into the root_dir as a txt file
