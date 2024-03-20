@@ -252,6 +252,8 @@ if __name__ == "__main__":
                 optimizer.step()
                 text_loss = loss.item()
                 epoch_loss.append(text_loss)
+                if verbose:
+                    print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
 
         # plot images
         if (epoch+1) % cfg["plot_step"] == 0:
