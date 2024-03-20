@@ -70,8 +70,8 @@ if __name__ == "__main__":
     random.seed(random_seed)
 
     # ------------------- create the model -------------------
-    if "verbose" in cfg:
-        verbose = True if cfg["verbose"] == "True" else False
+    if "model_verbose" in cfg:
+        model_verbose = True if cfg["verbose"] == "True" else False
        # load the model as the "model_name"
     if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
         model = decoder_PyramidPooling_encoder_MedSAM(
@@ -92,7 +92,7 @@ if __name__ == "__main__":
             rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
-            verbose=verbose,
+            verbose=model_verbose,
         )
     elif cfg["model_name"] == "decoder_UNETR_encoder_MedSAM":
         model = decoder_UNETR_encoder_MedSAM(
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
-            verbose=verbose,
+            verbose=model_verbose,
         )
     elif cfg["model_name"] == "decoder_Deconv_encoder_MedSAM":
         model = decoder_Deconv_encoder_MedSAM(
@@ -135,7 +135,7 @@ if __name__ == "__main__":
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
             BN=True if cfg["batch_size"] >= 8 else False,
-            verbose=verbose,
+            verbose=model_verbose,
         )
     elif cfg["model_name"] == "UNet_MONAI":
         model = UNet_MONAI(
@@ -229,6 +229,10 @@ if __name__ == "__main__":
     # output the parameters
     print(f"n_train: {n_train}, n_val: {n_val}), batch_size: {batch_size}")
 
+    # training_verbose
+    if "training_verbose" in cfg:
+        training_verbose = True if cfg["training_verbose"] == "True" else False
+
     # ------------------- start training -------------------
     # train the model
     for epoch in range(cfg["epochs"]):
@@ -252,10 +256,10 @@ if __name__ == "__main__":
                 optimizer.step()
                 text_loss = loss.item()
                 epoch_loss.append(text_loss)
-                if verbose:
+                if training_verbose:
                     print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
                     # pause the program
-                    input("Press Enter to continue...")
+                    # input("Press Enter to continue...")
 
 
         # plot images
