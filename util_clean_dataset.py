@@ -21,7 +21,7 @@ for idx, data_path in enumerate(data_list):
         # get data
         for key in keys:
             data = f[key][()]
-            print(key, np.sum(data < 1e-6))
+            print(key, np.sum(data < 1e-3))
             # check whether the data(ndarray) is valid, if not, change the filename to .invalid
             # rule: the num of values < 1e-3 should be less than 1/1000 of the total num of values
             # if np.sum(data < 1e-3) > data.size / 1000:
