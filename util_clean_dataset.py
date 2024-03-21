@@ -9,6 +9,8 @@ import numpy as np
 dataset_name = "MIMRTL_Brain"
 data_folder = "data/"+dataset_name
 data_list = sorted(glob.glob(os.path.join(data_folder, "/*/slice_*.hdf5")))
+print("Searching for data in the following folders:", data_folder)
+print("Found", len(data_list), "data files")
 
 for idx, data_path in enumerate(data_list):
     print(f"Processing {idx+1}/{len(data_list)}: {data_path}")
