@@ -1,6 +1,6 @@
 {
     "model_name": "decoder_UNETR_encoder_MedSAM",
-    "root_dir": "./proj/case_UNETR_pct5_MB/",
+    "root_dir": "./proj/case_UNETR_pct100_MB/",
     "data_folder": "data/MIMRTL_Brain",
     "img_size": 1024,
     "patch_size": 16,
@@ -27,7 +27,7 @@
     "epochs": 300,
     "gpu_list": "0",
     "eval_step": 1,
-    "save_step": 10,
+    "save_step": 20,
     "plot_step": 1,
     "print_batch_step": 1000,
     "subset_fraction": 0.05,
