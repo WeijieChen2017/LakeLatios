@@ -25,6 +25,6 @@ for idx, data_path in enumerate(data_list):
             # rule: the num of values < 1e-3 should be less than 1/1000 of the total num of values
             if np.sum(data < 1e-3) > data.size / 1000:
                 print(f"---------> Invalid data: {data_path}")
-                os.rename(data_path, data_path + ".invalid")
+                os.system(f"mv {data_path} {data_path}.invalid")
 
             
