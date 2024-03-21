@@ -166,16 +166,27 @@ if __name__ == "__main__":
 
     # ------------------- load the dataset -------------------
     # load all cases and select the first part for tarining and the second part for validation
-    training_case = cfg["training_case"]
-    validation_case = cfg["validation_case"]
+
     data_folder = cfg["data_folder"]
     import glob
     case_list = sorted(glob.glob(data_folder+"/*"))
     if "shuffle_case" in cfg:
         if cfg["shuffle_case"] == "True":
             random.shuffle(case_list)
-    training_list = case_list[:training_case]
-    validation_list = case_list[training_case:training_case+validation_case]
+    if "training_case" in cfg and "validation_case" in cfg:
+        training_case = cfg["training_case"]
+        validation_case = cfg["validation_case"]
+        training_list = case_list[:training_case]
+        validation_list = case_list[training_case:training_case+validation_case]
+    elif "training_ratio" in cfg and "validation_ratio" in cfg and "testing_ratio" in cfg:
+        training_ratio = cfg["training_ratio"]
+        validation_ratio = cfg["validation_ratio"]
+        testing_ratio = cfg["testing_ratio"]
+        training_list = case_list[:int(len(case_list)*training_ratio)]
+        validation_list = case_list[int(len(case_list)*training_ratio):int(len(case_list)*(training_ratio+validation_ratio))]
+        testing_list = case_list[int(len(case_list)*(training_ratio+validation_ratio)):]
+    else:
+        raise ValueError("training_case and validation_case or training_ratio and validation_ratio and testing_ratio not found !")
     # save the training and validation list into the root_dir as a txt file
     with open(root_dir+"training_list.txt", "w") as f:
         for item in training_list:
