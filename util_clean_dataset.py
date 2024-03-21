@@ -23,4 +23,6 @@ for idx, data_path in enumerate(data_list):
             data = f[key][()]
             if np.mean(data) < 1e-3:
                 print(f"Warning: {key} in {data_path} has mean {np.mean(data)}")
+                # rename the file
+                os.system(f"mv {data_path} {data_path+'.invalid'}")
             
