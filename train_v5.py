@@ -240,8 +240,10 @@ if __name__ == "__main__":
         for item in hdf5_validation_list:
             f.write("%s\n" % item)
     # create the dataset and dataloader
-    training_dataset = slice_hdf5_dataset(hdf5_training_list, required_keys=cfg["required_keys"], training_verbose=training_verbose)
-    validation_dataset = slice_hdf5_dataset(hdf5_validation_list, required_keys=cfg["required_keys"], training_verbose=training_verbose)
+    training_dataset = slice_hdf5_dataset(hdf5_training_list, required_keys=cfg["required_keys"], 
+                                          training_verbose=training_verbose, training_verbose_file=root_dir+"training_verbose.txt")
+    validation_dataset = slice_hdf5_dataset(hdf5_validation_list, required_keys=cfg["required_keys"],
+                                            training_verbose=training_verbose, training_verbose_file=root_dir+"training_verbose.txt")
 
     from torch.utils.data import DataLoader
     training_dataloader = DataLoader(training_dataset, batch_size=cfg["batch_size"], shuffle=True)

@@ -27,7 +27,9 @@ class small_hdf5_dataset(Dataset):
         return data
 
 class slice_hdf5_dataset(Dataset):
-    def __init__(self, file_path_list, required_keys=[], training_verbose=False, transform=None):
+    def __init__(self, file_path_list, required_keys=[], 
+                 training_verbose=False, training_verbose_file="slice_hdf5_dataset.txt",
+                 transform=None):
         """
         Args:
             file_paths (list of str): List of HDF5 file paths.
@@ -38,6 +40,7 @@ class slice_hdf5_dataset(Dataset):
         self.required_keys = required_keys
         self.training_verbose = training_verbose
         self.transform = transform
+        self.training_verbose_file = training_verbose_file
 
     def __len__(self):
         return len(self.file_path_list)
@@ -50,7 +53,7 @@ class slice_hdf5_dataset(Dataset):
 
         if self.training_verbose:
             # write to a file
-            with open("slice_hdf5_dataset.txt", "a") as f:
+            with open(self.training_verbose_file, "a") as f:
                 f.write(f"idx {idx}, {self.file_path_list[idx]}\n")
                 for key in self.required_keys:
                     f.write(f"key {key}, data[key].shape {data[key].shape}\n")
