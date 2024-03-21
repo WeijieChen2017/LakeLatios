@@ -24,6 +24,7 @@ for idx, data_path in enumerate(data_list):
     with h5py.File(data_path, 'r') as f:
         # get keys
         keys = list(f.keys())
+        print(f"Processing {idx+1}/{len(data_list)}: {data_path}, keys {keys}")
         # get data
         for key in keys:
             data = f[key][()]
