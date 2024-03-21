@@ -178,6 +178,7 @@ if __name__ == "__main__":
         validation_case = cfg["validation_case"]
         training_list = case_list[:training_case]
         validation_list = case_list[training_case:training_case+validation_case]
+        testing_list = case_list[training_case+validation_case:]
     elif "training_ratio" in cfg and "validation_ratio" in cfg and "testing_ratio" in cfg:
         training_ratio = cfg["training_ratio"]
         validation_ratio = cfg["validation_ratio"]
@@ -194,11 +195,16 @@ if __name__ == "__main__":
     with open(root_dir+"validation_list.txt", "w") as f:
         for item in validation_list:
             f.write("%s\n" % item)
+    with open(root_dir+"testing_list.txt", "w") as f:
+        for item in testing_list:
+            f.write("%s\n" % item)
     # output the training and validation list
     for idx, item in enumerate(training_list):
         print(f"Training {idx+1}: {item}")
     for idx, item in enumerate(validation_list):
         print(f"Validation {idx+1}: {item}")
+    # for idx, item in enumerate(testing_list):
+    #     print(f"Testing {idx+1}: {item}")
     # load all hdf5 in the training and validation list
     # in each folder, there are pack_000.hdf5, pack_001.hdf5, ...
     hdf5_training_list = []
