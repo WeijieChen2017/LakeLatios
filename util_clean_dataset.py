@@ -7,7 +7,7 @@ import torch
 import numpy as np
 
 dataset_name = "MIMRTL_Brain"
-data_folder = "data/MIMRTL_Brain"
+data_folder = "data/"+dataset_name
 data_list = sorted(glob.glob(os.path.join(data_folder, "/*/slice_*.hdf5")))
 
 for idx, data_path in enumerate(data_list):
