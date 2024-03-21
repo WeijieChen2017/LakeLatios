@@ -9,6 +9,12 @@ import numpy as np
 dataset_name = "MIMRTL_Brain"
 data_folder = "data/"+dataset_name
 data_list = sorted(glob.glob(data_folder+"/*/slice_*.hdf5"))
+
+# the folder name is int
+# data_list = [x for x in data_list if x.split("/")[-2].isdigit()]
+# filter out int less than 657
+data_list = [x for x in data_list if int(x.split("/")[-2]) >= 657]
+
 print("Searching for data in the following folders:", data_folder)
 print("Found", len(data_list), "data files")
 input("Press Enter to continue...")
