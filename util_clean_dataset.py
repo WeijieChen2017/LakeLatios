@@ -21,10 +21,11 @@ for idx, data_path in enumerate(data_list):
         # get data
         for key in keys:
             data = f[key][()]
+            print(key, np.sum(data < 1e-6))
             # check whether the data(ndarray) is valid, if not, change the filename to .invalid
             # rule: the num of values < 1e-3 should be less than 1/1000 of the total num of values
-            if np.sum(data < 1e-3) > data.size / 1000:
-                print(f"---------> Invalid data: {data_path}")
-                os.system(f"mv {data_path} {data_path}.invalid")
+            # if np.sum(data < 1e-3) > data.size / 1000:
+            #     print(f"---------> Invalid data: {data_path}")
+            #     os.system(f"mv {data_path} {data_path}.invalid")
 
             
