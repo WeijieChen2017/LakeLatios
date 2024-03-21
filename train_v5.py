@@ -296,7 +296,10 @@ if __name__ == "__main__":
                     input("Press Enter to continue...")
                 epoch_loss.append(text_loss)
                 if training_verbose:
-                    print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
+                    # write the loss into a txt file
+                    with open(root_dir+"training_verbose.txt", "a") as f:
+                        f.write(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}\n")
+                    # print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
                     # pause the program
                     # input("Press Enter to continue...")
 

@@ -49,9 +49,14 @@ class slice_hdf5_dataset(Dataset):
                 data[key] = f[key][()]
 
         if self.training_verbose:
-            print(f"idx {idx}, {self.file_path_list[idx]}")
-            for key in self.required_keys:
-                print(f"key {key}, data[key].shape {data[key].shape}")
+            # write to a file
+            with open("slice_hdf5_dataset.txt", "a") as f:
+                f.write(f"idx {idx}, {self.file_path_list[idx]}\n")
+                for key in self.required_keys:
+                    f.write(f"key {key}, data[key].shape {data[key].shape}\n")
+            # print(f"idx {idx}, {self.file_path_list[idx]}")
+            # for key in self.required_keys:
+            #     print(f"key {key}, data[key].shape {data[key].shape}")
         return data
 
 # # Usage
