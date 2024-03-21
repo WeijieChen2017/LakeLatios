@@ -20,9 +20,9 @@ for idx, data_path in enumerate(data_list):
         # get data
         for key in keys:
             data = f[key][()]
-            # check whether the data(pytorch tensor) is valid, if not, change the filename to .invalid
+            # check whether the data(ndarray) is valid, if not, change the filename to .invalid
             # rule: the num of values < 1e-3 should be less than 1/1000 of the total num of values
-            if torch.sum(data < 1e-3) > data.numel() / 1000:
+            if np.sum(data < 1e-3) > data.size / 1000:
                 print(f"---------> Invalid data: {data_path}")
                 os.rename(data_path, data_path + ".invalid")
 
