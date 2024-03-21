@@ -286,6 +286,14 @@ if __name__ == "__main__":
                 # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                 optimizer.step()
                 text_loss = loss.item()
+                # if text_loss is nan, pause the program
+                if np.isnan(text_loss):
+                    print("text_loss is nan !")
+                    print(f"idx_batch: {idx_batch}, mr.shape: {mr.shape}, ct.shape: {ct.shape}, pred.shape: {pred.shape}")
+                    print(f"mr: {mr}")
+                    print(f"ct: {ct}")
+                    print(f"pred: {pred}")
+                    input("Press Enter to continue...")
                 epoch_loss.append(text_loss)
                 if training_verbose:
                     print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
