@@ -317,6 +317,8 @@ if __name__ == "__main__":
             if (idx_batch+1) % display_step == 0:
                 print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {display_loss/display_step}")
                 display_loss = 0.0
+                with open(root_dir+"training_verbose.txt", "a") as f:
+                    f.write(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {display_loss/display_step}\n")
             
 
         # plot images
