@@ -261,17 +261,24 @@ if __name__ == "__main__":
     n_train = len(training_list)
     n_val = len(validation_list)
     batch_size = cfg["batch_size"]
+    if "display_loss_per_batch" in cfg:
+        display_step = cfg["display_loss_per_batch"]
+    else:
+        display_step = 1000
     # output the parameters
+    n_epoch = cfg["epochs"]
     print(f"n_train: {n_train}, n_val: {n_val}), batch_size: {batch_size}")
 
     # ------------------- start training -------------------
     # train the model
-    for epoch in range(cfg["epochs"]):
+    for epoch in range(n_epoch):
 
         epoch_loss = []
         # training
         model.train()
         # use training_dataloader to load the data
+        display_loss = 0.0
+
         for idx_batch, data in enumerate(training_dataloader):
             # data is a dict with keys in cfg["required_keys"], and the values are tensors
             # [4, 1, 3, 1024, 1024], so squeeze the second dimension
@@ -288,6 +295,7 @@ if __name__ == "__main__":
                 # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                 optimizer.step()
                 text_loss = loss.item()
+                display_loss += text_loss
                 # if text_loss is nan, pause the program
                 if np.isnan(text_loss):
                     print("text_loss is nan !")
@@ -304,7 +312,12 @@ if __name__ == "__main__":
                     # print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
                     # pause the program
                     # input("Press Enter to continue...")
-
+                        
+            # display the loss
+            if (idx_batch+1) % display_step == 0:
+                print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {display_loss/display_step}")
+                display_loss = 0.0
+            
 
         # plot images
         if (epoch+1) % cfg["plot_step"] == 0:
