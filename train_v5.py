@@ -85,6 +85,11 @@ if __name__ == "__main__":
     print(f"training_verbose: {training_verbose}")
 
     # ------------------- create the model -------------------
+    if "last_channel_num" in cfg:
+        last_channel_num = cfg["last_channel_num"]
+    else:
+        last_channel_num = 32
+
     # load the model as the "model_name"
     if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
         model = decoder_PyramidPooling_encoder_MedSAM(
@@ -149,6 +154,7 @@ if __name__ == "__main__":
             global_attn_indexes=cfg["global_attn_indexes"],
             BN=True if cfg["batch_size"] >= 8 else False,
             verbose=model_verbose,
+            last_channel_num=last_channel_num,
         )
     elif cfg["model_name"] == "UNet_MONAI":
         model = UNet_MONAI(
@@ -258,7 +264,17 @@ if __name__ == "__main__":
     
     # ------------------- training setting -------------------
     # create the optimizer
-    optimizer = optim.Adam(model.parameters(), lr=cfg["lr"])
+    if "optimizer" in cfg:
+        if cfg["optimizer"] == "Adam":
+            optimizer = optim.Adam(model.parameters(), lr=cfg["lr"])
+        elif cfg["optimizer"] == "AdamW":
+            optimizer = optim.AdamW(model.parameters(), lr=cfg["lr"])
+        elif cfg["optimizer"] == "SGD":
+            optimizer = optim.SGD(model.parameters(), lr=cfg["lr"])
+        else:
+            raise ValueError("optimizer not found !")
+    else:
+        optimizer = optim.Adam(model.parameters(), lr=cfg["lr"])
 
     # create the loss function using MAE loss
     loss_function = nn.L1Loss()

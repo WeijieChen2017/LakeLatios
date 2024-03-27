@@ -47,6 +47,7 @@ class decoder_Deconv_encoder_MedSAM(nn.Module):
         global_attn_indexes: Tuple[int, ...] = (),
         verbose: bool = False,
         BN: bool = False,
+        last_channel_num: int = 32,
     ) -> None:
         """
         Args:
@@ -70,6 +71,7 @@ class decoder_Deconv_encoder_MedSAM(nn.Module):
         self.img_size = img_size
         self.global_attn_indexes = global_attn_indexes
         self.verbose = verbose
+        self.last_channel_num = last_channel_num
 
         # ENCODER modules
         self.patch_embed = PatchEmbed(
@@ -123,15 +125,38 @@ class decoder_Deconv_encoder_MedSAM(nn.Module):
         )
 
         #([2, 256, 64, 64])
+        nc = self.last_channel_num
+        nc2 = nc * 2
+        nc4 = nc * 4
+        nc8 = nc * 8
+
+        self.new_neck = nn.Sequential(
+            nn.Conv2d(
+                embed_dim,
+                nc8,
+                kernel_size=1,
+                bias=False,
+            ),
+            LayerNorm2d(nc8),
+            nn.Conv2d(
+                nc8,
+                nc8,
+                kernel_size=3,
+                padding=1,
+                bias=False,
+            ),
+            LayerNorm2d(nc8),
+        )
+                
         self.deconv = nn.Sequential(
-            blue_block(256, 256, 2, BN), # 64px -> 128px
-            yellow_block(256, 128, 2, BN), # 128px -> 128px
-            blue_block(128, 128, 2, BN), # 128px -> 256px
-            yellow_block(128, 64, 2, BN), # 256px -> 256px
-            blue_block(64, 64, 2, BN), # 256px -> 512px
-            yellow_block(64, 32, 2, BN), # 512px -> 512px
-            blue_block(32, 32, 2, BN), # 512px -> 1024px
-            yellow_block(32, out_chans, 2, BN), # 1024px -> 1024px
+            blue_block(nc8, nc8, 2, BN), # 64px -> 128px
+            yellow_block(nc8, nc4, 2, BN), # 128px -> 128px
+            blue_block(nc4, nc4, 2, BN), # 128px -> 256px
+            yellow_block(nc4, nc2, 2, BN), # 256px -> 256px
+            blue_block(nc2, nc2, 2, BN), # 256px -> 512px
+            yellow_block(nc2, nc, 2, BN), # 512px -> 512px
+            blue_block(nc, nc, 2, BN), # 512px -> 1024px
+            yellow_block(nc, out_chans, 2, BN), # 1024px -> 1024px
             nn.Conv2d(out_chans, out_chans, kernel_size=1, bias=False),
         )
 
@@ -203,9 +228,13 @@ class decoder_Deconv_encoder_MedSAM(nn.Module):
             if self.verbose:
                 print("after block", i, x.shape)
 
-        x = self.neck(x.permute(0, 3, 1, 2))
+        x = self.new_neck(x.permute(0, 3, 1, 2))
         if self.verbose:
             print("after neck x.shape", x.shape)
+
+        # x = self.neck(x.permute(0, 3, 1, 2))
+        # if self.verbose:
+        #     print("after neck x.shape", x.shape)
         
         x = self.deconv(x)
         if self.verbose:
