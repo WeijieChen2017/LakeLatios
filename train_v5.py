@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # cfg_path = "config_0221.json"
     cfg_path = "config/"+args.cfg_path
     cfg = json.load(open(cfg_path))
-    print(cfg)
+    # print(cfg)
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     import torch
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -76,6 +76,13 @@ if __name__ == "__main__":
     # training_verbose
     if "training_verbose" in cfg:
         training_verbose = True if cfg["training_verbose"] == "True" else False
+    # show the configuration
+    print("################### Configuration ###################")
+    for key, value in cfg.items():
+        print(f"{key}: {value}")
+    print("################### Verbose ###################")
+    print(f"model_verbose: {model_verbose}")
+    print(f"training_verbose: {training_verbose}")
 
     # ------------------- create the model -------------------
     # load the model as the "model_name"
