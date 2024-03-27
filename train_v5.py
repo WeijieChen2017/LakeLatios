@@ -34,7 +34,7 @@ if __name__ == "__main__":
         root_dir = cfg["root_dir"]
     else:
         # generate an random 3-digit number according to current time as the cross_validation
-        random_id = int(time.time() % 1000)
+        random_id = int(time.time() % 10000)
         root_dir = cfg["root_dir"] + f"_cv{random_id}/"
     print("------------------- root_dir:", root_dir, "-------------------")
     if not os.path.exists(root_dir):
