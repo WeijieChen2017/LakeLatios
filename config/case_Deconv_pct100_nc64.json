@@ -1,6 +1,6 @@
 {
     "model_name": "decoder_Deconv_encoder_MedSAM",
-    "root_dir": "./proj/case_Deconv_pct100_MB/",
+    "root_dir": "./proj/case_Deconv_pct100_nc64_MB/",
     "data_folder": "data/MIMRTL_Brain",
     "img_size": 1024,
     "patch_size": 16,
