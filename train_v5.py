@@ -258,7 +258,7 @@ if __name__ == "__main__":
     
     # ------------------- training setting -------------------
     # create the optimizer
-    optimizer = optim.AdamW(model.parameters(), lr=cfg["lr"])
+    optimizer = optim.Adam(model.parameters(), lr=cfg["lr"])
 
     # create the loss function using MAE loss
     loss_function = nn.L1Loss()
@@ -298,6 +298,7 @@ if __name__ == "__main__":
                 pred = model(mr)
                 loss = loss_function(pred, ct)
                 loss.backward()
+                # save the gradient into training verbose
                 # # grad clipping
                 # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                 optimizer.step()
