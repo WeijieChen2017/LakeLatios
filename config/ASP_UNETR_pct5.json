@@ -40,5 +40,5 @@
     "file_affix": "",
     "remove_head_tail": 2,
     "shuffle_case": "True",
-    "cross_validation": "True",
+    "cross_validation": "True"
 }
