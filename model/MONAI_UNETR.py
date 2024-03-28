@@ -24,7 +24,7 @@ from monai.networks.layers import Conv
 # after neck x.shape torch.Size([2, 256, 64, 64])
 # torch.Size([2, 256, 64, 64])
 
-class decoder_UNETR_encoder_MedSAM(nn.Module):
+class MONAI_UNETR(nn.Module):
     def __init__(
         self,
         img_size: int = 1024,
