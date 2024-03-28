@@ -130,13 +130,14 @@ class MONAI_ViTAutoEnc(nn.Module):
         nc8 = nc * 8
 
         self.spatial_dims = 2
-        self.patch_size = [1024, 1024]
         conv_trans = Conv[Conv.CONVTRANS, self.spatial_dims]
+        conv = Conv[Conv.CONV, self.spatial_dims]
         
-        self.convTrans_1 = conv_trans(nc8, nc4, kernel_size=3, stride=2, padding=1, bias=False)
-        self.convTrans_2 = conv_trans(nc4, nc2, kernel_size=3, stride=2, padding=1, bias=False)
-        self.convTrans_3 = conv_trans(nc2, nc, kernel_size=3, stride=2, padding=1, bias=False)
-        self.convTrans_4 = conv_trans(nc, out_chans, kernel_size=3, stride=2, padding=1, bias=False)
+        self.convTrans_1 = conv_trans(nc8, nc4, kernel_size=3, stride=2, padding=2, bias=False)
+        self.convTrans_2 = conv_trans(nc4, nc2, kernel_size=3, stride=2, padding=2, bias=False)
+        self.convTrans_3 = conv_trans(nc2, nc, kernel_size=3, stride=2, padding=2, bias=False)
+        self.convTrans_4 = conv_trans(nc, nc, kernel_size=3, stride=2, padding=2, bias=False)
+        self.out = conv(nc, out_chans, kernel_size=3, stride=1, padding=0, bias=False)
         
         self._freeze_backbone()
         self._init_weights()
@@ -222,5 +223,8 @@ class MONAI_ViTAutoEnc(nn.Module):
         x = self.convTrans_4(x)
         if self.verbose:
             print("after convTrans_4 x.shape", x.shape, "means", x.mean(), "std", x.std())
+        x = self.out(x)
+        if self.verbose:
+            print("after out x.shape", x.shape, "means", x.mean(), "std", x.std())
 
         return x
