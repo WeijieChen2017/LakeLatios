@@ -139,7 +139,7 @@ class MONAI_ViTAutoEnc(nn.Module):
         self.convTrans_3 = conv_trans(nc2, nc, kernel_size=4, stride=2, padding=1, bias=False)
         self.convTrans_4 = conv_trans(nc, nc, kernel_size=4, stride=2, padding=1, bias=False)
 
-        self.out = conv(nc, out_chans, kernel_size=3, stride=1, bias=False)
+        self.out = conv(nc, out_chans, kernel_size=3, padding=1, bias=False)
         
         self._freeze_backbone()
         self._init_weights()
