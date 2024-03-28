@@ -329,10 +329,12 @@ class MONAI_UNETR(nn.Module):
             print("after decoder_out out.shape", out.shape)
             # ViT_heads.append(out.permute(0, 2, 3, 1).cpu().detach().numpy())
 
-        if self.verbose:
-            return out, ViT_heads
-        else:
-            return out
+        return out
+
+        # if self.verbose:
+        #     return out, ViT_heads
+        # else:
+        #     return out
     
 # x.shape torch.Size([2, 3, 1024, 1024])
 # zx.shape torch.Size([2, 32, 1024, 1024])
