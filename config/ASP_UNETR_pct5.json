@@ -38,5 +38,7 @@
     "required_keys": ["mr", "ct"],
     "file_prefix": "slice_",
     "file_affix": "",
-    "remove_head_tail": 2
+    "remove_head_tail": 2,
+    "shuffle_case": "True",
+    "cross_validation": "True",
 }
