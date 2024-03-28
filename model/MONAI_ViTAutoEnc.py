@@ -134,10 +134,10 @@ class MONAI_ViTAutoEnc(nn.Module):
         conv = Conv[Conv.CONV, self.spatial_dims]
         
         # we need to use trans conv to upsample the feature map from 64x64 to 128x128
-        self.convTrans_1 = conv_trans(nc8, nc4, kernel_size=4, stride=2, bias=False)
-        self.convTrans_2 = conv_trans(nc4, nc2, kernel_size=4, stride=2, bias=False)
-        self.convTrans_3 = conv_trans(nc2, nc, kernel_size=4, stride=2, bias=False)
-        self.convTrans_4 = conv_trans(nc, nc, kernel_size=4, stride=2, bias=False)
+        self.convTrans_1 = conv_trans(nc8, nc4, kernel_size=4, stride=2, padding=1, bias=False)
+        self.convTrans_2 = conv_trans(nc4, nc2, kernel_size=4, stride=2, padding=1, bias=False)
+        self.convTrans_3 = conv_trans(nc2, nc, kernel_size=4, stride=2, padding=1, bias=False)
+        self.convTrans_4 = conv_trans(nc, nc, kernel_size=4, stride=2, padding=1, bias=False)
 
         self.out = conv(nc, out_chans, kernel_size=3, stride=1, bias=False)
         
