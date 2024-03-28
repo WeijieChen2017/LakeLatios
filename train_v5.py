@@ -49,6 +49,7 @@ if __name__ == "__main__":
     from model import decoder_PyramidPooling_encoder_MedSAM
     from model import decoder_UNETR_encoder_MedSAM
     from model import decoder_Deconv_encoder_MedSAM
+    from model import MONAI_ViTAutoEnc
     from model import UNet_MONAI
 
     from dataset import slice_hdf5_dataset
@@ -171,6 +172,27 @@ if __name__ == "__main__":
             dropout=cfg["dropout"],
             bias=cfg["bias"],
             adn_ordering=cfg["adn_ordering"],
+        )
+    elif cfg["model_name"] == "MONAI_ViTAutoEnc":
+        model = MONAI_ViTAutoEnc(
+            img_size=cfg["img_size"],
+            patch_size=cfg["patch_size"],
+            in_chans=cfg["in_chans"],
+            out_chans=cfg["out_chans"],
+            out_chans_pretrain=cfg["out_chans_pretrain"],
+            embed_dim=cfg["embed_dim"],
+            depth=cfg["depth"],
+            num_heads=cfg["num_heads"],
+            mlp_ratio=cfg["mlp_ratio"],
+            qkv_bias=True if cfg["qkv_bias"] == "True" else False,
+            norm_layer=nn.LayerNorm if cfg["norm_layer"] == "nn.LayerNorm" else None,
+            act_layer=nn.GELU if cfg["act_layer"] == "nn.GELU" else None,
+            use_abs_pos=True if cfg["use_abs_pos"] == "True" else False,
+            use_rel_pos=False if cfg["use_rel_pos"] == "False" else True,
+            rel_pos_zero_init=True if cfg["rel_pos_zero_init"] == "True" else False,
+            window_size=cfg["window_size"],
+            global_attn_indexes=cfg["global_attn_indexes"],
+            verbose=model_verbose,
         )
     else:
         raise ValueError("model_name not found !")
