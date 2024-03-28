@@ -138,8 +138,7 @@ class MONAI_UNETR(nn.Module):
         conv = Conv[Conv.CONV, self.spatial_dims]
         
 
-        self.z_neck_block = conv
-
+        self.z_neck_block = conv(nc8, nc8, kernel_size=1, bias=False)
         self.z12_block = conv(ebd, nc8, kernel_size=1, bias=False)
         self.z9_block = conv_trans(ebd, nc8, kernel_size=4, stride=2, padding=1, bias=False)
         self.z6_block = nn.Sequential(
