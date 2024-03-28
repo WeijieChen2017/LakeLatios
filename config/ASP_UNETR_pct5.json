@@ -1,6 +1,6 @@
 {
     "model_name": "decoder_UNETR_encoder_MedSAM",
-    "root_dir": "./proj/case_UNETR_pct5_MB/",
+    "root_dir": "./proj/ASP_UNETR_pct5_MB/",
     "data_folder": "data/MIMRTL_Brain",
     "img_size": 1024,
     "patch_size": 16,
