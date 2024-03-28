@@ -46,10 +46,23 @@ class slice_hdf5_dataset(Dataset):
         return len(self.file_path_list)
 
     def __getitem__(self, idx):
-        with h5py.File(self.file_path_list[idx], 'r') as f:
-            data = {}
-            for key in self.required_keys:
-                data[key] = f[key][()]
+        # try to open the file
+        # if failed, use the next file as replacement
+        try:
+            with h5py.File(self.file_path_list[idx], 'r') as f:
+                data = {}
+                for key in self.required_keys:
+                    data[key] = f[key][()]
+        except:
+            idx = (idx+1)%len(self.file_path_list)
+            with h5py.File(self.file_path_list[idx], 'r') as f:
+                data = {}
+                for key in self.required_keys:
+                    data[key] = f[key][()]
+        # with h5py.File(self.file_path_list[idx], 'r') as f:
+        #     data = {}
+        #     for key in self.required_keys:
+        #         data[key] = f[key][()]
 
         if self.training_verbose:
             # write to a file
