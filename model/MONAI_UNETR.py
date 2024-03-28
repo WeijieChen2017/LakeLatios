@@ -176,7 +176,7 @@ class MONAI_UNETR(nn.Module):
         )
 
         self.decoder_x = nn.Sequential(
-            conv(inc+nc, nc, kernel_size=3, padding=1, bias=False),
+            conv(inc, nc, kernel_size=3, padding=1, bias=False),
             conv(nc, nc, kernel_size=3, padding=1, bias=False),
         )        
 
