@@ -124,6 +124,7 @@ def test_model(model, test_loader, device, cfg):
             MR = MR.detach().cpu().numpy()
             CT = CT.detach().cpu().numpy()
             pred = pred.detach().cpu().numpy()
+            print("mr shape", MR.shape, "ct shape", CT.shape, "pred shape", pred.shape)
             # if modality == "MR":
             #     img_data = np.clip(img_data, 0, 3000)
             #     img_data = img_data / 3000
