@@ -40,7 +40,9 @@ class slice_npy(Dataset):
                 data[key] = np.load(self.file_dict_list[idx][key], allow_pickle=True)
         if self.return_filename:
             filename = os.path.basename(self.file_dict_list[idx]["mr"])
+            print("$$$$$$$$$$", filename)
             filename = filename.split(".")[0]
+            print("$$$$$$$$$$", filename)
             return data, filename
         else:
             return data
