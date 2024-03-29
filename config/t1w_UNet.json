@@ -18,7 +18,7 @@
     "adn_ordering": "NDA",
 
     "model_verbose": "False",
-    "training_verbose": "True",
+    "training_verbose": "False",
     "batch_size": 16,
     "num_workers": 4,
     "lr": 1e-4,
