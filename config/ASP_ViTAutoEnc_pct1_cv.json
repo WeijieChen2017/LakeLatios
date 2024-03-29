@@ -1,6 +1,6 @@
 {
     "model_name": "MONAI_ViTAutoEnc",
-    "root_dir": "./proj/case_ViTAutoEnc_pct1_MB",
+    "root_dir": "./proj/case_ViTAutoEnc_pct1_MB_lr4",
     "data_folder": "data/MIMRTL_Brain",
     "img_size": 1024,
     "patch_size": 16,
@@ -23,7 +23,7 @@
     "training_verbose": "True",
     "batch_size": 1,
     "num_workers": 4,
-    "lr": 1e-5,
+    "lr": 1e-4,
     "epochs": 300,
     "gpu_list": "0",
     "eval_step": 1,
