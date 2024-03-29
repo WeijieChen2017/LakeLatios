@@ -15,7 +15,7 @@ class slice_npy(Dataset):
         self.transform = transform
 
     def __len__(self):
-        return len(self.file_path_list)
+        return len(self.file_dict_list)
 
     def __getitem__(self, idx):
         data = {}
