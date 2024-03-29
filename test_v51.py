@@ -114,8 +114,8 @@ def test_model(model, test_loader, device, cfg):
     print(f"Start testing on {n_test} samples.")
     with torch.no_grad():
         for batch, filename in test_loader:
-            MR = batch["MR"].to(device)
-            CT = batch["CT"].to(device)
+            MR = batch["mr"].to(device)
+            CT = batch["ct"].to(device)
             pred = model(MR)
             loss = loss_function(pred, CT)
             # MR = MR.detach().cpu().numpy()
