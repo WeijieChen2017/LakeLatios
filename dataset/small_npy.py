@@ -22,11 +22,11 @@ class slice_npy(Dataset):
         self.init_verbose = init_verbose
 
         if self.init_verbose:
-            print("slice_npy dataset initialized.")
-            print("Number of samples: ", len(self.file_dict_list))
-            print("Required keys: ", self.required_keys)
-            print("is_channel_last: ", self.is_channel_last)
-            print("return_filename: ", self.return_filename)
+            print("---> slice_npy dataset initialized.")
+            print("---> Number of samples: ", len(self.file_dict_list))
+            print("---> Required keys: ", self.required_keys)
+            print("---> is_channel_last: ", self.is_channel_last)
+            print("---> return_filename: ", self.return_filename)
 
     def __len__(self):
         return len(self.file_dict_list)
