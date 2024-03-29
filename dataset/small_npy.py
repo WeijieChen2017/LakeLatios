@@ -6,6 +6,7 @@ from torch.utils.data import Dataset
 class slice_npy(Dataset):
     def __init__(self, file_dict_list, required_keys, 
                  is_channel_last=False, return_filename=False,
+                 init_verbose=False,
                  transform=None):
         """
         Args:
@@ -18,6 +19,14 @@ class slice_npy(Dataset):
         self.transform = transform
         self.is_channel_last = is_channel_last
         self.return_filename = return_filename
+        self.init_verbose = init_verbose
+
+        if self.init_verbose:
+            print("slice_npy dataset initialized.")
+            print("Number of samples: ", len(self.file_dict_list))
+            print("Required keys: ", self.required_keys)
+            print("is_channel_last: ", self.is_channel_last)
+            print("return_filename: ", self.return_filename)
 
     def __len__(self):
         return len(self.file_dict_list)
