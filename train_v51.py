@@ -318,8 +318,9 @@ if __name__ == "__main__":
             # data is a dict with keys in cfg["required_keys"], and the values are tensors
             # [4, 1, 3, 1024, 1024], so squeeze the second dimension
             # load the data
-            mr = data["mr"].float().to(device).squeeze(1)
-            ct = data["ct"].float().to(device).squeeze(1)
+            mr = data["mr"].float().to(device)
+            ct = data["ct"].float().to(device)
+            print(f"mr.shape: {mr.shape}, ct.shape: {ct.shape}")
 
             optimizer.zero_grad()
             with torch.set_grad_enabled(True):
