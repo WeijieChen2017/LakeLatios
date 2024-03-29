@@ -318,7 +318,6 @@ if __name__ == "__main__":
             # data is a dict with keys in cfg["required_keys"], and the values are tensors
             # [4, 1, 3, 1024, 1024], so squeeze the second dimension
             # load the data
-            print(data)
             mr = data["mr"].float().to(device)
             ct = data["ct"].float().to(device)
 
