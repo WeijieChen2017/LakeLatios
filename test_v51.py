@@ -121,8 +121,8 @@ def test_model(model, test_loader, device, cfg):
             CT = data["ct"].to(device)
             pred = model(MR)
             loss = loss_function(pred, CT)
-            # MR = MR.detach().cpu().numpy()
-            # CT = CT.detach().cpu().numpy()
+            MR = MR.detach().cpu().numpy()
+            CT = CT.detach().cpu().numpy()
             pred = pred.detach().cpu().numpy()
             # if modality == "MR":
             #     img_data = np.clip(img_data, 0, 3000)
