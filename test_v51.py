@@ -230,7 +230,7 @@ if __name__ == "__main__":
     print(file_list_dict)
 
     test_dataset = slice_npy(file_list_dict, required_keys=cfg["required_keys"], is_channel_last=True, return_filename=True, init_verbose=True, transform=None)
-    test_loader = DataLoader(test_dataset, batch_size=cfg["batch_size"], shuffle=False, num_workers=cfg["num_workers"], pin_memory=True)
+    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=cfg["num_workers"], pin_memory=True)
     
     # Create a directory to save the predictions
     if not os.path.exists(cfg["root_dir"]):
