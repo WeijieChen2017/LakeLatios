@@ -2,6 +2,7 @@
     "model_name": "UNet_MONAI",
     "root_dir": "./proj/t1w_UNet/",
     "data_folder": "data/t1w",
+    "decoder_path": "./proj/t1w_UNet/best_model.pth",
 
     "spatial_dims": 2,
     "in_channels": 3,
