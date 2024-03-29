@@ -240,9 +240,9 @@ if __name__ == "__main__":
     train_case = cfg["train_case"]
     val_case = cfg["val_case"]
     test_case = cfg["test_case"]
-    training_list = case_list[:train_case]
-    validation_list = case_list[train_case:train_case+val_case]
-    testing_list = case_list[train_case+val_case:]
+    training_list = file_dict_list[:train_case]
+    validation_list = file_dict_list[train_case:train_case+val_case]
+    testing_list = file_dict_list[train_case+val_case:]
 
     # save the training and validation list into the root_dir as a txt file
     with open(root_dir+"training_list.txt", "w") as f:
