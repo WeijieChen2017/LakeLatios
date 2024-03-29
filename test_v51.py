@@ -173,14 +173,6 @@ if __name__ == "__main__":
     # Load model
     model = load_model(cfg, device)
     
-    # Assuming the dataset class for testing is similar to training
-    dataset_test = PairedMRCTDataset_test(
-        path_MR=cfg["data_path_MR"],
-        path_CT=cfg["data_path_CT"],
-        stage="test",
-        subset_fraction=cfg["subset_fraction"],
-    )
-    
     file_list_dict = {
         {'mr': 'data/t1w/6_mr_0.npy', 'ct': 'data/t1w/6_ct_0.npy'},
         {'mr': 'data/t1w/6_mr_1.npy', 'ct': 'data/t1w/6_ct_1.npy'},
@@ -214,7 +206,7 @@ if __name__ == "__main__":
 
 
     test_dataset = slice_npy(file_list_dict, required_keys=cfg["required_keys"], is_channel_last=True)
-    test_loader = DataLoader(dataset_test, batch_size=cfg["batch_size"], shuffle=False, num_workers=cfg["num_workers"], pin_memory=True)
+    test_loader = DataLoader(test_dataset, batch_size=cfg["batch_size"], shuffle=False, num_workers=cfg["num_workers"], pin_memory=True)
     
     # Create a directory to save the predictions
     if not os.path.exists(cfg["root_dir"]):
