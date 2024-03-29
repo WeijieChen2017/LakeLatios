@@ -192,7 +192,7 @@ if __name__ == "__main__":
     # Load model
     model = load_model(cfg, device)
     
-    file_list_dict = {
+    file_list_dict = [
         {'mr': 'data/t1w/6_mr_0.npy', 'ct': 'data/t1w/6_ct_0.npy'},
         {'mr': 'data/t1w/6_mr_1.npy', 'ct': 'data/t1w/6_ct_1.npy'},
         {'mr': 'data/t1w/6_mr_10.npy', 'ct': 'data/t1w/6_ct_10.npy'},
@@ -221,7 +221,7 @@ if __name__ == "__main__":
         {'mr': 'data/t1w/5_mr_7.npy', 'ct': 'data/t1w/5_ct_7.npy'},
         {'mr': 'data/t1w/5_mr_8.npy', 'ct': 'data/t1w/5_ct_8.npy'},
         {'mr': 'data/t1w/5_mr_9.npy', 'ct': 'data/t1w/5_ct_9.npy'},
-    }
+    ]
 
 
     test_dataset = slice_npy(file_list_dict, required_keys=cfg["required_keys"], is_channel_last=True)
