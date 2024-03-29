@@ -9,7 +9,10 @@ import argparse
 import numpy as np
 from dataset import slice_npy
 
-from model import decoder_PyramidPooling_encoder_MedSAM, decoder_UNETR_encoder_MedSAM, decoder_Deconv_encoder_MedSAM
+from model import decoder_PyramidPooling_encoder_MedSAM
+from model import decoder_UNETR_encoder_MedSAM
+from model import decoder_Deconv_encoder_MedSAM
+from model import UNet_MONAI
 
 def load_model(cfg, device):
     if cfg["model_name"] == "decoder_PyramidPooling_encoder_MedSAM":
@@ -73,6 +76,22 @@ def load_model(cfg, device):
             rel_pos_zero_init=cfg["rel_pos_zero_init"] == "True",
             window_size=cfg["window_size"],
             global_attn_indexes=cfg["global_attn_indexes"],
+        )
+    elif cfg["model_name"] == "UNet_MONAI":
+        model = UNet_MONAI(
+            spatial_dims=cfg["spatial_dims"],
+            in_channels=cfg["in_channels"],
+            out_channels=cfg["out_channels"],
+            channels=cfg["channels"],
+            strides=cfg["strides"],
+            kernel_size=cfg["kernel_size"],
+            up_kernel_size=cfg["up_kernel_size"],
+            num_res_units=cfg["num_res_units"],
+            act=cfg["act"], 
+            norm=cfg["norm"],
+            dropout=cfg["dropout"],
+            bias=cfg["bias"],
+            adn_ordering=cfg["adn_ordering"],
         )
     else:
         raise ValueError("model_name not found !")
