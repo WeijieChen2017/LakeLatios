@@ -388,8 +388,8 @@ if __name__ == "__main__":
             
             for idx_batch, data in enumerate(validation_dataloader):
                 
-                mr = data["mr"].float().to(device).squeeze(1)
-                ct = data["ct"].float().to(device).squeeze(1)
+                mr = data["mr"].float().to(device)
+                ct = data["ct"].float().to(device)
 
                 with torch.set_grad_enabled(False):
                     pred = model(mr)
