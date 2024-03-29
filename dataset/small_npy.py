@@ -1,9 +1,12 @@
+import os
 import torch
 import numpy as np
 from torch.utils.data import Dataset
 
 class slice_npy(Dataset):
-    def __init__(self, file_dict_list, required_keys, is_channel_last=False, transform=None):
+    def __init__(self, file_dict_list, required_keys, 
+                 is_channel_last=False, return_filename=False,
+                 transform=None):
         """
         Args:
             file_paths (list of str): List of npy file paths.
@@ -14,6 +17,7 @@ class slice_npy(Dataset):
         self.required_keys = required_keys
         self.transform = transform
         self.is_channel_last = is_channel_last
+        self.return_filename = return_filename
 
     def __len__(self):
         return len(self.file_dict_list)
@@ -25,5 +29,9 @@ class slice_npy(Dataset):
                 data[key] = np.load(self.file_dict_list[idx][key], allow_pickle=True).transpose(2, 0, 1)
             else:
                 data[key] = np.load(self.file_dict_list[idx][key], allow_pickle=True)
-
-        return data
+        if self.return_filename:
+            filename = os.path.basename(self.file_dict_list[idx]["mr"])
+            filename = filename.split(".")[0]
+            return data, filename
+        else:
+            return data

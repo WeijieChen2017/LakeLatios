@@ -113,9 +113,9 @@ def test_model(model, test_loader, device, cfg):
     n_test = len(test_loader)
     print(f"Start testing on {n_test} samples.")
     with torch.no_grad():
-        for idx, data in test_loader:
+        for data, filename_mr in test_loader:
             print(data)
-
+            filename = filename_mr+"_pred"
             MR = data["mr"].to(device)
             CT = data["ct"].to(device)
             pred = model(MR)
