@@ -8,7 +8,8 @@ from torch.utils.data import Dataset
 class slice_npy(Dataset):
     def __init__(self, file_dict_list, required_keys, 
                  is_channel_last=False, return_filename=False,
-                 init_verbose=False, transform=False):
+                 init_verbose=False, transform=False,
+                 output_size=512):
         """
         Args:
             file_paths (list of str): List of npy file paths.
@@ -21,6 +22,7 @@ class slice_npy(Dataset):
         self.is_channel_last = is_channel_last
         self.return_filename = return_filename
         self.init_verbose = init_verbose
+        self.output_size = output_size
         if self.transform:
             self.MedicalDataAugmentation = MedicalDataAugmentation()
 
@@ -37,10 +39,17 @@ class slice_npy(Dataset):
     def __getitem__(self, idx):
         data = {}
         for key in self.required_keys:
+            loaded_data = np.load(self.file_dict_list[idx][key], allow_pickle=True)
             if self.is_channel_last:
-                data[key] = np.load(self.file_dict_list[idx][key], allow_pickle=True).transpose(2, 0, 1)
-            else:
-                data[key] = np.load(self.file_dict_list[idx][key], allow_pickle=True)
+                # change the channel to the first dimension
+                loaded_data = loaded_data.transpose(2, 0, 1)
+            ax, ay, az = loaded_data.shape
+            if ax != self.output_size or ay != self.output_size:
+                # resize the data to the output_size
+                loaded_data = zoom(loaded_data, (self.output_size/ax, self.output_size/ay, 1), order=3)
+
+
+            data[key] = loaded_data
 
         # transform the data for all data in the required_keys
         if self.transform:

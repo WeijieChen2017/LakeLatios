@@ -9,7 +9,7 @@ if __name__ == "__main__":
     # run the parser to get the cfg path
     parser = argparse.ArgumentParser(description="Load configuration file path.")
     # Add an argument for the configuration file path with a default value
-    parser.add_argument("--cfg_path", type=str, default="t1w_UNet_reg.json", help="Path to the configuration file.")
+    parser.add_argument("--cfg_path", type=str, default="t1w_ViTAutoEnc.json", help="Path to the configuration file.")
     
     # Parse the command-line arguments
     args = parser.parse_args()
@@ -270,7 +270,8 @@ if __name__ == "__main__":
     training_transform = cfg["training_transform"]
 
     # create the dataset and dataloader
-    training_dataset = slice_npy(training_list, required_keys=cfg["required_keys"], is_channel_last=True, transform=training_transform)
+    training_dataset = slice_npy(training_list, required_keys=cfg["required_keys"], is_channel_last=True, 
+                                 transform=training_transform, output_size=1024)
     validation_dataset = slice_npy(validation_list, required_keys=cfg["required_keys"], is_channel_last=True)
     testing_dataset = slice_npy(testing_list, required_keys=cfg["required_keys"], is_channel_last=True)
     from torch.utils.data import DataLoader
