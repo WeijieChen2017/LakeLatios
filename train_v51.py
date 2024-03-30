@@ -267,7 +267,7 @@ if __name__ == "__main__":
         f.write(f"Validation: {val_case}\n")
         f.write(f"Testing: {test_case}\n")
 
-    training_transform = cfg["training_transform"]
+    training_transform = True if cfg["training_transform"] == "True" else False
 
     # create the dataset and dataloader
     training_dataset = slice_npy(training_list, required_keys=cfg["required_keys"], is_channel_last=True, 
