@@ -327,7 +327,6 @@ if __name__ == "__main__":
             # load the data
             mr = data["mr"].float().to(device)
             ct = data["ct"].float().to(device)
-            print(mr.shape, ct.shape)
 
             optimizer.zero_grad()
             with torch.set_grad_enabled(True):
