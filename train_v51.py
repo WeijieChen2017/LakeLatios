@@ -274,8 +274,8 @@ if __name__ == "__main__":
     # create the dataset and dataloader
     training_dataset = slice_npy(training_list, required_keys=cfg["required_keys"], is_channel_last=True, 
                                  transform=training_transform, output_size=1024)
-    validation_dataset = slice_npy(validation_list, required_keys=cfg["required_keys"], is_channel_last=True)
-    testing_dataset = slice_npy(testing_list, required_keys=cfg["required_keys"], is_channel_last=True)
+    validation_dataset = slice_npy(validation_list, required_keys=cfg["required_keys"], is_channel_last=True, output_size=1024)
+    testing_dataset = slice_npy(testing_list, required_keys=cfg["required_keys"], is_channel_last=True, output_size=1024)
     from torch.utils.data import DataLoader
     training_dataloader = DataLoader(training_dataset, batch_size=cfg["batch_size"], shuffle=True)
     validation_dataloader = DataLoader(validation_dataset, batch_size=cfg["batch_size"], shuffle=True)
