@@ -43,10 +43,10 @@ class slice_npy(Dataset):
             if self.is_channel_last:
                 # change the channel to the first dimension
                 loaded_data = loaded_data.transpose(2, 0, 1)
-            ax, ay, az = loaded_data.shape
+            num_chan, ax, ay = loaded_data.shape
             if ax != self.output_size or ay != self.output_size:
                 # resize the data to the output_size
-                loaded_data = zoom(loaded_data, (self.output_size/ax, self.output_size/ay, 1), order=3)
+                loaded_data = zoom(loaded_data, (1, self.output_size/ax, self.output_size/ay), order=3)
 
 
             data[key] = loaded_data
