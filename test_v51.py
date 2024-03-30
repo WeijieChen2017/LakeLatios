@@ -138,44 +138,47 @@ def test_model(model, test_loader, device, cfg):
             #     img_data = np.clip(img_data, -1024, 3000)
             #     img_data = img_data / 4024
             loss = loss.item() * 4024
+            print(f"Loss: {loss}")
             total_loss += loss
             # iterate all the filenames in the batch
-            for idx_batch in range(len(filename)):
-                save_name = os.path.join(cfg["root_dir"], filename[idx_batch])
-                save_data = np.squeeze(pred[idx_batch, :, :, :])# convert back to HU
-                np.save(save_name, save_data)
-                # print(f"Saved prediction for {filename[idx_batch]} with loss {loss}")
 
-                # plot input, ground truth and prediction
-                plt.figure(figsize=(15, 5), dpi=100)
-                plt.subplot(1, 3, 1)
-                img_MR = np.squeeze(MR[idx_batch, 1, :, :])
-                plt.imshow(img_MR, cmap="gray")
-                plt.title("MR")
-                plt.axis("off")
+            idx_batch = 0
 
-                plt.subplot(1, 3, 2)
-                img_CT = np.squeeze(CT[idx_batch, :, :, :])
-                plt.imshow(img_CT, cmap="gray")
-                plt.title("CT")
-                plt.axis("off")
+            save_name = os.path.join(cfg["root_dir"], filename)
+            save_data = np.squeeze(pred[idx_batch, :, :, :])# convert back to HU
+            np.save(save_name, save_data)
+            # print(f"Saved prediction for {filename[idx_batch]} with loss {loss}")
 
-                plt.subplot(1, 3, 3)
-                img_pred = np.squeeze(pred[idx_batch, :, :, :])
-                plt.imshow(img_pred, cmap="gray")
-                plt.title("Prediction")
-                plt.axis("off")
+            # plot input, ground truth and prediction
+            plt.figure(figsize=(15, 5), dpi=100)
+            plt.subplot(1, 3, 1)
+            img_MR = np.squeeze(MR[idx_batch, 1, :, :])
+            plt.imshow(img_MR, cmap="gray")
+            plt.title("MR")
+            plt.axis("off")
 
-                plt.savefig(os.path.join(cfg["root_dir"], filename[idx_batch].split(".")[0] + ".png"))
-                plt.close()
+            plt.subplot(1, 3, 2)
+            img_CT = np.squeeze(CT[idx_batch, :, :, :])
+            plt.imshow(img_CT, cmap="gray")
+            plt.title("CT")
+            plt.axis("off")
+
+            plt.subplot(1, 3, 3)
+            img_pred = np.squeeze(pred[idx_batch, :, :, :])
+            plt.imshow(img_pred, cmap="gray")
+            plt.title("Prediction")
+            plt.axis("off")
+
+            plt.savefig(os.path.join(cfg["root_dir"], filename+ ".png"))
+            plt.close()
 
             # write the loss to a file
-            with open(os.path.join(cfg["root_dir"], "loss.txt"), "a") as f:
-                f.write(f"{filename[idx_batch]}, {loss}\n")
+            with open(os.path.join(cfg["root_dir"], "_test_loss.txt"), "a") as f:
+                f.write(f"{filename}, {loss}\n")
     avg_loss = total_loss / len(test_loader)
     print(f"Test Loss: {avg_loss}")
     # write the average loss to a file
-    with open(os.path.join(cfg["root_dir"], "loss.txt"), "a") as f:
+    with open(os.path.join(cfg["root_dir"], "_test_loss.txt"), "a") as f:
         f.write(f"Average Loss: {avg_loss}\n")
 
 if __name__ == "__main__":
