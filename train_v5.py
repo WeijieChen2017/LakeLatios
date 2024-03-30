@@ -220,6 +220,7 @@ if __name__ == "__main__":
     else:
         raise ValueError("model_name not found !")
 
+    model.load_pretrain(cfg["pretrain_path"])
     model.to(device)
 
     # ------------------- load the dataset -------------------
