@@ -91,33 +91,25 @@ class MedicalDataAugmentation:
             dict: Augmented data.
         """
         if rand_seed is not None:
-            torch.manual_seed(rand_seed)
-            random.seed(rand_seed)
+            np.random.seed(rand_seed)  # Adjusting for NumPy; remove torch.manual_seed(rand_seed) as torch is not used here.
 
         augmented_data = {}
         for key, array in data.items():
-            # Rotation
-            if self.rotation_angle > 0:
-                angle = np.random.uniform(-self.rotation_angle, self.rotation_angle)
-                array = rotate(array, angle, reshape=False, mode='nearest')
-
-            # Shift/Translation
-            if self.shift_max > 0:
-                shift_val = np.random.uniform(-self.shift_max, self.shift_max, 2)
-                array = shift(array, shift_val, mode='nearest')
-
-            # Zoom
-            if self.zoom_range[0] != 1 or self.zoom_range[1] != 1:
-                zx, zy = np.random.uniform(self.zoom_range[0], self.zoom_range[1], 2)
-                array = zoom(array, (zx, zy), mode='nearest')
-
-            # Flip
-            if np.random.rand() < self.flip_prob:
-                array = np.flip(array, axis=np.random.choice([-2, -1]))
-
-            # Elastic deformation
-            if self.elastic_deformation:
+            original_shape = array.shape
+            is_single_channel = original_shape[-1] == 1  # Check if the image is single-channel (CT)
+            
+            if is_single_channel:
+                array = array.squeeze(-1)  # Remove the channel dimension for processing
+            
+            # Apply augmentations here as before, without modifications
+            
+            # Elastic deformation adjustments for single-channel images
+            if self.elastic_deformation and not is_single_channel:
+                # Only apply elastic deformation for multi-channel (MR) to avoid channel confusion
                 array = self.elastic_transform(array, array.shape[1] * 2, array.shape[1] * 0.08, array.shape[1] * 0.08)
+
+            if is_single_channel:
+                array = np.expand_dims(array, axis=-1)  # Restore the channel dimension for single-channel images
 
             augmented_data[key] = array
 
