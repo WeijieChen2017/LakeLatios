@@ -22,7 +22,7 @@
 
     "model_verbose": "False",
     "training_verbose": "False",
-    "batch_size": 16,
+    "batch_size": 4,
     "num_workers": 4,
     "lr": 1e-4,
     "epochs": 10000,
