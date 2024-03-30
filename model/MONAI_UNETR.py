@@ -193,8 +193,7 @@ class MONAI_UNETR(nn.Module):
         pretrain_dict = {k[len(remove_prefix):]: v for k, v in pretrain_dict.items() if k[len(remove_prefix):] in model_dict}
         model_dict.update(pretrain_dict)
         self.load_state_dict(model_dict)
-        if self.verbose:
-            print(f"load pretrain from {pretrain_path}")
+        print(f"load pretrain from {pretrain_path}")
 
     def load_from_checkpoint(self, checkpoint_path):
         checkpoint = torch.load(checkpoint_path, map_location="cpu")
