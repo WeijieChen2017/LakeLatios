@@ -1,6 +1,7 @@
 {
     "model_name": "MONAI_ViTAutoEnc",
     "root_dir": "./proj/t1w_ViTAutoEnc/",
+    "pretrain_path": "pretrain/medsam_vit_b.pth",
     "data_folder": "data/t1w",
     "img_size": 1024,
     "patch_size": 16,

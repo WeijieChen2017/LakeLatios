@@ -1,6 +1,7 @@
 {
     "model_name": "MONAI_ViTAutoEnc",
-    "root_dir": "./proj/case_ViTAutoEnc_pct5_MB_lr4",
+    "root_dir": "./proj/Mar29_ViTAutoEnc_pct5_MB_lr4",
+    "pretrain_path": "pretrain/medsam_vit_b.pth",
     "data_folder": "data/MIMRTL_Brain",
     "img_size": 1024,
     "patch_size": 16,
