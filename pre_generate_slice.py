@@ -67,13 +67,19 @@ for data_folder in [data_folder_to_process]:
             print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] Saved MR and CT")
 
             # save the results into a dict named "slice_mr_ct_1024_idxz.hdf5"
-            save_name = os.path.join(case_path, f"slice_mr_ct_1024_{idx_z:03d}.hdf5")
-            with h5py.File(save_name, "w") as f:
-                f.create_dataset("mr", data=mr_slice, compression="gzip", compression_opts=4)
-                f.create_dataset("ct", data=ct_slice, compression="gzip", compression_opts=4)
-            print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] Saved {save_name}")
-            f.close()
-                
+            mr_mean = np.mean(mr_slice)
+            ct_mean = np.mean(ct_slice)
+            if mr_mean > 1e-3 and ct_mean > 1e-3:
+                print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] MR mean: {mr_mean}, CT mean: {ct_mean}")
+                save_name = os.path.join(case_path, f"slice_mr_ct_1024_{idx_z:03d}.hdf5")
+                with h5py.File(save_name, "w") as f:
+                    f.create_dataset("mr", data=mr_slice, compression="gzip", compression_opts=4)
+                    f.create_dataset("ct", data=ct_slice, compression="gzip", compression_opts=4)
+                print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] Saved {save_name}")
+                f.close()
+            else:
+                print(f"[{data_folder}][{idx_case+1}/{n_cases}][{idx_z}/{res_z}] Warning: MR mean: {mr_mean}, CT mean: {ct_mean}")
+                print("Not saved")
 
 # [data/MIMRTL_Brain][1/777][121/124] MR slice shape: torch.Size([1, 3, 1024, 1024])
 # [data/MIMRTL_Brain][1/777][121/124] MR embedding shape: (1, 768, 64, 64), (1, 768, 64, 64), (1, 768, 64, 64), (1, 768, 64, 64), (1, 256, 64, 64)
