@@ -139,7 +139,7 @@ def test_model(model, test_loader, device, cfg):
             #     img_data = np.clip(img_data, -1024, 3000)
             #     img_data = img_data / 4024
             loss = loss.item() * 4024
-            print(f"Loss: {loss}")
+            print(f" ---> Loss: {loss}")
             total_loss += loss
             # iterate all the filenames in the batch
 
