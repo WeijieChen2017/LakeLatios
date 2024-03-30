@@ -115,7 +115,7 @@ def test_model(model, test_loader, device, cfg):
     with torch.no_grad():
         for data, filename_mr in test_loader:
             filename = filename_mr[0]+"_pred"
-            print(f"Processing {filename}")
+            print(f"Processing {filename}", end="")
 
             MR = data["mr"].to(device)
             CT = data["ct"].to(device)
