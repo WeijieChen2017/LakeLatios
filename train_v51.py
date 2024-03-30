@@ -267,12 +267,16 @@ if __name__ == "__main__":
         f.write(f"Validation: {val_case}\n")
         f.write(f"Testing: {test_case}\n")
 
+    training_transform = cfg["training_transform"]
+
     # create the dataset and dataloader
-    training_dataset = slice_npy(training_list, required_keys=cfg["required_keys"], is_channel_last=True)
+    training_dataset = slice_npy(training_list, required_keys=cfg["required_keys"], is_channel_last=True, transform=training_transform)
     validation_dataset = slice_npy(validation_list, required_keys=cfg["required_keys"], is_channel_last=True)
+    testing_dataset = slice_npy(testing_list, required_keys=cfg["required_keys"], is_channel_last=True)
     from torch.utils.data import DataLoader
     training_dataloader = DataLoader(training_dataset, batch_size=cfg["batch_size"], shuffle=True)
     validation_dataloader = DataLoader(validation_dataset, batch_size=cfg["batch_size"], shuffle=True)
+    testing_dataloader = DataLoader(testing_dataset, batch_size=cfg["batch_size"], shuffle=True)
     
     # ------------------- training setting -------------------
     # create the optimizer
@@ -408,3 +412,22 @@ if __name__ == "__main__":
                 print("Model was saved !")
             else:
                 print("Model was not saved !")
+        
+        # testing
+        if (epoch+1) % cfg["test_step"] == 0:
+            model.eval()
+            test_loss = []
+            for idx_batch, data in enumerate(testing_dataloader):
+                mr = data["mr"].float().to(device)
+                ct = data["ct"].float().to(device)
+
+                with torch.set_grad_enabled(False):
+                    pred = model(mr)
+                    loss = loss_function(pred, ct)
+                    test_loss.append(loss.item())
+            
+            test_loss = np.mean(np.asarray(test_loss))
+            print(f"Epoch {epoch+1}/{cfg['epochs']}, test_loss: {test_loss}")
+            time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            with open(root_dir+"test_loss.txt", "a") as f:
+                f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, test_loss: {test_loss}\n")

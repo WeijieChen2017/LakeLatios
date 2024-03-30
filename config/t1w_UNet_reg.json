@@ -1,8 +1,8 @@
 {
     "model_name": "UNet_MONAI",
-    "root_dir": "./proj/t1w_UNet/",
+    "root_dir": "./proj/t1w_UNet_reg/",
     "data_folder": "data/t1w",
-    "decoder_path": "./proj/t1w_UNet/model_10000.pth",
+    "decoder_path": "./proj/t1w_UNet_reg/model_10000.pth",
 
     "spatial_dims": 2,
     "in_channels": 3,
@@ -17,6 +17,8 @@
     "dropout": 0.1,
     "bias": true,
     "adn_ordering": "NDA",
+
+    "training_transform": "True",
 
     "model_verbose": "False",
     "training_verbose": "False",

@@ -3,11 +3,12 @@ import torch
 import numpy as np
 from torch.utils.data import Dataset
 
+# import the data transform class
+
 class slice_npy(Dataset):
     def __init__(self, file_dict_list, required_keys, 
                  is_channel_last=False, return_filename=False,
-                 init_verbose=False,
-                 transform=None):
+                 init_verbose=False, transform=False):
         """
         Args:
             file_paths (list of str): List of npy file paths.
@@ -20,6 +21,8 @@ class slice_npy(Dataset):
         self.is_channel_last = is_channel_last
         self.return_filename = return_filename
         self.init_verbose = init_verbose
+        if self.transform:
+            self.MedicalDataAugmentation = MedicalDataAugmentation()
 
         if self.init_verbose:
             print("---> slice_npy dataset initialized.")
@@ -38,9 +41,113 @@ class slice_npy(Dataset):
                 data[key] = np.load(self.file_dict_list[idx][key], allow_pickle=True).transpose(2, 0, 1)
             else:
                 data[key] = np.load(self.file_dict_list[idx][key], allow_pickle=True)
+
+        # transform the data for all data in the required_keys
+        if self.transform:
+            rand_seed = np.random.randint(0, 100)
+            data = self.MedicalDataAugmentation(data, rand_seed)
+
         if self.return_filename:
             filename = os.path.basename(self.file_dict_list[idx]["mr"])
             filename = filename.split(".")[0]
             return data, filename
         else:
             return data
+
+
+import numpy as np
+import random
+import cv2
+from scipy.ndimage import rotate, zoom, shift
+from scipy.ndimage.interpolation import map_coordinates
+from scipy.ndimage.filters import gaussian_filter
+
+class MedicalDataAugmentation:
+    def __init__(self, rotation_angle=30, shift_max=5, zoom_range=(0.9, 1.1), flip_prob=0.5, elastic_deformation=False):
+        """
+        Initialize the data augmentation class with specified parameters.
+
+        Args:
+            rotation_angle (int): Maximum rotation angle in degrees.
+            shift_max (int or float): Maximum shift in pixels.
+            zoom_range (tuple): Min and max scaling factor.
+            flip_prob (float): Probability of applying a horizontal or vertical flip.
+            elastic_deformation (bool): If True, applies elastic deformation.
+        """
+        self.rotation_angle = rotation_angle
+        self.shift_max = shift_max
+        self.zoom_range = zoom_range
+        self.flip_prob = flip_prob
+        self.elastic_deformation = elastic_deformation
+
+    def __call__(self, data, rand_seed=None):
+        """
+        Apply transformations to the input data.
+
+        Args:
+            data (dict): Dictionary with keys pointing to NumPy arrays representing images.
+
+        Returns:
+            dict: Augmented data.
+        """
+        if rand_seed is not None:
+            torch.manual_seed(rand_seed)
+            random.seed(rand_seed)
+
+        augmented_data = {}
+        for key, array in data.items():
+            # Rotation
+            if self.rotation_angle > 0:
+                angle = np.random.uniform(-self.rotation_angle, self.rotation_angle)
+                array = rotate(array, angle, reshape=False, mode='nearest')
+
+            # Shift/Translation
+            if self.shift_max > 0:
+                shift_val = np.random.uniform(-self.shift_max, self.shift_max, 2)
+                array = shift(array, shift_val, mode='nearest')
+
+            # Zoom
+            if self.zoom_range[0] != 1 or self.zoom_range[1] != 1:
+                zx, zy = np.random.uniform(self.zoom_range[0], self.zoom_range[1], 2)
+                array = zoom(array, (zx, zy), mode='nearest')
+
+            # Flip
+            if np.random.rand() < self.flip_prob:
+                array = np.flip(array, axis=np.random.choice([-2, -1]))
+
+            # Elastic deformation
+            if self.elastic_deformation:
+                array = self.elastic_transform(array, array.shape[1] * 2, array.shape[1] * 0.08, array.shape[1] * 0.08)
+
+            augmented_data[key] = array
+
+        return augmented_data
+
+    def elastic_transform(self, image, alpha, sigma, alpha_affine, random_state=None):
+        """
+        Elastic deformation of images as described in [Simard2003]_ (with modifications).
+        .. [Simard2003] Simard, Steinkraus and Platt, "Best Practices for Convolutional Neural Networks applied to Visual Document Analysis", in
+           Proc. of the International Conference on Document Analysis and Recognition, 2003.
+        """
+        if random_state is None:
+            random_state = np.random.RandomState(None)
+
+        shape = image.shape
+        shape_size = shape[:2]
+        
+        # Random affine
+        center_square = np.float32(shape_size) // 2
+        square_size = min(shape_size) // 3
+        pts1 = np.float32([center_square + square_size, [center_square[0]+square_size, center_square[1]-square_size], center_square - square_size])
+        pts2 = pts1 + random_state.uniform(-alpha_affine, alpha_affine, size=pts1.shape).astype(np.float32)
+        M = cv2.getAffineTransform(pts1, pts2)
+        image = cv2.warpAffine(image, M, shape_size[::-1], borderMode=cv2.BORDER_REFLECT_101)
+
+        dx = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma, mode="constant", cval=0) * alpha
+        dy = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma, mode="constant", cval=0) * alpha
+        dz = np.zeros_like(dx)
+
+        x, y, z = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]), np.arange(shape[2]))
+        indices = np.reshape(y+dy, (-1, 1)), np.reshape(x+dx, (-1, 1)), np.reshape(z+dz, (-1, 1))
+
+        return map_coordinates(image, indices, order=1, mode='reflect').reshape(shape)
