@@ -339,7 +339,7 @@ if __name__ == "__main__":
                 optimizer.step()
                 text_loss = loss.item()
                 display_loss += text_loss
-
+                epoch_loss.append(text_loss)
                 print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
                 if training_verbose:
                     # write the loss into a txt file
