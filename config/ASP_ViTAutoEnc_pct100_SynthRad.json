@@ -2,7 +2,7 @@
     "model_name": "MONAI_ViTAutoEnc",
     "root_dir": "./proj/Mar31_ViTAutoEnc_pct100_SR_lr4/",
     "pretrain_path": "pretrain/medsam_vit_b.pth",
-    "data_folder": "data/SynthRad",
+    "data_folder": "data/SynthRad_Brain",
     "img_size": 1024,
     "patch_size": 16,
     "in_chans": 3,
