@@ -231,7 +231,7 @@ if __name__ == "__main__":
     import glob
     case_list = sorted(glob.glob(data_folder+"/*"))
     data_folder_name = cfg["data_folder"].split("/")[-1]
-    experiment_name = root_dir.split("/")[-1]
+    experiment_name = root_dir.split("/")[-2]
     if "shuffle_case" in cfg:
         if cfg["shuffle_case"] == "True":
             random.shuffle(case_list)

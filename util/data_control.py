@@ -75,6 +75,8 @@ def acquire_data_from_control(data_folder_name, required_case_numbers, experimen
     
     # print the selected cases
     print(f"Selected cases for {experiment_name}:")
+    # for each case in selected_cases, add "data/data_folder_name/case_folder_name" to the list
+    selected_cases = [f"data/{data_folder_name}/{case}" for case in selected_cases]
     for case in selected_cases:
         print(case)
     return selected_cases
