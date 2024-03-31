@@ -54,6 +54,7 @@ if __name__ == "__main__":
     from model import UNet_MONAI
 
     from dataset import slice_hdf5_dataset
+    from util import acquire_data_from_control
 
     # ------------------- random seeds -------------------
     # load the random seed
@@ -229,24 +230,43 @@ if __name__ == "__main__":
     data_folder = cfg["data_folder"]
     import glob
     case_list = sorted(glob.glob(data_folder+"/*"))
+    data_folder_name = cfg["data_folder"].split("/")[-1]
+    experiment_name = root_dir.split("/")[-1]
     if "shuffle_case" in cfg:
         if cfg["shuffle_case"] == "True":
             random.shuffle(case_list)
-    if "training_case" in cfg and "validation_case" in cfg:
-        training_case = cfg["training_case"]
-        validation_case = cfg["validation_case"]
-        training_list = case_list[:training_case]
-        validation_list = case_list[training_case:training_case+validation_case]
-        testing_list = case_list[training_case+validation_case:]
+    if "training_case" in cfg and "validation_case" in cfg and "testing_case" in cfg:
+        training_num = cfg["training_case"]
+        validation_num = cfg["validation_case"]
+        testing_num = cfg["testing_case"]
     elif "training_ratio" in cfg and "validation_ratio" in cfg and "testing_ratio" in cfg:
         training_ratio = cfg["training_ratio"]
         validation_ratio = cfg["validation_ratio"]
         testing_ratio = cfg["testing_ratio"]
-        training_list = case_list[:int(len(case_list)*training_ratio)]
-        validation_list = case_list[int(len(case_list)*training_ratio):int(len(case_list)*(training_ratio+validation_ratio))]
-        testing_list = case_list[int(len(case_list)*(training_ratio+validation_ratio)):]
+        training_num = int(len(case_list)*training_ratio)
+        validation_num = int(len(case_list)*validation_ratio)
+        testing_num = int(len(case_list)*testing_ratio)
     else:
-        raise ValueError("training_case and validation_case or training_ratio and validation_ratio and testing_ratio not found !")
+        raise ValueError("training_case and validation_case or training_ratio and validation_ratio not found !")
+
+    training_list = acquire_data_from_control(
+        data_folder_name = data_folder_name,
+        required_case_numbers = training_num,
+        experiment_name = experiment_name,
+    )
+
+    validation_list = acquire_data_from_control(
+        data_folder_name = data_folder_name,
+        required_case_numbers = validation_num,
+        experiment_name = experiment_name,
+    )
+
+    testing_list = acquire_data_from_control(
+        data_folder_name = data_folder_name,
+        required_case_numbers = testing_num,
+        experiment_name = experiment_name,
+    )
+
     # save the training and validation list into the root_dir as a txt file
     with open(root_dir+"training_list.txt", "w") as f:
         for item in training_list:
@@ -257,13 +277,14 @@ if __name__ == "__main__":
     with open(root_dir+"testing_list.txt", "w") as f:
         for item in testing_list:
             f.write("%s\n" % item)
+
     # output the training and validation list
     for idx, item in enumerate(training_list):
         print(f"Training {idx+1}: {item}")
     for idx, item in enumerate(validation_list):
         print(f"Validation {idx+1}: {item}")
-    # for idx, item in enumerate(testing_list):
-    #     print(f"Testing {idx+1}: {item}")
+    for idx, item in enumerate(testing_list):
+        print(f"Testing {idx+1}: {item}")
     # load all hdf5 in the training and validation list
     # in each folder, there are pack_000.hdf5, pack_001.hdf5, ...
     hdf5_training_list = []
@@ -303,10 +324,13 @@ if __name__ == "__main__":
                                           training_verbose=training_verbose, training_verbose_file=root_dir+"training_verbose.txt")
     validation_dataset = slice_hdf5_dataset(hdf5_validation_list, required_keys=cfg["required_keys"],
                                             training_verbose=training_verbose, training_verbose_file=root_dir+"training_verbose.txt")
+    testing_dataset = slice_hdf5_dataset(hdf5_validation_list, required_keys=cfg["required_keys"],
+                                            training_verbose=training_verbose, training_verbose_file=root_dir+"training_verbose.txt")
 
     from torch.utils.data import DataLoader
     training_dataloader = DataLoader(training_dataset, batch_size=cfg["batch_size"], shuffle=True)
     validation_dataloader = DataLoader(validation_dataset, batch_size=cfg["batch_size"], shuffle=True)
+    testing_dataloader = DataLoader(testing_dataset, batch_size=cfg["batch_size"], shuffle=True)
     
     # ------------------- training setting -------------------
     # create the optimizer
@@ -442,3 +466,22 @@ if __name__ == "__main__":
                 print("Model was saved !")
             else:
                 print("Model was not saved !")
+
+        # ------------------- testing -------------------
+        if (epoch+1) % cfg["test_step"] == 0:
+            model.eval()
+            test_loss = []
+            for idx_batch, data in enumerate(testing_dataloader):
+                mr = data["mr"].float().to(device).squeeze(1)
+                ct = data["ct"].float().to(device).squeeze(1)
+
+                with torch.set_grad_enabled(False):
+                    pred = model(mr)
+                    loss = loss_function(pred, ct)
+                    test_loss.append(loss.item())
+            test_loss = np.mean(np.asarray(test_loss))
+            print(f"Epoch {epoch+1}/{cfg['epochs']}, test_loss: {test_loss}")
+            time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            with open(root_dir+"test_loss.txt", "a") as f:
+                f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, test_loss: {test_loss}\n")
+            
