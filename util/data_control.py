@@ -45,7 +45,8 @@ def acquire_data_from_control(data_folder_name, required_case_numbers, experimen
         print(f"Required case number {required_case_numbers} is larger than available case number {len(available_cases)}")
         return None
     # randomly select the required number of cases
-    selected_cases = np.random.choice(list(available_cases.keys()), required_case_numbers, replace=False)
+    selected_cases = np.random.choice(available_cases, required_case_numbers, replace=False)
+    
     # replace the data_control_file with info
     # first write the case with current experiment name
     # second write the case with other occupied experiment name
