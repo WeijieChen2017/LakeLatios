@@ -12,10 +12,11 @@ data_folder_list = [
     "data/MIMRTL_Brain",
     "data/SynthRad_Brain",
     "data/SynthRad_Pelvis",
+    "data/MIMRTL_Brain_subset",
 ]
 
 # take the user input to determine which data folder to process
-input_idx = int(input("Which data folder to process? (0-2) "))
+input_idx = int(input("Which data folder to process? (0-3) "))
 data_folder_to_process = data_folder_list[input_idx]
 dataset_name = data_folder_to_process.split("/")[-1]
 record_txt_name = f"data/{dataset_name}_record.txt"
@@ -59,7 +60,10 @@ for data_folder in [data_folder_to_process]:
             mr_slice = F.interpolate(mr_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
 
             # save the results into a dict named "MedSAM_embedding"
-            ct_slice = ct_data[:, :, idx_z-1:idx_z] # (256, 256, 1)
+            if data_folder_to_process == "data/MIMRTL_Brain_subset":
+                ct_slice = ct_data[:, :, idx_z-1:idx_z+2] # (256, 256, 1)
+            else:
+                ct_slice = ct_data[:, :, idx_z-1:idx_z] # (256, 256, 1)
             ct_slice = np.squeeze(ct_slice) # (256, 256)
             ct_slice = np.expand_dims(ct_slice, axis=0) # (1, 256, 256)
             # interpolate the CT slice to (1, 1024, 1024)
