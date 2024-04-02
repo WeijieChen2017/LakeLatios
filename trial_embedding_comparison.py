@@ -37,7 +37,8 @@ model = output_ViTheads_encoder_MedSAM(
     global_attn_indexes=(),
     verbose=True,
 )
-
+model.load_pretrain(pretrain_path = "pretrain/medsam_vit_b.pth")
+model.to(device)
 experiment_name = "trial_embedding_comparison"
 root_dir = "proj/" + experiment_name + "/"
 if not os.path.exists(root_dir):
