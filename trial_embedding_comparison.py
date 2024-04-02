@@ -168,7 +168,7 @@ for i in range(12):
     axs[i].set_xlabel("Channel")
     axs[i].set_ylabel("Std")
     # set the y range from 0 to 12
-    axs[i].set_ylim(0, 12)
+    axs[i].set_ylim(0, 4)
 
 plt.savefig(root_dir+"channel_wise_diff_std.png")
 plt.close()
@@ -195,7 +195,7 @@ for i in range(12):
     axs[i//3, i%3].set_xlabel("Width")
     axs[i//3, i%3].set_ylabel("Height")
     # show the color bar
-    # plt.colorbar(axs[i//3, i%3].imshow(mean_feature_map[i, :, :]))
+    plt.colorbar(axs[i//3, i%3].imshow(mean_feature_map[i, :, :]))
 
 plt.savefig(root_dir+"feature_map_wise_diff_mean.png")
 plt.close()
@@ -213,7 +213,7 @@ for i in range(12):
     axs[i//3, i%3].set_xlabel("Width")
     axs[i//3, i%3].set_ylabel("Height")
     # show the color bar
-    # plt.colorbar(axs[i//3, i%3].imshow(std_feature_map[i, :, :]))
+    plt.colorbar(axs[i//3, i%3].imshow(std_feature_map[i, :, :]))
 
 plt.savefig(root_dir+"feature_map_wise_diff_std.png")
 plt.close()
