@@ -82,3 +82,29 @@ def acquire_data_from_control(data_folder_name, required_case_numbers, experimen
     return selected_cases
     
 
+def remove_data_occupation(data_folder_name, experiment_name):
+    # search the data control file
+    data_control_file = "data/"+data_folder_name+"_data_control.txt"
+    if not os.path.exists(data_control_file):
+        print(f"Data control file {data_control_file} does not exist")
+        return
+    # load the data control file
+    with open(data_control_file, "r") as f:
+        lines = f.readlines()
+    # create the data control dictionary
+    data_control_dict = {}
+    for line in lines:
+        case_folder_name, occupiant = line.split(":")
+        data_control_dict[case_folder_name] = occupiant.strip()
+    # remove the experiment_name from the data control file
+    for case in data_control_dict.keys():
+        if data_control_dict[case] == experiment_name:
+            data_control_dict[case] = "none"
+    # write the data control file
+    os.system(f"rm {data_control_file}")
+    with open(data_control_file, "w") as f:
+        for case in data_control_dict.keys():
+            f.write(case+":"+data_control_dict[case]+"\n")
+    print(f"Data control file updated for {data_folder_name}")
+
+    

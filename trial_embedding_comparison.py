@@ -4,6 +4,7 @@
 from model import output_ViTheads_encoder_MedSAM
 from dataset import small_hdf5_dataset
 from util import acquire_data_from_control
+from util import remove_data_occupation
 
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -42,6 +43,7 @@ root_dir = "proj/" + experiment_name + "/"
 if not os.path.exists(root_dir):
     os.makedirs(root_dir)
 
+remove_data_occupation(experiment_name)
 case_list = acquire_data_from_control(
         data_folder_name = "MIMRTL_Brain",
         required_case_numbers = 10,
