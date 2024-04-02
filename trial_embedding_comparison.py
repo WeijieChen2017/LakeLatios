@@ -148,7 +148,7 @@ for i in range(12):
     # axs[i].bar(range(768), mean_channel[i, :])
     # plot the curve using thin line
     axs[i].plot(range(768), mean_channel[i, :], color="blue", linewidth=0.5)
-    axs[i].set_title(f"Block {i}")
+    axs[i].set_title(f"Block {i}, mean: {mean_channel[i, :].mean():.4f})
     axs[i].set_xlabel("Channel")
     axs[i].set_ylabel("Mean")
     # set the y range from 0 to 12
@@ -164,7 +164,7 @@ for i in range(12):
     # axs[i].bar(range(768), mean_channel[i, :])
     # plot the curve using thin line
     axs[i].plot(range(768), std_channel[i, :], color="blue", linewidth=0.5)
-    axs[i].set_title(f"Block {i}")
+    axs[i].set_title(f"Block {i}, std: {std_channel[i, :].mean():.4f})
     axs[i].set_xlabel("Channel")
     axs[i].set_ylabel("Std")
     # set the y range from 0 to 12
@@ -188,10 +188,9 @@ fig, axs = plt.subplots(4, 3, figsize=(30, 40))
 for i in range(12):
     # force to use 0 to 3 as the color bar range
     image_to_plot = mean_feature_map[i, :, :]
-    image_to_plot = image_to_plot / 3 * 255
 
-    axs[i//3, i%3].imshow(mean_feature_map[i, :, :])
-    axs[i//3, i%3].set_title(f"Block {i}")
+    axs[i//3, i%3].imshow(mean_feature_map[i, :, :], vmin=0, vmax=3)
+    axs[i//3, i%3].set_title(f"Block {i} mean: {mean_feature_map[i, :, :].mean():.4f}")
     axs[i//3, i%3].set_xlabel("Width")
     axs[i//3, i%3].set_ylabel("Height")
     # show the color bar
@@ -206,10 +205,9 @@ fig, axs = plt.subplots(4, 3, figsize=(30, 40))
 for i in range(12):
     # force to use 0 to 3 as the color bar range
     image_to_plot = std_feature_map[i, :, :]
-    image_to_plot = image_to_plot / 3 * 255
 
-    axs[i//3, i%3].imshow(std_feature_map[i, :, :])
-    axs[i//3, i%3].set_title(f"Block {i}")
+    axs[i//3, i%3].imshow(std_feature_map[i, :, :], vmin=0, vmax=1.5)
+    axs[i//3, i%3].set_title(f"Block {i}" std: {std_feature_map[i, :, :].mean():.4f})   
     axs[i//3, i%3].set_xlabel("Width")
     axs[i//3, i%3].set_ylabel("Height")
     # show the color bar
