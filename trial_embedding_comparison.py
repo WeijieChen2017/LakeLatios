@@ -39,6 +39,8 @@ model = output_ViTheads_encoder_MedSAM(
 
 experiment_name = "trial_embedding_comparison"
 root_dir = "proj/" + experiment_name + "/"
+if not os.path.exists(root_dir):
+    os.makedirs(root_dir)
 
 case_list = acquire_data_from_control(
         data_folder_name = "MIMRTL_Brain",
