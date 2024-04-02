@@ -44,12 +44,13 @@ root_dir = "proj/" + experiment_name + "/"
 if not os.path.exists(root_dir):
     os.makedirs(root_dir)
 
+dataset_name = "MIMRTL_Brain_subset"
 remove_data_occupation(
-    data_folder_name = "MIMRTL_Brain",
+    data_folder_name = dataset_name,
     experiment_name = experiment_name,
 )
 case_list = acquire_data_from_control(
-        data_folder_name = "MIMRTL_Brain",
+        data_folder_name = dataset_name,
         required_case_numbers = 10,
         experiment_name = experiment_name,
 )
