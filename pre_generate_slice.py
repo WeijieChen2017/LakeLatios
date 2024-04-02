@@ -68,6 +68,8 @@ for data_folder in [data_folder_to_process]:
             ct_slice = np.expand_dims(ct_slice, axis=0) # (1, 256, 256)
             # interpolate the CT slice to (1, 1024, 1024)
             ct_slice = torch.from_numpy(ct_slice).float().unsqueeze(0)
+            if data_folder_to_process == "data/MIMRTL_Brain_subset":
+                 ct_slice = ct_slice.permute(0, 3, 1, 2) # (1, 3, 256, 256)
             ct_slice = F.interpolate(ct_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
             ct_slice = ct_slice.detach().cpu().numpy() # (1, 1024, 1024)
             mr_slice = mr_slice.detach().cpu().numpy() # (1, 3, 1024, 1024)
