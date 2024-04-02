@@ -167,12 +167,16 @@ std_feature_map = total_stat_feature_map.std(axis=0)
 # 24 subplots, 4 rows, 6 columns, with title as the block number
 fig, axs = plt.subplots(4, 3, figsize=(30, 40))
 for i in range(12):
+    # force to use 0 to 3 as the color bar range
+    image_to_plot = mean_feature_map[i, :, :]
+    image_to_plot = image_to_plot / 3 * 255
+
     axs[i//3, i%3].imshow(mean_feature_map[i, :, :])
     axs[i//3, i%3].set_title(f"Block {i}")
     axs[i//3, i%3].set_xlabel("Width")
     axs[i//3, i%3].set_ylabel("Height")
     # show the color bar
-    plt.colorbar(axs[i//3, i%3].imshow(mean_feature_map[i, :, :]))
+    # plt.colorbar(axs[i//3, i%3].imshow(mean_feature_map[i, :, :]))
 
 plt.savefig(root_dir+"feature_map_wise_diff.png")
 plt.close()
