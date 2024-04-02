@@ -148,7 +148,7 @@ for i in range(12):
     # axs[i].bar(range(768), mean_channel[i, :])
     # plot the curve using thin line
     axs[i].plot(range(768), mean_channel[i, :], color="blue", linewidth=0.5)
-    axs[i].set_title(f"Block {i}, mean: {mean_channel[i, :].mean():.4f})
+    axs[i].set_title(f"Block {i}, mean: {mean_channel[i, :].mean():.4f}")
     axs[i].set_xlabel("Channel")
     axs[i].set_ylabel("Mean")
     # set the y range from 0 to 12
