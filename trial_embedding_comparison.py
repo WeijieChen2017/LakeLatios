@@ -141,16 +141,19 @@ import matplotlib.pyplot as plt
 mean_channel = total_stat_channel.mean(axis=0)
 std_channel = total_stat_channel.std(axis=0)
 
-# try 12 subplots, in each plot, plot the mean in 768 bars and use std as error bar
+# try 12 subplots, in each plot, plot the mean and use std as error bar
 # 12 rows, 1 column, with title as the block number
 fig, axs = plt.subplots(12, 1, figsize=(10, 60))
 for i in range(12):
-    axs[i].bar(range(768), mean_channel[i, :])
+    # axs[i].bar(range(768), mean_channel[i, :])
+    # plot the curve
+    axs[i].plot(range(768), mean_channel[i, :])
     axs[i].errorbar(range(768), mean_channel[i, :], yerr=std_channel[i, :], fmt='o')
     axs[i].set_title(f"Block {i}")
     axs[i].set_xlabel("Channel")
     axs[i].set_ylabel("Mean")
     # set the y range from 0 to 12
+    axs[i].set_ylim(0, 12)
 
 plt.savefig(root_dir+"channel_wise_diff.png")
 plt.close()
