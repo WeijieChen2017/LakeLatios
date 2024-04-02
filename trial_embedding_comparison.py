@@ -79,6 +79,7 @@ total_stat_feature_map = np.zeros((n_slice, 12, 64, 64))
 
 for idx_batch, data in enumerate(hdf5_dataloader):
 
+    print(f"Processing {idx_batch+1}/{n_slice} samples.")
     mr = data["mr"].float().to(device).squeeze(1)
     ct = data["ct"].float().to(device).squeeze(1)
 
