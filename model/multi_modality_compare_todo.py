@@ -5,7 +5,6 @@ import torch.nn.functional as F
 from typing import Optional, Tuple, Type
 from .image_encoder import PatchEmbed, Block, LayerNorm2d
 
-
 # x.shape torch.Size([2, 3, 1024, 1024])
 # after patch_embed x.shape torch.Size([2, 64, 64, 768])
 # after pos_embed x.shape torch.Size([2, 64, 64, 768])
@@ -24,8 +23,7 @@ from .image_encoder import PatchEmbed, Block, LayerNorm2d
 # after neck x.shape torch.Size([2, 256, 64, 64])
 # torch.Size([2, 256, 64, 64])
 
-
-class output_ViTheads_encoder_MedSAM(nn.Module):
+class decoder_UNETR_encoder_MedSAM(nn.Module):
     def __init__(
         self,
         img_size: int = 1024,
@@ -121,7 +119,6 @@ class output_ViTheads_encoder_MedSAM(nn.Module):
             LayerNorm2d(out_chans_pretrain),
         )
 
-
         self._freeze_backbone()
         self._init_weights()
 
@@ -133,6 +130,11 @@ class output_ViTheads_encoder_MedSAM(nn.Module):
         self.load_state_dict(model_dict)
         if self.verbose:
             print(f"load pretrain from {pretrain_path}")
+
+    def load_from_checkpoint(self, checkpoint_path):
+        checkpoint = torch.load(checkpoint_path, map_location="cpu")
+        self.load_state_dict(checkpoint)
+        print(f"load from checkpoint {checkpoint_path}")
     
     def _freeze_backbone(self):
         for param in self.patch_embed.parameters():
@@ -165,38 +167,72 @@ class output_ViTheads_encoder_MedSAM(nn.Module):
                     print("init layernorm for", m)
                 nn.init.constant_(m.bias, 0)
                 nn.init.constant_(m.weight, 1.0)
+            # elif isinstance(m, nn.InstanceNorm2d):
+            #     if self.verbose:
+            #         print("init instancenorm for", m)
+            #     nn.init.constant_(m.bias, 0)
+            #     nn.init.constant_(m.weight, 1.0)
         print("init weights done")
-        
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
 
         if self.verbose:
             print("x.shape", x.shape)
 
+        zx = self.decoder_x(x)
+        if self.verbose:
+            print("zx.shape", zx.shape)
+
         x = self.patch_embed(x)
         if self.verbose:
             print("after patch_embed x.shape", x.shape)
-        
-        # save it to cpu and numpy
-        ViT_heads = [x.cpu().detach().numpy()] # 0th head
+
         if self.pos_embed is not None:
             x = x + self.pos_embed
         if self.verbose:
             print("after pos_embed x.shape", x.shape)
-        ViT_heads.append(x.cpu().detach().numpy()) # 1st head
-        
+
+        ViT_heads = []
         for i, blk in enumerate(self.blocks):
             x = blk(x)
             if self.verbose:
                 print("after block", i, x.shape)
-            ViT_heads.append(x.cpu().detach().numpy())
+            if i in self.global_attn_indexes:
+                ViT_heads.append(x)
 
         x = self.neck(x.permute(0, 3, 1, 2))
         if self.verbose:
             print("after neck x.shape", x.shape)
-        # from torch.Size([2, 256, 64, 64]) to torch.Size([2, 64, 64, 256])
-        x = x.permute(0, 2, 3, 1)
-        if self.verbose:
-            print("after permutation x.shape", x.shape)
-        ViT_heads.append(x.cpu().detach().numpy()) # last head
 
-        return ViT_heads
+        return x
+    
+# x.shape torch.Size([2, 3, 1024, 1024])
+# zx.shape torch.Size([2, 32, 1024, 1024])
+# after patch_embed x.shape torch.Size([2, 64, 64, 768])
+# after pos_embed x.shape torch.Size([2, 64, 64, 768])
+# after block 0 torch.Size([2, 64, 64, 768])
+# after block 1 torch.Size([2, 64, 64, 768])
+# after block 2 torch.Size([2, 64, 64, 768])
+# after block 3 torch.Size([2, 64, 64, 768])
+# after block 4 torch.Size([2, 64, 64, 768])
+# after block 5 torch.Size([2, 64, 64, 768])
+# after block 6 torch.Size([2, 64, 64, 768])
+# after block 7 torch.Size([2, 64, 64, 768])
+# after block 8 torch.Size([2, 64, 64, 768])
+# after block 9 torch.Size([2, 64, 64, 768])
+# after block 10 torch.Size([2, 64, 64, 768])
+# after block 11 torch.Size([2, 64, 64, 768])
+# after neck x.shape torch.Size([2, 256, 64, 64])
+# z3.shape torch.Size([2, 64, 64, 768]) z6.shape torch.Size([2, 64, 64, 768]) z9.shape torch.Size([2, 64, 64, 768]) z12.shape torch.Size([2, 64, 64, 768])
+# after z_block, z3.shape torch.Size([2, 64, 512, 512]) z6.shape torch.Size([2, 128, 256, 256]) z9.shape torch.Size([2, 256, 128, 128]) z12.shape torch.Size([2, 256, 64, 64]) zneck.shape torch.Size([2, 256, 64, 64])
+# after cat zneck, z12, out.shape torch.Size([2, 512, 64, 64])
+# after decoder_12 out.shape torch.Size([2, 256, 128, 128])
+# after cat out, z9, out.shape torch.Size([2, 512, 128, 128])
+# after decoder_9 out.shape torch.Size([2, 128, 256, 256])
+# after cat out, z6, out.shape torch.Size([2, 256, 256, 256])
+# after decoder_6 out.shape torch.Size([2, 64, 512, 512])
+# after cat out, z3, out.shape torch.Size([2, 128, 512, 512])
+# after decoder_3 out.shape torch.Size([2, 32, 1024, 1024])
+# after cat out, zx, out.shape torch.Size([2, 64, 1024, 1024])
+# after decoder_out out.shape torch.Size([2, 1, 1024, 1024])
+# torch.Size([2, 1, 1024, 1024])
