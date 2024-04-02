@@ -146,18 +146,37 @@ std_channel = total_stat_channel.std(axis=0)
 fig, axs = plt.subplots(12, 1, figsize=(10, 60))
 for i in range(12):
     # axs[i].bar(range(768), mean_channel[i, :])
-    # plot the curve
-    axs[i].plot(range(768), mean_channel[i, :])
-    axs[i].errorbar(range(768), mean_channel[i, :], yerr=std_channel[i, :], fmt='o')
+    # plot the curve using thin line
+    axs[i].plot(range(768), mean_channel[i, :], color="blue", linewidth=0.5)
     axs[i].set_title(f"Block {i}")
     axs[i].set_xlabel("Channel")
     axs[i].set_ylabel("Mean")
     # set the y range from 0 to 12
     axs[i].set_ylim(0, 12)
 
-plt.savefig(root_dir+"channel_wise_diff.png")
+plt.savefig(root_dir+"channel_wise_diff_mean.png")
 plt.close()
-print("Channel wise diff saved to", root_dir+"channel_wise_diff.png")
+print("Channel wise diff saved to", root_dir+"channel_wise_diff_mean.png")
+
+# plot the std
+fig, axs = plt.subplots(12, 1, figsize=(10, 60))
+for i in range(12):
+    # axs[i].bar(range(768), mean_channel[i, :])
+    # plot the curve using thin line
+    axs[i].plot(range(768), std_channel[i, :], color="blue", linewidth=0.5)
+    axs[i].set_title(f"Block {i}")
+    axs[i].set_xlabel("Channel")
+    axs[i].set_ylabel("Std")
+    # set the y range from 0 to 12
+    axs[i].set_ylim(0, 12)
+
+plt.savefig(root_dir+"channel_wise_diff_std.png")
+plt.close()
+print("Channel wise diff saved to", root_dir+"channel_wise_diff_std.png")
+
+
+
+
 
 # plot the feature map wise diff in mean and std
 mean_feature_map = total_stat_feature_map.mean(axis=0)
@@ -178,9 +197,27 @@ for i in range(12):
     # show the color bar
     # plt.colorbar(axs[i//3, i%3].imshow(mean_feature_map[i, :, :]))
 
-plt.savefig(root_dir+"feature_map_wise_diff.png")
+plt.savefig(root_dir+"feature_map_wise_diff_mean.png")
 plt.close()
-print("Feature map wise diff saved to", root_dir+"feature_map_wise_diff.png")
+print("Feature map wise diff saved to", root_dir+"feature_map_wise_diff_mean.png")
+
+# plot the std map
+fig, axs = plt.subplots(4, 3, figsize=(30, 40))
+for i in range(12):
+    # force to use 0 to 3 as the color bar range
+    image_to_plot = std_feature_map[i, :, :]
+    image_to_plot = image_to_plot / 3 * 255
+
+    axs[i//3, i%3].imshow(std_feature_map[i, :, :])
+    axs[i//3, i%3].set_title(f"Block {i}")
+    axs[i//3, i%3].set_xlabel("Width")
+    axs[i//3, i%3].set_ylabel("Height")
+    # show the color bar
+    # plt.colorbar(axs[i//3, i%3].imshow(std_feature_map[i, :, :]))
+
+plt.savefig(root_dir+"feature_map_wise_diff_std.png")
+plt.close()
+print("Feature map wise diff saved to", root_dir+"feature_map_wise_diff_std.png")
 
 
 
