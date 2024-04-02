@@ -43,7 +43,10 @@ root_dir = "proj/" + experiment_name + "/"
 if not os.path.exists(root_dir):
     os.makedirs(root_dir)
 
-remove_data_occupation(experiment_name)
+remove_data_occupation(
+    data_folder_name = "MIMRTL_Brain",
+    experiment_name = experiment_name,
+)
 case_list = acquire_data_from_control(
         data_folder_name = "MIMRTL_Brain",
         required_case_numbers = 10,
