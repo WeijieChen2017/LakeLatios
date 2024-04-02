@@ -18,7 +18,7 @@ import numpy as np
 from torch.utils.data import DataLoader
 
 model = output_ViTheads_encoder_MedSAM(
-    img_size=256,
+    img_size=1024,
     patch_size=16,
     in_chans=3,
     out_chans=1,
