@@ -110,8 +110,8 @@ for idx_batch, data in enumerate(hdf5_dataloader):
             embedding_ct = output_ct[i].squeeze(0)
             diff = np.abs(embedding_mr - embedding_ct) # [64, 64, 768]
 
-            diff_channel = np.abs(diff).mean(dim=(0, 1)) # [768]
-            diff_feature_map = np.abs(diff).mean(dim=2) # [64, 64]
+            diff_channel = np.mean(np.abs(diff), axis=(0, 1)) # [768]
+            diff_feature_map = np.mean(np.abs(diff), axis=2) # [64, 64]
 
             stat_channel[i, :] = diff_channel
             stat_feature_map[i, :, :] = diff_feature_map
