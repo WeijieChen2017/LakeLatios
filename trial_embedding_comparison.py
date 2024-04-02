@@ -35,7 +35,7 @@ model = output_ViTheads_encoder_MedSAM(
     rel_pos_zero_init=True,
     window_size=14,
     global_attn_indexes=(),
-    verbose=True,
+    verbose=False,
 )
 model.load_pretrain(pretrain_path = "pretrain/medsam_vit_b.pth")
 model.to(device)
@@ -108,13 +108,13 @@ for idx_batch, data in enumerate(hdf5_dataloader):
         for i in range(2, n_embedding-1):
             embedding_mr = output_mr[i].squeeze(0)
             embedding_ct = output_ct[i].squeeze(0)
-            diff = torch.abs(embedding_mr - embedding_ct) # [64, 64, 768]
+            diff = np.abs(embedding_mr - embedding_ct) # [64, 64, 768]
 
-            diff_channel = diff.mean(dim=(0, 1)) # 768
-            diff_feature_map = diff.mean(dim=(2)) # [64, 64]
+            diff_channel = np.abs(diff).mean(dim=(0, 1)) # [768]
+            diff_feature_map = np.abs(diff).mean(dim=2) # [64, 64]
 
-            stat_channel[i, :] = diff_channel.cpu().numpy()
-            stat_feature_map[i, :, :] = diff_feature_map.cpu().numpy()
+            stat_channel[i, :] = diff_channel
+            stat_feature_map[i, :, :] = diff_feature_map
 
     total_stat_channel[idx_batch, :, :] = stat_channel
     total_stat_feature_map[idx_batch, :, :, :] = stat_feature_map
