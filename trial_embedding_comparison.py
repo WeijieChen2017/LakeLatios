@@ -2,7 +2,7 @@
 # the encoder is the same, so we can use the same model
 
 from model import output_ViTheads_encoder_MedSAM
-from dataset import small_hdf5_dataset
+from dataset import slice_hdf5_dataset
 from util import acquire_data_from_control
 from util import remove_data_occupation
 
@@ -69,7 +69,7 @@ with open(root_dir+"hdf5_validation_list.txt", "w") as f:
     for item in hdf5_file_list:
         f.write("%s\n" % item)
 # create the dataset and dataloader
-hdf5_dataset = small_hdf5_dataset(hdf5_file_list, required_keys=required_keys)
+hdf5_dataset = slice_hdf5_dataset(hdf5_file_list, required_keys=required_keys)
 hdf5_dataloader = DataLoader(hdf5_dataset, batch_size=1, shuffle=True)
 n_slice = len(hdf5_dataset)
 total_stat_channel = np.zeros((n_slice, 12, 768))
