@@ -113,8 +113,8 @@ for idx_batch, data in enumerate(hdf5_dataloader):
             diff_channel = np.mean(np.abs(diff), axis=(0, 1)) # [768]
             diff_feature_map = np.mean(np.abs(diff), axis=2) # [64, 64]
 
-            stat_channel[i, :] = diff_channel
-            stat_feature_map[i, :, :] = diff_feature_map
+            stat_channel[i-2, :] = diff_channel
+            stat_feature_map[i-2, :, :] = diff_feature_map
 
     total_stat_channel[idx_batch, :, :] = stat_channel
     total_stat_feature_map[idx_batch, :, :, :] = stat_feature_map
