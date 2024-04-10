@@ -18,6 +18,7 @@ class simple_nifti_dataset(Dataset):
         folder_path = self.case_list[idx]
         mr_path = folder_path + "/mr.nii.gz"
         ct_path = folder_path + "/ct.nii.gz"
+        print(f"Loading {mr_path} and {ct_path}")
         # try load both
         try:
             mr_file = nib.load(mr_path)
@@ -28,4 +29,5 @@ class simple_nifti_dataset(Dataset):
         
         mr_data = mr_file.get_fdata()
         ct_data = ct_file.get_fdata()
+        print("mr_data.shape", mr_data.shape, "ct_data.shape", ct_data.shape)
         return {"mr": mr_data, "ct": ct_data}
