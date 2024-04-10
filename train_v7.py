@@ -381,9 +381,10 @@ if __name__ == "__main__":
             # load the data
             mr = data["mr"].float().squeeze(1)
             ct = data["ct"].float().squeeze(1)
-            # replace mr 3 slices with all middle slices
-            print(mr.shape)
-            mr = torch.cat([mr[:, 1, :, :],mr[:, 1, :, :],mr[:, 1, :, :]], dim=1)
+            # give the data size torch.Size([4, 3, 1024, 1024])
+            # replace the 1st dim 3 with the same 2nd slice
+            mr_mid = mr[:, 1:2, :, :]
+            mr = torch.cat([mr_mid, mr_mid, mr_mid], dim=1)
             mr.to(device)
             ct.to(device)
             # [1, 4, 3072, 1024]
@@ -460,7 +461,8 @@ if __name__ == "__main__":
                 mr = data["mr"].float().squeeze(1)
                 ct = data["ct"].float().squeeze(1)
                 # replace mr 3 slices with all middle slices
-                mr = torch.cat([mr[:, :1, :, :],mr[:, :1, :, :],mr[:, :1, :, :]], dim=1)
+                mr_mid = mr[:, 1:2, :, :]
+                mr = torch.cat([mr_mid, mr_mid, mr_mid], dim=1)
                 mr.to(device)
                 ct.to(device)
 
