@@ -48,12 +48,14 @@ for data_folder in [data_folder_to_process]:
         log_message(f"[{data_folder}][{idx_case+1}/{n_cases}] Normalised MR and CT")
 
         # pad mr_data
-        mr_data = np.pad(mr_data, ((0, 0), (0, 0), (1, 1)), mode="constant")
-        log_message(f"[{data_folder}][{idx_case+1}/{n_cases}] Padded MR")
+        # mr_data = np.pad(mr_data, ((0, 0), (0, 0), (1, 1)), mode="constant")
+        # log_message(f"[{data_folder}][{idx_case+1}/{n_cases}] Padded MR")
 
         # divide the MR into (3, res_x, res_y), according to last dim.
         for idx_z in range(1, res_z+1):
-            mr_slice = mr_data[:, :, idx_z-1:idx_z+2] # (256, 256, 3)
+            mr_slice = np.squeeze(mr_data[:, :, idx_z]) # (256, 256, 3)
+            # repeat the mr_slice for 3 times
+            mr_slice = np.repeat(mr_slice[:, :, np.newaxis], 3, axis=2)
             mr_slice = torch.from_numpy(mr_slice).float().unsqueeze(0) # (1, 256, 256, 3)
             mr_slice = mr_slice.permute(0, 3, 1, 2) # (1, 3, 256, 256)
             # interpolate the MR slice to (1, 3, 1024, 1024)
@@ -67,7 +69,7 @@ for data_folder in [data_folder_to_process]:
                 # interpolate the CT slice to (1, 3, 1024, 1024)
                 ct_slice = F.interpolate(ct_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
             else:
-                ct_slice = ct_data[:, :, idx_z-1:idx_z] # (256, 256, 1)
+                ct_slice = ct_data[:, :, idx_z] # (256, 256, 1)
                 ct_slice = np.squeeze(ct_slice) # (256, 256)
                 ct_slice = np.expand_dims(ct_slice, axis=0) # (1, 256, 256)
                 # interpolate the CT slice to (1, 1024, 1024)

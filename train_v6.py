@@ -3,6 +3,44 @@
 import time
 import argparse
 
+def nifti_to_slice_pairs(data):
+    # {"mr": mr_data, "ct": ct_data}
+    mr_data = data["mr"] # [256, 256, idz]
+    ct_data = data["ct"] # [256, 256, idz]
+    res_x, res_y, res_z = mr_data.shape
+
+    # normalise mr and ct to [0, 1]
+    mr_data = np.clip(mr_data, 0, 3000) / 3000 * 255
+    ct_data = np.clip(ct_data+1000, 0, 3000) / 4000
+    
+    slice_pairs = []
+
+    # divide the MR into (3, res_x, res_y), according to last dim.
+    for idx_z in range(1, res_z+1):
+        mr_slice = np.squeeze(mr_data[:, :, idx_z]) # (256, 256, 1)
+        ct_slice = np.squeeze(ct_data[:, :, idx_z]) # (256, 256, 1)
+        # if the mean of the MR and CT is too small, skip this slice
+        if np.mean(mr_slice) < 1e-3 or np.mean(ct_slice) < 1e-3:
+            continue
+        
+        # repeat the mr_slice for 3 times
+        mr_slice = np.repeat(mr_slice[:, :, np.newaxis], 3, axis=2)
+        mr_slice = torch.from_numpy(mr_slice).float().unsqueeze(0) # (1, 256, 256, 3)
+        mr_slice = mr_slice.permute(0, 3, 1, 2) # (1, 3, 256, 256)
+        # interpolate the MR slice to (1, 3, 1024, 1024)
+        mr_slice = F.interpolate(mr_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
+
+        ct_slice = np.expand_dims(ct_slice, axis=0) # (1, 256, 256)
+        # interpolate the CT slice to (1, 1024, 1024)
+        ct_slice = torch.from_numpy(ct_slice).float().unsqueeze(0)
+        ct_slice = F.interpolate(ct_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
+    
+        slice_pairs.append({"mr": mr_slice, "ct": ct_slice})
+        # ct_slice = ct_slice # (1, 1024, 1024)
+        # mr_slice = mr_slice # (1, 3, 1024, 1024)
+        
+    return slice_pairs
+
 if __name__ == "__main__":
 
     # ------------------- load the configuration file path -------------------
@@ -353,158 +391,140 @@ if __name__ == "__main__":
         # use training_dataloader to load the data
         display_loss = 0.0
 
+        model.train()
         for idx_batch, data in enumerate(training_dataloader):
             
-            # {"mr": mr_data, "ct": ct_data}
-            mr_data = data["mr"] # [256, 256, idz]
-            ct_data = data["ct"] # [256, 256, idz]
-            res_x, res_y, res_z = mr_data.shape
+            slice_pairs = nifti_to_slice_pairs(data)
+            # shuffle the slice_pairs
+            random.shuffle(slice_pairs)
+            len_slice_pairs = len(slice_pairs)
 
-            # normalise mr and ct to [0, 1]
-            mr_data = np.clip(mr_data, 0, 3000) / 3000
-            ct_data = np.clip(ct_data+1000, 0, 4000) / 4000
+            for idx_slice in range(len_slice_pairs):
 
-            mr_data = np.pad(mr_data, ((0, 0), (0, 0), (1, 1)), mode="constant")
-            slice_pairs = []
+                data = slice_pairs[idx_slice]
+                mr = data["mr"].float().to(device)
+                ct = data["ct"].float().to(device)
 
-            # divide the MR into (3, res_x, res_y), according to last dim.
-            for idx_z in range(1, res_z+1):
-                mr_slice = mr_data[:, :, idx_z-1:idx_z+2] # (256, 256, 3)
-                mr_slice = torch.from_numpy(mr_slice).float().unsqueeze(0) # (1, 256, 256, 3)
-                mr_slice = mr_slice.permute(0, 3, 1, 2) # (1, 3, 256, 256)
-                # interpolate the MR slice to (1, 3, 1024, 1024)
-                mr_slice = F.interpolate(mr_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
-
-            # save the results into a dict named "MedSAM_embedding"
-            if data_folder_to_process == "data/MIMRTL_Brain_subset":
-                ct_slice = ct_data[:, :, idx_z-1:idx_z+2] # (256, 256, 3)
-                ct_slice = torch.from_numpy(ct_slice).float().unsqueeze(0) # (1, 256, 256, 3)
-                ct_slice = ct_slice.permute(0, 3, 1, 2) # (1, 3, 256, 256)
-                # interpolate the CT slice to (1, 3, 1024, 1024)
-                ct_slice = F.interpolate(ct_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
-            else:
-                ct_slice = ct_data[:, :, idx_z-1:idx_z] # (256, 256, 1)
-                ct_slice = np.squeeze(ct_slice) # (256, 256)
-                ct_slice = np.expand_dims(ct_slice, axis=0) # (1, 256, 256)
-                # interpolate the CT slice to (1, 1024, 1024)
-                ct_slice = torch.from_numpy(ct_slice).float().unsqueeze(0)
-                ct_slice = F.interpolate(ct_slice, size=(1024, 1024), mode="bilinear", align_corners=False)
-            
-            ct_slice = ct_slice.detach().cpu().numpy() # (1, 1024, 1024)
-            mr_slice = mr_slice.detach().cpu().numpy() # (1, 3, 1024, 1024)
-
-
-
-
-
-
-
-            mr = data["mr"].float().to(device).squeeze(1)
-            ct = data["ct"].float().to(device).squeeze(1)
-
-            optimizer.zero_grad()
-            with torch.set_grad_enabled(True):
-                pred = model(mr)
-                loss = loss_function(pred, ct)
-                loss.backward()
-                # save the gradient into training verbose
-                # # grad clipping
-                # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-                optimizer.step()
-                text_loss = loss.item()
-                display_loss += text_loss
-                # if text_loss is nan, pause the program
-                if np.isnan(text_loss):
-                    print("text_loss is nan !")
-                    print(f"idx_batch: {idx_batch}, mr.shape: {mr.shape}, ct.shape: {ct.shape}, pred.shape: {pred.shape}")
-                    print(f"mr: {mr}")
-                    print(f"ct: {ct}")
-                    print(f"pred: {pred}")
-                    input("Press Enter to continue...")
-                epoch_loss.append(text_loss)
-                if training_verbose:
-                    # write the loss into a txt file
+                optimizer.zero_grad()
+                with torch.set_grad_enabled(True):
+                    pred = model(mr)
+                    loss = loss_function(pred, ct)
+                    loss.backward()
+                    # save the gradient into training verbose
+                    # # grad clipping
+                    # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                    optimizer.step()
+                    text_loss = loss.item()
+                    display_loss += text_loss
+                    # if text_loss is nan, pause the program
+                    if np.isnan(text_loss):
+                        print("text_loss is nan !")
+                        print(f"idx_batch: {idx_batch}, mr.shape: {mr.shape}, ct.shape: {ct.shape}, pred.shape: {pred.shape}")
+                        print(f"mr: {mr}")
+                        print(f"ct: {ct}")
+                        print(f"pred: {pred}")
+                        input("Press Enter to continue...")
+                    epoch_loss.append(text_loss)
+                    if training_verbose:
+                        # write the loss into a txt file
+                        with open(root_dir+"training_verbose.txt", "a") as f:
+                            f.write(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}\n")
+                        # print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
+                        # pause the program
+                        # input("Press Enter to continue...")
+                            
+                # display the loss
+                if (idx_batch+1) % display_step == 0:
+                    print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {display_loss/display_step}")
+                    display_loss = 0.0
                     with open(root_dir+"training_verbose.txt", "a") as f:
-                        f.write(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}\n")
-                    # print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
-                    # pause the program
-                    # input("Press Enter to continue...")
-                        
-            # display the loss
-            if (idx_batch+1) % display_step == 0:
-                print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {display_loss/display_step}")
-                display_loss = 0.0
-                with open(root_dir+"training_verbose.txt", "a") as f:
-                    f.write(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {display_loss/display_step}\n")
-            
-
-        # plot images
-        if (epoch+1) % cfg["plot_step"] == 0:
-            fig, ax = plt.subplots(1, 3, figsize=(15, 5))
-            ax[0].imshow(mr[0, 1, :, :].cpu().detach().numpy(), cmap="gray")
-            ax[0].set_title("MR")
-            ax[1].imshow(ct[0, 0, :, :].cpu().detach().numpy(), cmap="gray")
-            ax[1].set_title("CT")
-            ax[2].imshow(pred[0, 0, :, :].cpu().detach().numpy(), cmap="gray")
-            ax[2].set_title("pred")
-            plt.savefig(root_dir+f"epoch_{epoch+1}.png")
-            plt.close()
-
-        epoch_loss = np.mean(np.asarray(epoch_loss))
-        # print the loss
-        print(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}")
-        # save the loss
-        time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        with open(root_dir+"loss.txt", "a") as f:
-            f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}\n")
-        # save the model and optimizer
-        if (epoch+1) % cfg["save_step"] == 0:
-            torch.save(model.state_dict(), root_dir+f"model_{epoch+1}.pth")
-            torch.save(optimizer.state_dict(), root_dir+f"optimizer_{epoch+1}.pth")
-        
-        # validation
-        if (epoch+1) % cfg["eval_step"] == 0:
-            model.eval()
-            val_loss = []
-            
-            for idx_batch, data in enumerate(validation_dataloader):
+                        f.write(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {display_loss/display_step}\n")
                 
-                mr = data["mr"].float().to(device).squeeze(1)
-                ct = data["ct"].float().to(device).squeeze(1)
 
-                with torch.set_grad_enabled(False):
-                    pred = model(mr)
-                    loss = loss_function(pred, ct)
-                    val_loss.append(loss.item())
+            # plot images
+            if (epoch+1) % cfg["plot_step"] == 0:
+                fig, ax = plt.subplots(1, 3, figsize=(15, 5))
+                ax[0].imshow(mr[0, 1, :, :].cpu().detach().numpy(), cmap="gray")
+                ax[0].set_title("MR")
+                ax[1].imshow(ct[0, 0, :, :].cpu().detach().numpy(), cmap="gray")
+                ax[1].set_title("CT")
+                ax[2].imshow(pred[0, 0, :, :].cpu().detach().numpy(), cmap="gray")
+                ax[2].set_title("pred")
+                plt.savefig(root_dir+f"epoch_{epoch+1}.png")
+                plt.close()
 
-            val_loss = np.mean(np.asarray(val_loss))
-            print(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}")
+            epoch_loss = np.mean(np.asarray(epoch_loss))
+            # print the loss
+            print(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}")
+            # save the loss
             time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            with open(root_dir+"val_loss.txt", "a") as f:
-                f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}\n")
-            if val_loss < best_val_loss:
-                best_val_loss = val_loss
-                torch.save(model.state_dict(), root_dir+f"best_model.pth")
-                torch.save(optimizer.state_dict(), root_dir+f"best_optimizer.pth")
-                print("Model was saved !")
-            else:
-                print("Model was not saved !")
-
-        # ------------------- testing -------------------
-        if (epoch+1) % cfg["test_step"] == 0:
-            model.eval()
-            test_loss = []
-            for idx_batch, data in enumerate(testing_dataloader):
-                mr = data["mr"].float().to(device).squeeze(1)
-                ct = data["ct"].float().to(device).squeeze(1)
-
-                with torch.set_grad_enabled(False):
-                    pred = model(mr)
-                    loss = loss_function(pred, ct)
-                    test_loss.append(loss.item())
-            test_loss = np.mean(np.asarray(test_loss))
-            print(f"Epoch {epoch+1}/{cfg['epochs']}, test_loss: {test_loss}")
-            time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            with open(root_dir+"test_loss.txt", "a") as f:
-                f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, test_loss: {test_loss}\n")
+            with open(root_dir+"loss.txt", "a") as f:
+                f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}\n")
+            # save the model and optimizer
+            if (epoch+1) % cfg["save_step"] == 0:
+                torch.save(model.state_dict(), root_dir+f"model_{epoch+1}.pth")
+                torch.save(optimizer.state_dict(), root_dir+f"optimizer_{epoch+1}.pth")
             
+            # validation
+            if (epoch+1) % cfg["eval_step"] == 0:
+                model.eval()
+                val_loss = []
+                for idx_batch, data in enumerate(validation_dataloader):
+                    
+                    slice_pairs = nifti_to_slice_pairs(data)
+                    # shuffle the slice_pairs
+                    random.shuffle(slice_pairs)
+                    len_slice_pairs = len(slice_pairs)
+
+                    for idx_slice in range(len_slice_pairs):
+                            
+                        data = slice_pairs[idx_slice]
+                        mr = data["mr"].float().to(device).squeeze(1)
+                        ct = data["ct"].float().to(device).squeeze(1)
+
+                        with torch.set_grad_enabled(False):
+                            pred = model(mr)
+                            loss = loss_function(pred, ct)
+                            val_loss.append(loss.item())
+
+                val_loss = np.mean(np.asarray(val_loss))
+                print(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}")
+                time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                with open(root_dir+"val_loss.txt", "a") as f:
+                    f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}\n")
+                if val_loss < best_val_loss:
+                    best_val_loss = val_loss
+                    torch.save(model.state_dict(), root_dir+f"best_model.pth")
+                    torch.save(optimizer.state_dict(), root_dir+f"best_optimizer.pth")
+                    print("Model was saved !")
+                else:
+                    print("Model was not saved !")
+
+            # ------------------- testing -------------------
+            if (epoch+1) % cfg["test_step"] == 0:
+                model.eval()
+                test_loss = []
+                for idx_batch, data in enumerate(testing_dataloader):
+
+                    slice_pairs = nifti_to_slice_pairs(data)
+                    # shuffle the slice_pairs
+                    random.shuffle(slice_pairs)
+                    len_slice_pairs = len(slice_pairs)
+
+                    for idx_slice in range(len_slice_pairs):
+                            
+                        data = slice_pairs[idx_slice]
+                        mr = data["mr"].float().to(device).squeeze(1)
+                        ct = data["ct"].float().to(device).squeeze(1)
+
+                        with torch.set_grad_enabled(False):
+                            pred = model(mr)
+                            loss = loss_function(pred, ct)
+                            test_loss.append(loss.item())
+                test_loss = np.mean(np.asarray(test_loss))
+                print(f"Epoch {epoch+1}/{cfg['epochs']}, test_loss: {test_loss}")
+                time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                with open(root_dir+"test_loss.txt", "a") as f:
+                    f.write(f"%{time_stamp}% -> Epoch {epoch+1}/{cfg['epochs']}, test_loss: {test_loss}\n")
+            
+
