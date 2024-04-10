@@ -17,7 +17,7 @@ def nifti_to_slice_pairs(data):
     slice_pairs = []
 
     # divide the MR into (3, res_x, res_y), according to last dim.
-    for idx_z in range(1, res_z+1):
+    for idx_z in range(1, res_z):
         mr_slice = np.squeeze(mr_data[:, :, idx_z]) # (256, 256, 1)
         ct_slice = np.squeeze(ct_data[:, :, idx_z]) # (256, 256, 1)
         # if the mean of the MR and CT is too small, skip this slice
