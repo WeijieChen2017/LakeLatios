@@ -7,7 +7,6 @@ def nifti_to_slice_pairs(data):
     # {"mr": mr_data, "ct": ct_data}
     mr_data = data["mr"].numpy().squeeze() # torch.Size([1, 256, 256, 132])
     ct_data = data["ct"].numpy().squeeze() # torch.Size([1, 256, 256, 132])
-    print("mr_data.shape:", mr_data.shape, "ct_data.shape:", ct_data.shape)
     res_x, res_y, res_z = mr_data.shape
 
     # normalise mr and ct to [0, 1]
