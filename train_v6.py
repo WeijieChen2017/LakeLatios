@@ -429,7 +429,7 @@ if __name__ == "__main__":
                     # # grad clipping
                     # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
                     optimizer.step()
-                slice_loss = loss.item()
+                    slice_loss = loss.item()
                 if training_verbose:
                     # write the loss into a txt file
                     with open(root_dir+"training_verbose.txt", "a") as f:
@@ -437,7 +437,7 @@ if __name__ == "__main__":
                     # print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
                     # pause the program
                     # input("Press Enter to continue...")
-                case_list.append(slice_loss)
+                case_loss_list.append(slice_loss)
             
             case_loss = np.mean(np.asarray(case_loss_list))
             epoch_loss_list.append(case_loss)
