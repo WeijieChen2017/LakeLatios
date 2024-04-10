@@ -397,6 +397,10 @@ if __name__ == "__main__":
         model.train()
         for idx_batch, data in enumerate(training_dataloader):
             
+            # write to training verbose
+            if training_verbose:
+                with open(root_dir+"training_verbose.txt", "a") as f:
+                    f.write(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{n_training_case}\n")
             slice_pairs = nifti_to_slice_pairs(data)
             # shuffle the slice_pairs
             random.shuffle(slice_pairs)
@@ -442,14 +446,6 @@ if __name__ == "__main__":
                         # print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
                         # pause the program
                         # input("Press Enter to continue...")
-                            
-                # display the loss
-                if (idx_batch+1) % display_step == 0:
-                    print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{n_training_case}, loss: {display_loss/display_step}")
-                    display_loss = 0.0
-                    with open(root_dir+"training_verbose.txt", "a") as f:
-                        f.write(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{n_training_case}, loss: {display_loss/display_step}\n")
-                
 
             # plot images
             if (epoch+1) % cfg["plot_step"] == 0:
