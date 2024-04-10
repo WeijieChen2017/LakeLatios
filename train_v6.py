@@ -7,6 +7,7 @@ def nifti_to_slice_pairs(data):
     # {"mr": mr_data, "ct": ct_data}
     mr_data = data["mr"] # [256, 256, idz]
     ct_data = data["ct"] # [256, 256, idz]
+    print("mr_data.shape:", mr_data.shape, "ct_data.shape:", ct_data.shape)
     res_x, res_y, res_z = mr_data.shape
 
     # normalise mr and ct to [0, 1]
