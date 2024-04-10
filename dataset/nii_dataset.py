@@ -20,8 +20,8 @@ class simple_nifti_dataset(Dataset):
         ct_path = folder_path + "/ct.nii.gz"
         # try load both
         try:
-            mr_file = nib.load(mr_path).get_fdata()
-            ct_file = nib.load(ct_path).get_fdata()
+            mr_file = nib.load(mr_path)
+            ct_file = nib.load(ct_path)
         except:
             # if failed, raise an error
             raise ValueError(f"Error loading {mr_path} or {ct_path}")
