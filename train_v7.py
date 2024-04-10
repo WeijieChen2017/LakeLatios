@@ -382,9 +382,11 @@ if __name__ == "__main__":
             mr = data["mr"].float().squeeze(1)
             ct = data["ct"].float().squeeze(1)
             # replace mr 3 slices with all middle slices
+            print(mr.shape)
             mr = torch.cat([mr[:, 1, :, :],mr[:, 1, :, :],mr[:, 1, :, :]], dim=1)
             mr.to(device)
             ct.to(device)
+            # [1, 4, 3072, 1024]
 
 
             optimizer.zero_grad()
