@@ -385,6 +385,7 @@ if __name__ == "__main__":
             # replace the 1st dim 3 with the same 2nd slice
             mr_mid = mr[:, 1:2, :, :]
             mr = torch.cat([mr_mid, mr_mid, mr_mid], dim=1)
+            print("The device is:", device)
             mr.to(device)
             ct.to(device)
             # [1, 4, 3072, 1024]
