@@ -374,6 +374,7 @@ if __name__ == "__main__":
         # use training_dataloader to load the data
         display_loss = 0.0
 
+        model.train()
         for idx_batch, data in enumerate(training_dataloader):
             # data is a dict with keys in cfg["required_keys"], and the values are tensors
             # [4, 1, 3, 1024, 1024], so squeeze the second dimension
@@ -381,9 +382,10 @@ if __name__ == "__main__":
             mr = data["mr"].float().squeeze(1)
             ct = data["ct"].float().squeeze(1)
             # replace mr 3 slices with all middle slices
-            mr = torch.cat([mr[:, :1, :, :],mr[:, :1, :, :],mr[:, :1, :, :]], dim=1)
+            mr = torch.cat([mr[:, 1, :, :],mr[:, 1, :, :],mr[:, 1, :, :]], dim=1)
             mr.to(device)
             ct.to(device)
+
 
             optimizer.zero_grad()
             with torch.set_grad_enabled(True):
@@ -446,6 +448,7 @@ if __name__ == "__main__":
             torch.save(optimizer.state_dict(), root_dir+f"optimizer_{epoch+1}.pth")
         
         # validation
+        model.eval()
         if (epoch+1) % cfg["eval_step"] == 0:
             model.eval()
             val_loss = []
