@@ -379,13 +379,16 @@ if __name__ == "__main__":
         display_step = 1000
     # output the parameters
     n_epoch = cfg["epochs"]
+    n_training_case = len(training_dataset)
+    n_validation_case = len(validation_dataset)
+    n_testing_case = len(testing_dataset)
     print(f"n_train: {n_train}, n_val: {n_val}), batch_size: {batch_size}")
 
     # ------------------- start training -------------------
     # train the model
     for epoch in range(n_epoch):
 
-        epoch_loss = []
+        epoch_loss_list = []
         # training
         model.train()
         # use training_dataloader to load the data
@@ -431,21 +434,21 @@ if __name__ == "__main__":
                         print(f"ct: {ct}")
                         print(f"pred: {pred}")
                         input("Press Enter to continue...")
-                    epoch_loss.append(text_loss)
+                    epoch_loss_list.append(text_loss)
                     if training_verbose:
                         # write the loss into a txt file
                         with open(root_dir+"training_verbose.txt", "a") as f:
-                            f.write(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{n_batch}, loss: {text_loss}\n")
+                            f.write(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{n_training_case}, loss: {text_loss}\n")
                         # print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
                         # pause the program
                         # input("Press Enter to continue...")
                             
                 # display the loss
                 if (idx_batch+1) % display_step == 0:
-                    print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{n_batch}, loss: {display_loss/display_step}")
+                    print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{n_training_case}, loss: {display_loss/display_step}")
                     display_loss = 0.0
                     with open(root_dir+"training_verbose.txt", "a") as f:
-                        f.write(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{n_batch}, loss: {display_loss/display_step}\n")
+                        f.write(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{n_training_case}, loss: {display_loss/display_step}\n")
                 
 
             # plot images
@@ -460,7 +463,7 @@ if __name__ == "__main__":
                 plt.savefig(root_dir+f"epoch_{epoch+1}.png")
                 plt.close()
 
-            epoch_loss = np.mean(np.asarray(epoch_loss))
+            epoch_loss = np.mean(np.asarray(epoch_loss_list))
             # print the loss
             print(f"Epoch {epoch+1}/{cfg['epochs']}, loss: {epoch_loss}")
             # save the loss
@@ -475,7 +478,7 @@ if __name__ == "__main__":
             # validation
             if (epoch+1) % cfg["eval_step"] == 0:
                 model.eval()
-                val_loss = []
+                val_loss_list = []
                 for idx_batch, data in enumerate(validation_dataloader):
                     
                     slice_pairs = nifti_to_slice_pairs(data)
@@ -498,9 +501,9 @@ if __name__ == "__main__":
                         with torch.set_grad_enabled(False):
                             pred = model(mr)
                             loss = loss_function(pred, ct)
-                            val_loss.append(loss.item())
+                            val_loss_list.append(loss.item())
 
-                val_loss = np.mean(np.asarray(val_loss))
+                val_loss = np.mean(np.asarray(val_loss_list))
                 print(f"Epoch {epoch+1}/{cfg['epochs']}, val_loss: {val_loss}")
                 time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                 with open(root_dir+"val_loss.txt", "a") as f:
@@ -516,7 +519,7 @@ if __name__ == "__main__":
             # ------------------- testing -------------------
             if (epoch+1) % cfg["test_step"] == 0:
                 model.eval()
-                test_loss = []
+                test_loss_list = []
                 for idx_batch, data in enumerate(testing_dataloader):
 
                     slice_pairs = nifti_to_slice_pairs(data)
@@ -539,8 +542,9 @@ if __name__ == "__main__":
                         with torch.set_grad_enabled(False):
                             pred = model(mr)
                             loss = loss_function(pred, ct)
-                            test_loss.append(loss.item())
-                test_loss = np.mean(np.asarray(test_loss))
+                            test_loss_list.append(loss.item())
+
+                test_loss = np.mean(np.asarray(test_loss_list))
                 print(f"Epoch {epoch+1}/{cfg['epochs']}, test_loss: {test_loss}")
                 time_stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                 with open(root_dir+"test_loss.txt", "a") as f:
