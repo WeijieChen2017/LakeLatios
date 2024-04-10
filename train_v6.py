@@ -347,9 +347,9 @@ if __name__ == "__main__":
     validation_dataset = simple_nifti_dataset(validation_list)
     testing_dataset = simple_nifti_dataset(testing_list)
 
-    training_dataloader = DataLoader(training_dataset, batch_size=cfg["batch_size"], shuffle=True)
-    validation_dataloader = DataLoader(validation_dataset, batch_size=cfg["batch_size"], shuffle=True)
-    testing_dataloader = DataLoader(testing_dataset, batch_size=cfg["batch_size"], shuffle=True)
+    training_dataloader = DataLoader(training_dataset, batch_size=1, shuffle=True)
+    validation_dataloader = DataLoader(validation_dataset, batch_size=1, shuffle=True)
+    testing_dataloader = DataLoader(testing_dataset, batch_size=1, shuffle=True)
 
     # ------------------- training setting -------------------
     # create the optimizer
@@ -398,12 +398,19 @@ if __name__ == "__main__":
             # shuffle the slice_pairs
             random.shuffle(slice_pairs)
             len_slice_pairs = len(slice_pairs)
+            n_batch = len_slice_pairs // batch_size
 
-            for idx_slice in range(len_slice_pairs):
-
-                data = slice_pairs[idx_slice]
-                mr = data["mr"].float().to(device)
-                ct = data["ct"].float().to(device)
+            for idx_slice in range(n_batch):
+                
+                mr = torch.zeros((batch_size, cfg["in_chans"], cfg["img_size"], cfg["img_size"]))
+                ct = torch.zeros((batch_size, cfg["out_chans"], cfg["img_size"], cfg["img_size"]))
+                for idx in range(batch_size):
+                    data = slice_pairs[idx_slice*batch_size+idx]
+                    mr[idx, :, :, :] = data["mr"]
+                    ct[idx, :, :, :] = data["ct"]
+                
+                mr = mr.float().to(device)
+                ct = ct.float().to(device)
 
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(True):
@@ -428,17 +435,17 @@ if __name__ == "__main__":
                     if training_verbose:
                         # write the loss into a txt file
                         with open(root_dir+"training_verbose.txt", "a") as f:
-                            f.write(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}\n")
+                            f.write(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{n_batch}, loss: {text_loss}\n")
                         # print(f"Epoch {epoch+1}/{cfg['epochs']}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {text_loss}")
                         # pause the program
                         # input("Press Enter to continue...")
                             
                 # display the loss
                 if (idx_batch+1) % display_step == 0:
-                    print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {display_loss/display_step}")
+                    print(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{n_batch}, loss: {display_loss/display_step}")
                     display_loss = 0.0
                     with open(root_dir+"training_verbose.txt", "a") as f:
-                        f.write(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{len(training_dataloader)}, loss: {display_loss/display_step}\n")
+                        f.write(f"Epoch {epoch+1}/{n_epoch}, batch {idx_batch+1}/{n_batch}, loss: {display_loss/display_step}\n")
                 
 
             # plot images
@@ -475,13 +482,19 @@ if __name__ == "__main__":
                     # shuffle the slice_pairs
                     random.shuffle(slice_pairs)
                     len_slice_pairs = len(slice_pairs)
+                    n_batch = len_slice_pairs // batch_size
 
-                    for idx_slice in range(len_slice_pairs):
-                            
-                        data = slice_pairs[idx_slice]
-                        mr = data["mr"].float().to(device).squeeze(1)
-                        ct = data["ct"].float().to(device).squeeze(1)
-
+                    for idx_slice in range(n_batch):
+                        
+                        mr = torch.zeros((batch_size, cfg["in_chans"], cfg["img_size"], cfg["img_size"]))
+                        ct = torch.zeros((batch_size, cfg["out_chans"], cfg["img_size"], cfg["img_size"]))
+                        for idx in range(batch_size):
+                            data = slice_pairs[idx_slice*batch_size+idx]
+                            mr[idx, :, :, :] = data["mr"]
+                            ct[idx, :, :, :] = data["ct"]
+                        
+                        mr = mr.float().to(device)
+                        ct = ct.float().to(device)
                         with torch.set_grad_enabled(False):
                             pred = model(mr)
                             loss = loss_function(pred, ct)
@@ -510,13 +523,19 @@ if __name__ == "__main__":
                     # shuffle the slice_pairs
                     random.shuffle(slice_pairs)
                     len_slice_pairs = len(slice_pairs)
+                    n_batch = len_slice_pairs // batch_size
 
-                    for idx_slice in range(len_slice_pairs):
-                            
-                        data = slice_pairs[idx_slice]
-                        mr = data["mr"].float().to(device).squeeze(1)
-                        ct = data["ct"].float().to(device).squeeze(1)
-
+                    for idx_slice in range(n_batch):
+                        
+                        mr = torch.zeros((batch_size, cfg["in_chans"], cfg["img_size"], cfg["img_size"]))
+                        ct = torch.zeros((batch_size, cfg["out_chans"], cfg["img_size"], cfg["img_size"]))
+                        for idx in range(batch_size):
+                            data = slice_pairs[idx_slice*batch_size+idx]
+                            mr[idx, :, :, :] = data["mr"]
+                            ct[idx, :, :, :] = data["ct"]
+                        
+                        mr = mr.float().to(device)
+                        ct = ct.float().to(device)
                         with torch.set_grad_enabled(False):
                             pred = model(mr)
                             loss = loss_function(pred, ct)
