@@ -12,6 +12,7 @@ import numpy as np
 # the folder is like data/data_folder/path_to_case_num/*.nii.gz
 
 file_list = sorted(glob.glob(os.path.join(folder_path, "*/*.nii.gz")))
+file_list = file_list + sorted(glob.glob(os.path.join(folder_path, "*/*.nii")))
 print("Found", len(file_list), "files")
 
 folder_level_stat = {}
@@ -61,7 +62,23 @@ for file_path in file_list:
     # output the stat in the folder in a txt
     with open(os.path.join(case_path, "stat.txt"), "a") as f:
         f.write(f"File: {basename}\n")
-        f.write(f"mean: {mean}, std: {std}, shape: {shape}, max: {max}, min: {min}, sum: {sum}\n\n")
+        # write in lines
+        f.write(f"mean: {mean}\n")
+        f.write(f"std: {std}\n")
+        f.write(f"shape: {shape}\n")
+        f.write(f"max: {max}\n")
+        f.write(f"min: {min}\n\n")
+
+    # if this is a .nii file, load the data, header, and affine, and output as a .nii.gz file
+    if file_path.endswith(".nii"):
+        print("Outputing", file_path)
+        # output the data as a .nii.gz file
+        new_file_path = file_path + ".gz"
+        old_file = nib.load(file_path)
+        new_file = nib.Nifti1Image(data, old_file.affine, old_file.header)
+        nib.save(new_file, new_file_path)
+        os.system(f"rm {file_path}")
+        print("Outputed", new_file_path)
 
 # output the overall stat of the folder
 for basename in folder_level_stat.keys():
@@ -72,4 +89,11 @@ for basename in folder_level_stat.keys():
     min = folder_level_stat[basename]["min"]
     with open(os.path.join(folder_path, "stat.txt"), "a") as f:
         f.write(f"Folder: {basename}\n")
-        f.write(f"mean: {mean}, std: {std}, shape: {shape}, max: {max}, min: {min}\n\n")
+        # write in lines
+        f.write(f"mean: {mean}\n")
+        f.write(f"std: {std}\n")
+        f.write(f"shape: {shape}\n")
+        f.write(f"max: {max}\n")
+        f.write(f"min: {min}\n\n")
+
+print("Finished")
