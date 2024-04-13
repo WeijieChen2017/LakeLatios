@@ -3,7 +3,7 @@ import glob
 import numpy as np
 import nibabel as nib
 
-data_folder = "data/Lumbar_Spine/"
+data_folder = "data/LumbarSpine/"
 # find folders in the data folder
 folder_list = sorted(glob.glob(data_folder+"*/"))
 
