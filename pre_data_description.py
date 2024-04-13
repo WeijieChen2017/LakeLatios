@@ -2,7 +2,7 @@
 # and output stats of each file using a file tree at the folder path
 # then output a overall stats of the folder
 
-folder_path = "data/LumbarSpine"
+folder_path = "data/LumbarSpine/"
 import os
 import glob
 import nibabel as nib
@@ -38,9 +38,9 @@ def compare_stat(basenmae, stat):
         folder_level_stat[basename]["mean"].append(stat["mean"])
 
 for file_path in file_list:
-
+    print("Loading", file_path)
     basename = os.path.basename(file_path)
-    folder_path = os.path.dirname(file_path)
+    case_path = os.path.dirname(file_path)
 
     # load the data
     data = nib.load(file_path).get_fdata()
@@ -59,7 +59,7 @@ for file_path in file_list:
     compare_stat(basename, file_stat)
 
     # output the stat in the folder in a txt
-    with open(os.path.join(folder_path, "stat.txt"), "a") as f:
+    with open(os.path.join(case_path, "stat.txt"), "a") as f:
         f.write(f"File: {basename}\n")
         f.write(f"mean: {mean}, std: {std}, shape: {shape}, max: {max}, min: {min}, sum: {sum}\n\n")
 
