@@ -66,12 +66,11 @@ for folder in folder_list:
     fwd_ct_img = reg_ct_img['fwdtransforms']
     fwd_nc_img = reg_nc_img['fwdtransforms']
 
-    ants.image_write(new_ct_img, os.path.join(folder, "reg_CT.nii.gz"))
-    ants.image_write(new_nc_img, os.path.join(folder, "reg_NC.nii.gz"))
+    ants.image_write(fwd_ct_img, os.path.join(folder, "fwd_CT.nii.gz"))
+    ants.image_write(fwd_nc_img, os.path.join(folder, "fwd_NC.nii.gz"))
     ants.image_write(war_ct_img, os.path.join(folder, "war_CT.nii.gz"))
     ants.image_write(war_nc_img, os.path.join(folder, "war_NC.nii.gz"))
 
-    print(f"Saved registered files to {os.path.join(folder, 'reg_CT.nii.gz')}, {os.path.join(folder, 'reg_NC.nii.gz')}")
-    print(f"Saved warped files to {os.path.join(folder, 'war_CT.nii.gz')}, {os.path.join(folder, 'war_NC.nii.gz')}")
-
+    print(f"Saved registered files to {os.path.join(folder, 'fwd_CT.nii.gz')}, {os.path.join(folder, 'fwd_NC.nii.gz')}, {os.path.join(folder, 'war_CT.nii.gz')}, {os.path.join(folder, 'war_NC.nii.gz')}")
+    
 
