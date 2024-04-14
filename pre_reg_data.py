@@ -57,14 +57,14 @@ for folder in folder_list:
 
     new_ct_img = mr_ants_img.new_image_like(mr_ants_img.numpy())
     new_nc_img = mr_ants_img.new_image_like(mr_ants_img.numpy())
-    reg_ct = ants.registration(fixed=mr_ants_img, moving=ct_ants_img, type_of_transform='SyN')
-    reg_nc = ants.registration(fixed=mr_ants_img, moving=nc_ants_img, type_of_transform='SyN')
+    reg_ct_img = ants.registration(fixed=mr_ants_img, moving=ct_ants_img, type_of_transform='SyN')
+    reg_nc_img = ants.registration(fixed=mr_ants_img, moving=nc_ants_img, type_of_transform='SyN')
 
-    war_ct_img = ants.apply_transforms(fixed=mr_ants_img, moving=ct_ants_img, transformlist=reg_ct['warpedmovout'])
-    war_nc_img = ants.apply_transforms(fixed=mr_ants_img, moving=nc_ants_img, transformlist=reg_nc['warpedmovout'])
+    war_ct_img = reg_ct_img['warpedmovout']
+    war_nc_img = reg_nc_img['warpedmovout']
 
-    new_ct_img = ants.apply_transforms(fixed=mr_ants_img, moving=ct_ants_img, transformlist=reg_ct['fwdtransforms'])
-    new_nc_img = ants.apply_transforms(fixed=mr_ants_img, moving=nc_ants_img, transformlist=reg_nc['fwdtransforms'])
+    fwd_ct_img = reg_ct_img['fwdtransforms']
+    fwd_nc_img = reg_nc_img['fwdtransforms']
 
     ants.image_write(new_ct_img, os.path.join(folder, "reg_CT.nii.gz"))
     ants.image_write(new_nc_img, os.path.join(folder, "reg_NC.nii.gz"))
@@ -73,5 +73,5 @@ for folder in folder_list:
 
     print(f"Saved registered files to {os.path.join(folder, 'reg_CT.nii.gz')}, {os.path.join(folder, 'reg_NC.nii.gz')}")
     print(f"Saved warped files to {os.path.join(folder, 'war_CT.nii.gz')}, {os.path.join(folder, 'war_NC.nii.gz')}")
-    
+
 
