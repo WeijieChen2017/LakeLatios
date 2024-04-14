@@ -43,40 +43,40 @@ folder_list = sorted(glob.glob(data_folder+"*/"))
 #     print(f"Saved processed files to {proc_mr_filename}, {proc_nc_filename}, {proc_ct_filename}")
 
 # resample to the same resolution
-from scipy.ndimage import zoom
+# from scipy.ndimage import zoom
 
-for folder in folder_list:
-    print(folder)
+# for folder in folder_list:
+#     print(folder)
     
-    mr_path = os.path.join(folder, "proc_T1WI.nii.gz")
-    ct_path = os.path.join(folder, "proc_CT.nii.gz")
-    nc_path = os.path.join(folder, "proc_NC.nii.gz")
+#     mr_path = os.path.join(folder, "proc_T1WI.nii.gz")
+#     ct_path = os.path.join(folder, "proc_CT.nii.gz")
+#     nc_path = os.path.join(folder, "proc_NC.nii.gz")
 
-    mr_file = nib.load(mr_path)
-    ct_file = nib.load(ct_path)
-    nc_file = nib.load(nc_path)
+#     mr_file = nib.load(mr_path)
+#     ct_file = nib.load(ct_path)
+#     nc_file = nib.load(nc_path)
 
-    mr_data = mr_file.get_fdata()
-    ct_data = ct_file.get_fdata()
-    nc_data = nc_file.get_fdata()
+#     mr_data = mr_file.get_fdata()
+#     ct_data = ct_file.get_fdata()
+#     nc_data = nc_file.get_fdata()
 
-    mr_x, mr_y, mr_z = mr_data.shape
-    ct_x, ct_y, ct_z = ct_data.shape
+#     mr_x, mr_y, mr_z = mr_data.shape
+#     ct_x, ct_y, ct_z = ct_data.shape
 
-    # resample the CT and NC to the same resolution as MR using scipy
-    re_ct_data = zoom(ct_data, (mr_x/ct_x, mr_y/ct_y, mr_z/ct_z), order=3)
-    re_nc_data = zoom(nc_data, (mr_x/ct_x, mr_y/ct_y, mr_z/ct_z), order=3)
+#     # resample the CT and NC to the same resolution as MR using scipy
+#     re_ct_data = zoom(ct_data, (mr_x/ct_x, mr_y/ct_y, mr_z/ct_z), order=3)
+#     re_nc_data = zoom(nc_data, (mr_x/ct_x, mr_y/ct_y, mr_z/ct_z), order=3)
 
-    re_ct_file = nib.Nifti1Image(re_ct_data, mr_file.affine, mr_file.header)
-    re_nc_file = nib.Nifti1Image(re_nc_data, mr_file.affine, mr_file.header)
+#     re_ct_file = nib.Nifti1Image(re_ct_data, mr_file.affine, mr_file.header)
+#     re_nc_file = nib.Nifti1Image(re_nc_data, mr_file.affine, mr_file.header)
 
-    re_ct_filename = os.path.join(folder, "re_CT.nii.gz")
-    re_nc_filename = os.path.join(folder, "re_NC.nii.gz")
+#     re_ct_filename = os.path.join(folder, "re_CT.nii.gz")
+#     re_nc_filename = os.path.join(folder, "re_NC.nii.gz")
 
-    nib.save(re_ct_file, re_ct_filename)
-    nib.save(re_nc_file, re_nc_filename)
+#     nib.save(re_ct_file, re_ct_filename)
+#     nib.save(re_nc_file, re_nc_filename)
 
-    print(f"Saved resampled files to {re_ct_filename}, {re_nc_filename}")
+#     print(f"Saved resampled files to {re_ct_filename}, {re_nc_filename}")
 
 # register the CT and NC to MR using ANTs
 import ants 
