@@ -101,8 +101,11 @@ for folder in folder_list:
     war_ct_img = reg_ct_img['warpedmovout']
     war_nc_img = reg_nc_img['warpedmovout']
 
-    fwd_ct_img = ants.apply_transforms(fixed=mr_path, moving=ct_path, transformlist=reg_ct_img['fwdtransforms'])
-    fwd_nc_img = ants.apply_transforms(fixed=mr_path, moving=nc_path, transformlist=reg_nc_img['fwdtransforms'])
+    # fwd_ct_img = ants.apply_transforms(fixed=mr_path, moving=ct_path, transformlist=reg_ct_img['fwdtransforms'])
+    # fwd_nc_img = ants.apply_transforms(fixed=mr_path, moving=nc_path, transformlist=reg_nc_img['fwdtransforms'])
+
+    fwd_ct_img = reg_ct_img['fwdtransforms']
+    fwd_nc_img = reg_nc_img['fwdtransforms']
 
     ants.image_write(fwd_ct_img, os.path.join(folder, "fwd_CT.nii.gz"))
     ants.image_write(fwd_nc_img, os.path.join(folder, "fwd_NC.nii.gz"))
