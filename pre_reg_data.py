@@ -92,10 +92,11 @@ for folder in folder_list:
     nc_file = nib.load(nc_path)
 
     # write the affine and header to the header_affine
+    os.system(f"rm {os.path.join(folder, 'header_affine.txt')}")
     with open(os.path.join(folder, "header_affine.txt"), "w") as f:
-        f.write(f"MR affine:\n{mr_file.affine}\nMR header:\n{mr_file.header}\n")
-        f.write(f"CT affine:\n{ct_file.affine}\nCT header:\n{ct_file.header}\n")
-        f.write(f"NC affine:\n{nc_file.affine}\nNC header:\n{nc_file.header}\n")
+        f.write(f"MR affine:\n{mr_file.affine}\nMR header:\n{mr_file.header}\n\n")
+        f.write(f"CT affine:\n{ct_file.affine}\nCT header:\n{ct_file.header}\n\n")
+        f.write(f"NC affine:\n{nc_file.affine}\nNC header:\n{nc_file.header}\n\n")
     
     print(f"Saved header and affine to {os.path.join(folder, 'header_affine.txt')}")
 
