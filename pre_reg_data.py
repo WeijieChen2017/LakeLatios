@@ -128,6 +128,10 @@ for folder in folder_list:
     print(ct_path)
     print(nc_path)
 
+    # show the spacing for each image using property spacing
+    print("Spacing for MR:", mr_ants_img.spacing)
+    print("Spacing for CT:", ct_ants_img.spacing)
+    print("Spacing for NC:", nc_ants_img.spacing)
 
     print("Resampling CT to MR using ANTs")
     re_ct_img = ants.resample_image(ct_ants_img, mr_ants_img, use_voxels=True, interp_type=1)
