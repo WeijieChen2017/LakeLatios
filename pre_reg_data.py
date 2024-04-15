@@ -130,7 +130,7 @@ for folder in folder_list:
 
 
     print("Resampling CT to MR using ANTs")
-    re_nc_img = ants.resample_image(ct_ants_img, mr_ants_img, use_voxels=True, interp_type=1)
+    re_ct_img = ants.resample_image(ct_ants_img, mr_ants_img, use_voxels=True, interp_type=1)
     # re_ct_img = ants.resample_image_to_target(
     #     image = ct_ants_img, 
     #     target = mr_ants_img,
