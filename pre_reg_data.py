@@ -105,6 +105,17 @@ for folder in folder_list:
     mr_path = os.path.join(folder, "proc_T1WI.nii.gz")
     ct_path = os.path.join(folder, "proc_CT.nii.gz")
     nc_path = os.path.join(folder, "proc_NC.nii.gz")
+    # check whether the source and target images exist
+    if not os.path.exists(mr_path):
+        print(f"MR file {mr_path} does not exist.")
+        continue
+    if not os.path.exists(ct_path):
+        print(f"CT file {ct_path} does not exist.")
+        continue
+    if not os.path.exists(nc_path):
+        print(f"NC file {nc_path} does not exist.")
+        continue
+    
 
     mr_ants_img = ants.image_read(mr_path)
     ct_ants_img = ants.image_read(ct_path)
