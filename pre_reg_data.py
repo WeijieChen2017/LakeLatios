@@ -112,7 +112,7 @@ for folder in folder_list:
 
     re_ct_img = ants.resample_image(ct_ants_img, mr_ants_img, use_voxels=False, interp_type=1)
     ants.image_write(re_ct_img, os.path.join(folder, "ants_reCT.nii.gz"))
-    print(f"Saved resampled CT to {os.path.join(folder, 'ants_reCT.nii.gz')}"
+    print(f"Saved resampled CT to {os.path.join(folder, 'ants_reCT.nii.gz')}")
 
     re_nc_img = ants.resample_image(nc_ants_img, mr_ants_img, use_voxels=False, interp_type=1)
     ants.image_write(re_nc_img, os.path.join(folder, "ants_reNC.nii.gz"))
