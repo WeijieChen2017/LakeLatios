@@ -108,19 +108,28 @@ for folder in folder_list:
     # check whether the source and target images exist
     if not os.path.exists(mr_path):
         print(f"MR file {mr_path} does not exist.")
-        continue
+    else:
+        print(f"MR file {mr_path} exists.")
     if not os.path.exists(ct_path):
         print(f"CT file {ct_path} does not exist.")
-        continue
+    else:
+        print(f"CT file {ct_path} exists.")
     if not os.path.exists(nc_path):
         print(f"NC file {nc_path} does not exist.")
-        continue
+    else:
+        print(f"NC file {nc_path} exists.")
     
 
     mr_ants_img = ants.image_read(mr_path)
     ct_ants_img = ants.image_read(ct_path)
     nc_ants_img = ants.image_read(nc_path)
+    print("Read images using ANTs for MR, CT and NC from the following paths:")
+    print(mr_path)
+    print(ct_path)
+    print(nc_path)
 
+
+    print("Resampling CT to MR using ANTs")
     re_ct_img = ants.resample_image_to_target(
         image = ct_ants_img, 
         target = mr_ants_img,
@@ -131,6 +140,7 @@ for folder in folder_list:
     ants.image_write(re_ct_img, os.path.join(folder, "ants_reCT.nii.gz"))
     print(f"Saved resampled CT to {os.path.join(folder, 'ants_reCT.nii.gz')}")
 
+    print("Resampling NC to MR using ANTs")
     # re_nc_img = ants.resample_image(nc_ants_img, mr_ants_img, use_voxels=False, interp_type=1)
     re_nc_img = ants.resample_image_to_target(
         image = nc_ants_img, 
