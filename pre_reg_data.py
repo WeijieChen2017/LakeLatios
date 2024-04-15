@@ -42,7 +42,7 @@ folder_list = sorted(glob.glob(data_folder+"*/"))
 
 #     print(f"Saved processed files to {proc_mr_filename}, {proc_nc_filename}, {proc_ct_filename}")
 
-# resample to the same resolution
+# resample to the same resolution using scipy
 # from scipy.ndimage import zoom
 
 # for folder in folder_list:
@@ -78,38 +78,57 @@ folder_list = sorted(glob.glob(data_folder+"*/"))
 
 #     print(f"Saved resampled files to {re_ct_filename}, {re_nc_filename}")
 
-# register the CT and NC to MR using ANTs
+# resample CT and NC to the same resolution using ANTs
 import ants 
 
 for folder in folder_list:
     print(folder)
-    
     mr_path = os.path.join(folder, "proc_T1WI.nii.gz")
-    ct_path = os.path.join(folder, "re_CT.nii.gz")
-    nc_path = os.path.join(folder, "re_NC.nii.gz")
+    ct_path = os.path.join(folder, "proc_CT.nii.gz")
+    nc_path = os.path.join(folder, "proc_NC.nii.gz")
 
     mr_ants_img = ants.image_read(mr_path)
     ct_ants_img = ants.image_read(ct_path)
     nc_ants_img = ants.image_read(nc_path)
 
-    reg_ct_img = ants.registration(fixed=mr_ants_img, moving=ct_ants_img, type_of_transform='SyN')
-    reg_nc_img = ants.registration(fixed=mr_ants_img, moving=nc_ants_img, type_of_transform='SyN')
+    re_ct_img = ants.resample_image(ct_ants_img, mr_ants_img, use_voxels=True, interp_type=1)
+    re_nc_img = ants.resample_image(nc_ants_img, mr_ants_img, use_voxels=True, interp_type=1)
 
-    # war_ct_img = ants.apply_transforms(fixed=mr_path, moving=ct_path, transformlist=reg_ct_img['warpedmovout'])
-    # war_nc_img = ants.apply_transforms(fixed=mr_path, moving=nc_path, transformlist=reg_nc_img['warpedmovout'])
+    ants.image_write(re_ct_img, os.path.join(folder, "ants_reCT.nii.gz"))
+    ants.image_write(re_nc_img, os.path.join(folder, "ants_reNC.nii.gz"))
 
-    war_ct_img = reg_ct_img['warpedmovout']
-    war_nc_img = reg_nc_img['warpedmovout']
+# register the CT and NC to MR using ANTs
+# import ants 
 
-    # fwd_ct_img = ants.apply_transforms(fixed=mr_path, moving=ct_path, transformlist=reg_ct_img['fwdtransforms'])
-    # fwd_nc_img = ants.apply_transforms(fixed=mr_path, moving=nc_path, transformlist=reg_nc_img['fwdtransforms'])
+# for folder in folder_list:
+#     print(folder)
+    
+#     mr_path = os.path.join(folder, "proc_T1WI.nii.gz")
+#     ct_path = os.path.join(folder, "re_CT.nii.gz")
+#     nc_path = os.path.join(folder, "re_NC.nii.gz")
 
-    # fwd_ct_img = reg_ct_img['fwdtransforms']
-    # fwd_nc_img = reg_nc_img['fwdtransforms']
+#     mr_ants_img = ants.image_read(mr_path)
+#     ct_ants_img = ants.image_read(ct_path)
+#     nc_ants_img = ants.image_read(nc_path)
 
-    # ants.image_write(fwd_ct_img, os.path.join(folder, "fwd_CT.nii.gz"))
-    # ants.image_write(fwd_nc_img, os.path.join(folder, "fwd_NC.nii.gz"))
-    ants.image_write(war_ct_img, os.path.join(folder, "war_CT.nii.gz"))
-    ants.image_write(war_nc_img, os.path.join(folder, "war_NC.nii.gz"))
+#     reg_ct_img = ants.registration(fixed=mr_ants_img, moving=ct_ants_img, type_of_transform='SyN')
+#     reg_nc_img = ants.registration(fixed=mr_ants_img, moving=nc_ants_img, type_of_transform='SyN')
 
-    print(f"Saved registered files to {os.path.join(folder, 'fwd_CT.nii.gz')}, {os.path.join(folder, 'fwd_NC.nii.gz')}, {os.path.join(folder, 'war_CT.nii.gz')}, {os.path.join(folder, 'war_NC.nii.gz')}")
+#     # war_ct_img = ants.apply_transforms(fixed=mr_path, moving=ct_path, transformlist=reg_ct_img['warpedmovout'])
+#     # war_nc_img = ants.apply_transforms(fixed=mr_path, moving=nc_path, transformlist=reg_nc_img['warpedmovout'])
+
+#     war_ct_img = reg_ct_img['warpedmovout']
+#     war_nc_img = reg_nc_img['warpedmovout']
+
+#     # fwd_ct_img = ants.apply_transforms(fixed=mr_path, moving=ct_path, transformlist=reg_ct_img['fwdtransforms'])
+#     # fwd_nc_img = ants.apply_transforms(fixed=mr_path, moving=nc_path, transformlist=reg_nc_img['fwdtransforms'])
+
+#     # fwd_ct_img = reg_ct_img['fwdtransforms']
+#     # fwd_nc_img = reg_nc_img['fwdtransforms']
+
+#     # ants.image_write(fwd_ct_img, os.path.join(folder, "fwd_CT.nii.gz"))
+#     # ants.image_write(fwd_nc_img, os.path.join(folder, "fwd_NC.nii.gz"))
+#     ants.image_write(war_ct_img, os.path.join(folder, "war_CT.nii.gz"))
+#     ants.image_write(war_nc_img, os.path.join(folder, "war_NC.nii.gz"))
+
+#     print(f"Saved registered files to {os.path.join(folder, 'fwd_CT.nii.gz')}, {os.path.join(folder, 'fwd_NC.nii.gz')}, {os.path.join(folder, 'war_CT.nii.gz')}, {os.path.join(folder, 'war_NC.nii.gz')}")
