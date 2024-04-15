@@ -79,7 +79,7 @@ folder_list = sorted(glob.glob(data_folder+"*/"))
 #     print(f"Saved resampled files to {re_ct_filename}, {re_nc_filename}")
 
 # resample CT and NC to the same resolution using ANTs
-import ants 
+# import ants 
 
 # for folder in folder_list:
 #     print(folder)
