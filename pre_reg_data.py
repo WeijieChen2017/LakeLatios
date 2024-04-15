@@ -78,28 +78,8 @@ folder_list = sorted(glob.glob(data_folder+"*/"))
 
 #     print(f"Saved resampled files to {re_ct_filename}, {re_nc_filename}")
 
-# resample CT and NC to the same resolution using ANTs
-# import ants 
-
-for folder in folder_list:
-    print(folder)
-    mr_path = os.path.join(folder, "proc_T1WI.nii.gz")
-    ct_path = os.path.join(folder, "proc_CT.nii.gz")
-    nc_path = os.path.join(folder, "proc_NC.nii.gz")
-
-    mr_file = nib.load(mr_path)
-    ct_file = nib.load(ct_path)
-    nc_file = nib.load(nc_path)
-
-    # write the affine and header to the header_affine
-    os.system(f"rm {os.path.join(folder, 'header_affine.txt')}")
-    with open(os.path.join(folder, "header_affine.txt"), "w") as f:
-        f.write(f"MR affine:\n{mr_file.affine}\nMR header:\n{mr_file.header}\n\n")
-        f.write(f"CT affine:\n{ct_file.affine}\nCT header:\n{ct_file.header}\n\n")
-        f.write(f"NC affine:\n{nc_file.affine}\nNC header:\n{nc_file.header}\n\n")
-    
-    print(f"Saved header and affine to {os.path.join(folder, 'header_affine.txt')}")
-
+resample CT and NC to the same resolution using ANTs
+import ants 
 
 # for folder in folder_list:
 #     print(folder)
@@ -107,15 +87,35 @@ for folder in folder_list:
 #     ct_path = os.path.join(folder, "proc_CT.nii.gz")
 #     nc_path = os.path.join(folder, "proc_NC.nii.gz")
 
-#     mr_ants_img = ants.image_read(mr_path)
-#     ct_ants_img = ants.image_read(ct_path)
-#     nc_ants_img = ants.image_read(nc_path)
+#     mr_file = nib.load(mr_path)
+#     ct_file = nib.load(ct_path)
+#     nc_file = nib.load(nc_path)
 
-#     re_ct_img = ants.resample_image(ct_ants_img, mr_ants_img, use_voxels=True, interp_type=1)
-#     re_nc_img = ants.resample_image(nc_ants_img, mr_ants_img, use_voxels=True, interp_type=1)
+#     # write the affine and header to the header_affine
+#     os.system(f"rm {os.path.join(folder, 'header_affine.txt')}")
+#     with open(os.path.join(folder, "header_affine.txt"), "w") as f:
+#         f.write(f"MR affine:\n{mr_file.affine}\nMR header:\n{mr_file.header}\n\n")
+#         f.write(f"CT affine:\n{ct_file.affine}\nCT header:\n{ct_file.header}\n\n")
+#         f.write(f"NC affine:\n{nc_file.affine}\nNC header:\n{nc_file.header}\n\n")
+    
+#     print(f"Saved header and affine to {os.path.join(folder, 'header_affine.txt')}")
 
-#     ants.image_write(re_ct_img, os.path.join(folder, "ants_reCT.nii.gz"))
-#     ants.image_write(re_nc_img, os.path.join(folder, "ants_reNC.nii.gz"))
+
+for folder in folder_list:
+    print(folder)
+    mr_path = os.path.join(folder, "proc_T1WI.nii.gz")
+    ct_path = os.path.join(folder, "proc_CT.nii.gz")
+    nc_path = os.path.join(folder, "proc_NC.nii.gz")
+
+    mr_ants_img = ants.image_read(mr_path)
+    ct_ants_img = ants.image_read(ct_path)
+    nc_ants_img = ants.image_read(nc_path)
+
+    re_ct_img = ants.resample_image(ct_ants_img, mr_ants_img, use_voxels=False, interp_type=1)
+    re_nc_img = ants.resample_image(nc_ants_img, mr_ants_img, use_voxels=False, interp_type=1)
+
+    ants.image_write(re_ct_img, os.path.join(folder, "ants_reCT.nii.gz"))
+    ants.image_write(re_nc_img, os.path.join(folder, "ants_reNC.nii.gz"))
 
 # register the CT and NC to MR using ANTs
 # import ants 
