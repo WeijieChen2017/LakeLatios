@@ -190,8 +190,8 @@ for folder in folder_list:
     print(folder)
     
     mr_path = os.path.join(folder, "proc_T1WI.nii.gz")
-    ct_path = os.path.join(folder, "3dre_CT.nii.gz")
-    nc_path = os.path.join(folder, "3dre_NC.nii.gz")
+    ct_path = os.path.join(folder, "proc_CT.nii.gz")
+    nc_path = os.path.join(folder, "proc_NC.nii.gz")
 
     mr_ants_img = ants.image_read(mr_path)
     ct_ants_img = ants.image_read(ct_path)
