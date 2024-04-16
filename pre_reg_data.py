@@ -197,8 +197,11 @@ for folder in folder_list:
     ct_ants_img = ants.image_read(ct_path)
     nc_ants_img = ants.image_read(nc_path)
 
-    reg_ct_img = ants.registration(fixed=mr_ants_img, moving=ct_ants_img, type_of_transform='SyN')
-    reg_nc_img = ants.registration(fixed=mr_ants_img, moving=nc_ants_img, type_of_transform='SyN')
+    # reg_ct_img = ants.registration(fixed=mr_ants_img, moving=ct_ants_img, type_of_transform='SyN')
+    # reg_nc_img = ants.registration(fixed=mr_ants_img, moving=nc_ants_img, type_of_transform='SyN')
+
+    reg_ct_img = ants.registration(fixed=ct_ants_img, moving=mr_ants_img, type_of_transform='SyN')
+    reg_nc_img = ants.registration(fixed=nc_ants_img, moving=mr_ants_img, type_of_transform='SyN')
 
     # war_ct_img = ants.apply_transforms(fixed=mr_path, moving=ct_path, transformlist=reg_ct_img['warpedmovout'])
     # war_nc_img = ants.apply_transforms(fixed=mr_path, moving=nc_path, transformlist=reg_nc_img['warpedmovout'])
@@ -214,7 +217,11 @@ for folder in folder_list:
 
     # ants.image_write(fwd_ct_img, os.path.join(folder, "fwd_CT.nii.gz"))
     # ants.image_write(fwd_nc_img, os.path.join(folder, "fwd_NC.nii.gz"))
-    ants.image_write(war_ct_img, os.path.join(folder, "war_CT.nii.gz"))
-    ants.image_write(war_nc_img, os.path.join(folder, "war_NC.nii.gz"))
+    # ants.image_write(war_ct_img, os.path.join(folder, "war_CT.nii.gz"))
+    # ants.image_write(war_nc_img, os.path.join(folder, "war_NC.nii.gz"))
 
-    print(f"Saved registered files to {os.path.join(folder, 'fwd_CT.nii.gz')}, {os.path.join(folder, 'fwd_NC.nii.gz')}, {os.path.join(folder, 'war_CT.nii.gz')}, {os.path.join(folder, 'war_NC.nii.gz')}")
+    ants.image_write(war_ct_img, os.path.join(folder, "rewar_CT.nii.gz"))
+    ants.image_write(war_nc_img, os.path.join(folder, "rewar_NC.nii.gz"))
+
+    # print(f"Saved registered files to {os.path.join(folder, 'fwd_CT.nii.gz')}, {os.path.join(folder, 'fwd_NC.nii.gz')}, {os.path.join(folder, 'war_CT.nii.gz')}, {os.path.join(folder, 'war_NC.nii.gz')}")
+    print(f"Saved")
