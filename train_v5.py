@@ -267,6 +267,8 @@ if __name__ == "__main__":
         experiment_name = experiment_name,
     )
 
+    
+
     # save the training and validation list into the root_dir as a txt file
     with open(root_dir+"training_list.txt", "w") as f:
         for item in training_list:

@@ -16,8 +16,6 @@
     "print_batch_step": 500,
     "subset_fraction": 0.2,
     "random_seed": 42,
-
-
     "spatial_dims": 2,
     "in_channels": 3,
     "out_channels": 1,

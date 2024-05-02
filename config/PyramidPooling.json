@@ -1,5 +1,5 @@
 {
-    "model_name": "decoder_PyramidPooling_encoder_MedSAM",
+    "model_name": "decoder_PyramidPooling_encoder_MedSAM_May2",
     "pretrain_path": "pretrain/medsam_vit_b.pth",
     "img_size": 1024,
     "patch_size": 16,

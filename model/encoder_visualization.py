@@ -120,8 +120,7 @@ class output_ViTheads_encoder_MedSAM(nn.Module):
             ),
             LayerNorm2d(out_chans_pretrain),
         )
-
-
+        
         self._freeze_backbone()
         self._init_weights()
 

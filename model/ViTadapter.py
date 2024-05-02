@@ -11,7 +11,8 @@ from torch.nn.init import normal_
 
 from .MSDeformAttn import MSDeformAttn
 from .image_encoder import PatchEmbed, Block, LayerNorm2d
-from .ViTadapter_modules import SpatialPriorModule, Extractor, Injector, deform_inputs, PatchEmbed_adapter, LayerNorm
+from .ViTadapter_modules import SpatialPriorModule, Extractor, Injector, deform_inputs
+from .ViTadapter_modules import PatchEmbed_adapter, LayerNorm, InteractionBlock_frozenViT
 
 # x.shape torch.Size([2, 3, 1024, 1024])
 # after patch_embed x.shape torch.Size([2, 64, 64, 768])
@@ -139,7 +140,7 @@ class decoder_ViTadapter_encoder_MedSAM(nn.Module):
         self.spm = SpatialPriorModule(inplanes=conv_inplane, embed_dim=embed_dim,
                                       out_indices=out_indices)
         self.interactions = nn.Sequential(*[
-            InteractionBlock(dim=embed_dim, num_heads=deform_num_heads, n_points=n_points,
+            InteractionBlock_frozenViT(dim=embed_dim, num_heads=deform_num_heads, n_points=n_points,
                              init_values=init_values, drop_path=self.drop_path_rate,
                              norm_layer=nn.LayerNorm, with_cffn=with_cffn,
                              cffn_ratio=cffn_ratio, deform_ratio=deform_ratio,
